@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Vocab Builder - Concursos TI & Administrativo</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; -webkit-transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
+    
+    /* Custom scrollbar for dark theme */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- HEADER -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-4 py-3 sm:px-6">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-xl shadow-lg shadow-indigo-500/20 text-white">
+          <i class="fa-solid fa-book-open text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-violet-300 to-amber-300 bg-clip-text text-transparent">
+              English Vocab Builder
+            </h1>
+            <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> AI Powered
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium">Preparação Estratégica para Concursos (Cesgranrio, FGV, Cebraspe)</p>
+        </div>
+      </div>
+
+      <!-- TABS NAVIGATION -->
+      <nav class="flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs sm:text-sm overflow-x-auto w-full lg:w-auto">
+        <button id="nav-flashcards" onclick="switchTab('flashcards')" class="px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 bg-indigo-600 text-white shadow">
+          <i class="fa-solid fa-layer-group mr-1.5"></i> Flashcards
+        </button>
+        <button id="nav-explorer" onclick="switchTab('explorer')" class="px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-list-ul mr-1.5"></i> Explorador (<span id="total-count-badge">0</span>)
+        </button>
+        <button id="nav-quiz" onclick="switchTab('quiz'); startQuiz();" class="px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-circle-question mr-1.5"></i> Quiz
+        </button>
+        <button id="nav-simulado" onclick="switchTab('simulado')" class="px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-amber-300 hover:text-white flex items-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Simulado IA
+        </button>
+        <button id="nav-lab" onclick="switchTab('lab')" class="px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-indigo-300 hover:text-white flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt text-indigo-400"></i> Escrita IA
+        </button>
+        <button id="nav-add" onclick="switchTab('add')" class="px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-plus mr-1"></i> Palavra
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+
+    <!-- STATS DASHBOARD -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl backdrop-blur-sm">
+      <div class="flex flex-col">
+        <span class="text-xs text-slate-400">Total de Termos</span>
+        <span class="text-2xl font-bold text-white mt-0.5 flex items-center gap-2">
+          <span id="stat-total">0</span> <span class="text-xs font-normal text-indigo-400">palavras</span>
+        </span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-xs text-slate-400">Termos Dominados</span>
+        <span class="text-2xl font-bold text-emerald-400 mt-0.5 flex items-center gap-2">
+          <span id="stat-learned">0</span> <span id="stat-learned-pct" class="text-xs font-normal text-emerald-500">(0%)</span>
+        </span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-xs text-slate-400">Favoritos</span>
+        <span class="text-2xl font-bold text-amber-400 mt-0.5 flex items-center gap-2">
+          <span id="stat-bookmarks">0</span> <span class="text-xs font-normal text-amber-500">salvos</span>
+        </span>
+      </div>
+      <div class="flex flex-col justify-center">
+        <div class="w-full bg-slate-800 rounded-full h-2">
+          <div id="stat-progress-bar" class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <span class="text-[10px] text-slate-500 mt-1">Status de memorização ativa</span>
+      </div>
+    </section>
+
+    <!-- SEARCH & FILTER TOOLBAR -->
+    <div id="filter-toolbar" class="flex flex-col md:flex-row gap-4 justify-between bg-slate-900/40 p-4 rounded-xl border border-slate-800/60">
+      <div class="flex-1 relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input 
+          type="text" 
+          id="search-input"
+          placeholder="Buscar termo, tradução ou exemplo..."
+          oninput="onSearchOrFilterChange()"
+          class="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl focus:border-indigo-500 outline-none text-sm text-slate-100 placeholder-slate-500 transition-all"
+        />
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+          <i class="fa-solid fa-filter text-indigo-400 text-xs"></i>
+          <select id="category-filter" onchange="onSearchOrFilterChange()" class="bg-transparent text-xs text-slate-300 outline-none cursor-pointer">
+            <option value="Todas" class="bg-slate-950">Todas Categorias</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+          <i class="fa-solid fa-layer-group text-amber-400 text-xs"></i>
+          <select id="difficulty-filter" onchange="onSearchOrFilterChange()" class="bg-transparent text-xs text-slate-300 outline-none cursor-pointer">
+            <option value="Todas" class="bg-slate-950">Todas Dificuldades</option>
+            <option value="Fácil" class="bg-slate-950">Fácil</option>
+            <option value="Médio" class="bg-slate-950">Médio</option>
+            <option value="Difícil" class="bg-slate-950">Difícil</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB CONTENT 1: FLASHCARDS -->
+    <section id="tab-flashcards" class="flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full gap-6">
+      <div class="flex items-center justify-between w-full text-xs text-slate-400 px-2">
+        <span>Categoria: <strong id="card-category-display" class="text-indigo-400">-</strong></span>
+        <span>Card <strong id="card-current-num">1</strong> de <strong id="card-total-num">1</strong></span>
+      </div>
+
+      <!-- 3D FLIP CARD CONTAINER -->
+      <div class="w-full aspect-[16/10] min-h-[320px] perspective-1000 cursor-pointer" onclick="flipCard()">
+        <div id="card-inner" class="relative w-full h-full transform-style-3d">
+          
+          <!-- FRONT FACE -->
+          <div class="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-slate-800/80 hover:border-indigo-500/50 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl transition-all">
+            <div class="flex justify-between items-start">
+              <span id="card-difficulty-badge" class="text-[10px] font-bold uppercase px-2 py-1 rounded border bg-amber-500/20 text-amber-300 border-amber-500/30">
+                Médio
+              </span>
+              <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
+                <button onclick="speakCurrentWord()" class="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-indigo-400 transition-colors" title="Ouvir pronúncia">
+                  <i class="fa-solid fa-volume-high"></i>
+                </button>
+                <button id="card-bookmark-btn" onclick="toggleBookmarkCurrent()" class="p-2 hover:bg-slate-800 rounded-lg text-slate-400 transition-colors">
+                  <i class="fa-solid fa-star"></i>
+                </button>
+                <button id="card-learned-btn" onclick="toggleLearnedCurrent()" class="p-2 hover:bg-slate-800 rounded-lg text-slate-400 transition-colors">
+                  <i class="fa-solid fa-circle-check"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="text-center my-auto space-y-2">
+              <h2 id="card-word-display" class="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                Word
+              </h2>
+              <span id="card-pos-display" class="text-xs text-indigo-400 font-mono tracking-wider bg-indigo-500/10 px-3 py-1 rounded-full inline-block">
+                Part of speech
+              </span>
+            </div>
+
+            <div class="flex justify-between items-center text-xs text-slate-400 border-t border-slate-800/60 pt-4">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-circle-question text-indigo-400"></i> Toque para virar o card
+              </span>
+              <button onclick="event.stopPropagation(); openAiDeepDiveCurrent();" class="px-2.5 py-1 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-md shadow-indigo-500/20">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Análise IA
+              </button>
+            </div>
+          </div>
+
+          <!-- BACK FACE -->
+          <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-indigo-950/40 border-2 border-indigo-500/40 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl backdrop-blur-sm">
+            <div class="flex justify-between items-start">
+              <span class="text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-1 rounded">
+                TRADUÇÃO & REGRA
+              </span>
+              <span id="card-category-back" class="text-xs text-slate-400">Categoria</span>
+            </div>
+
+            <div class="my-auto space-y-3">
+              <div class="text-center space-y-1">
+                <h3 id="card-translation-display" class="text-2xl sm:text-3xl font-bold text-indigo-200">
+                  Tradução
+                </h3>
+                <div id="card-note-container" class="inline-block bg-amber-500/10 text-amber-300 border border-amber-500/20 text-[11px] font-medium py-1 px-3 rounded-lg max-w-lg hidden">
+                  📌 <span id="card-note-display"></span>
+                </div>
+              </div>
+
+              <div class="bg-slate-950/80 p-3.5 rounded-xl border border-indigo-500/20 text-left space-y-1">
+                <div class="flex justify-between items-start gap-2">
+                  <p id="card-example-display" class="text-xs text-slate-200 italic">"Example sentence."</p>
+                  <button onclick="event.stopPropagation(); speakCurrentExample();" class="p-1 hover:bg-slate-800 text-slate-400 hover:text-indigo-400 rounded shrink-0">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                  </button>
+                </div>
+                <p id="card-example-trans-display" class="text-xs text-indigo-400">"Tradução do exemplo."</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs text-indigo-300 border-t border-indigo-500/20 pt-3">
+              <span>Toque para voltar ao inglês</span>
+              <button onclick="event.stopPropagation(); openAiDeepDiveCurrent();" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[11px] font-bold flex items-center gap-1">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Aprofundar IA
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CARD CONTROLS -->
+      <div class="flex items-center justify-between w-full gap-4 max-w-md">
+        <button onclick="prevCard()" class="p-3 bg-slate-900 border border-slate-800 hover:border-indigo-500 hover:bg-slate-800 rounded-xl transition-all">
+          <i class="fa-solid fa-chevron-left text-sm"></i>
+        </button>
+
+        <button id="card-mark-toggle-btn" onclick="toggleLearnedCurrent()" class="flex-1 py-3 px-4 rounded-xl border font-semibold text-xs flex items-center justify-center gap-2 transition-all bg-slate-900 border-slate-800 text-slate-200 hover:border-slate-700">
+          <i class="fa-solid fa-check"></i> <span id="card-mark-btn-text">Marcar "Estudado"</span>
+        </button>
+
+        <button onclick="nextCard()" class="p-3 bg-slate-900 border border-slate-800 hover:border-indigo-500 hover:bg-slate-800 rounded-xl transition-all">
+          <i class="fa-solid fa-chevron-right text-sm"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 2: EXPLORER -->
+    <section id="tab-explorer" class="flex-1 hidden flex-col gap-4">
+      <div id="explorer-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Cards injected dynamically -->
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 3: QUIZ -->
+    <section id="tab-quiz" class="flex-1 hidden flex-col items-center justify-center max-w-xl mx-auto w-full gap-6">
+      <div class="w-full bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl flex flex-col gap-6 shadow-xl">
+        <div class="space-y-2 text-center">
+          <span class="text-xs font-bold text-indigo-400 tracking-widest uppercase block">
+            Questão <span id="quiz-question-num">1</span> de <span id="quiz-total-num">10</span>
+          </span>
+          <h2 class="text-2xl font-black text-white">
+            Significado do termo <span id="quiz-target-word" class="text-indigo-400">"..."</span>:
+          </h2>
+        </div>
+
+        <div id="quiz-options-container" class="flex flex-col gap-2.5">
+          <!-- Options rendered via JS -->
+        </div>
+
+        <div id="quiz-explanation-box" class="bg-slate-950 p-4 rounded-xl border border-indigo-500/20 text-xs space-y-1.5 hidden animate-fadeIn">
+          <p id="quiz-note-text" class="text-amber-400 font-bold text-[10px] uppercase hidden"></p>
+          <p id="quiz-example-text" class="text-slate-200 italic"></p>
+          <p id="quiz-example-trans-text" class="text-indigo-400"></p>
+        </div>
+
+        <div class="flex justify-between items-center pt-2">
+          <span class="text-xs font-bold text-slate-400">Score: <span id="quiz-score-val" class="text-emerald-400">0</span></span>
+          <button id="quiz-action-btn" onclick="submitQuizAnswer()" disabled class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition-all">
+            Confirmar Resposta
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 4: SIMULADO IA -->
+    <section id="tab-simulado" class="flex-1 hidden flex-col max-w-3xl mx-auto w-full gap-6">
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4 shadow-xl">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-xl shadow-lg text-white">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-black text-white">Gerador de Simulado IA (Cesgranrio & FGV)</h2>
+            <p class="text-xs text-slate-400">A IA do Gemini gera um texto técnico em inglês e 5 questões inéditas com gabarito comentado.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-300">Banca Examinadora</label>
+            <select id="simulado-banca-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-indigo-500">
+              <option value="Cesgranrio">Cesgranrio (Petrobras / Transpetro)</option>
+              <option value="FGV">FGV (Fundação Getulio Vargas)</option>
+              <option value="Cebraspe">Cebraspe (INSS / Polícia Federal)</option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-300">Tema do Texto Técnico</label>
+            <select id="simulado-topic-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 outline-none focus:border-indigo-500">
+              <option value="Segurança da Informação e Redes">Segurança da Informação & Redes</option>
+              <option value="Arquitetura de Servidores e RAID">Arquitetura de Servidores & RAID</option>
+              <option value="Direito Administrativo e Legislação">Legislação e Direito Administrativo</option>
+              <option value="Gestão de Pessoas e Organização">Gestão Organizacional</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="simulado-generate-btn" onclick="generateAiExam()" class="w-full py-3 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 transition-all">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Gerar Prova Inédita com IA
+        </button>
+      </div>
+
+      <!-- SIMULADO EXAM DISPLAY -->
+      <div id="simulado-results-container" class="space-y-6 hidden animate-fadeIn">
+        <!-- Generated passage and questions injected here -->
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 5: ESCRITA IA -->
+    <section id="tab-lab" class="flex-1 hidden flex-col max-w-2xl mx-auto w-full gap-6">
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-6 shadow-xl">
+        <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+          <div class="p-3 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+            <i class="fa-solid fa-bolt text-indigo-400 text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-black text-white">Laboratório de Escrita com IA</h2>
+            <p class="text-xs text-slate-400">Escreva uma frase em inglês usando a palavra-chave e receba uma correção e pontuação instantânea.</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold text-slate-300">Escolha a Palavra Alvo para Praticar</label>
+            <select id="writing-target-select" class="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-indigo-300 font-bold outline-none cursor-pointer">
+              <!-- Injected dynamically -->
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold text-slate-300">Sua Frase em Inglês</label>
+            <textarea 
+              id="writing-user-input"
+              rows="3"
+              placeholder="Escreva sua frase em inglês aqui..."
+              class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 outline-none focus:border-indigo-500 resize-none"
+            ></textarea>
+          </div>
+
+          <button id="writing-analyze-btn" onclick="analyzeWritingLabSentence()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 transition-all">
+            <i class="fa-solid fa-robot"></i> Analisar Frase com IA do Gemini
+          </button>
+        </div>
+
+        <!-- WRITING LAB FEEDBACK DISPLAY -->
+        <div id="writing-feedback-container" class="bg-slate-950 border border-indigo-500/30 p-5 rounded-xl space-y-4 hidden animate-fadeIn">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Avaliação da IA</span>
+            <span id="writing-score-badge" class="text-sm font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+              Nota: 0 / 10
+            </span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <h4 class="font-bold text-slate-300">Gramática e Correção:</h4>
+              <p id="writing-grammar-text" class="text-slate-400 mt-0.5"></p>
+            </div>
+
+            <div>
+              <h4 class="font-bold text-slate-300">Uso do Vocabulário:</h4>
+              <p id="writing-usage-text" class="text-slate-400 mt-0.5"></p>
+            </div>
+
+            <div class="bg-indigo-950/50 p-3 rounded-lg border border-indigo-500/30">
+              <h4 class="font-bold text-indigo-300">Sugestão Aprimorada:</h4>
+              <p id="writing-improved-text" class="text-slate-200 italic mt-0.5 font-medium"></p>
+            </div>
+
+            <div class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20 text-amber-300">
+              <h4 class="font-bold uppercase text-[10px] tracking-wider">Dica para Prova de Concurso:</h4>
+              <p id="writing-tip-text" class="text-slate-200 mt-0.5"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB CONTENT 6: + PALAVRA -->
+    <section id="tab-add" class="flex-1 hidden flex-col max-w-2xl mx-auto w-full gap-6">
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-6">
+        <div class="space-y-1">
+          <h2 class="text-xl font-black text-white">Adicionar Novo Termo</h2>
+          <p class="text-xs text-slate-400">Cadastre novas palavras observadas em questões do concurso.</p>
+        </div>
+
+        <div id="add-feedback-msg" class="p-3 bg-emerald-950 border border-emerald-500/30 text-emerald-300 text-xs rounded-xl flex items-center gap-2 hidden">
+          <i class="fa-solid fa-check"></i> <span id="add-feedback-text"></span>
+        </div>
+
+        <form onsubmit="handleAddNewWord(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input type="text" id="add-word-input" required placeholder="Palavra em Inglês *" class="px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-indigo-500" />
+            <input type="text" id="add-trans-input" required placeholder="Tradução em Português *" class="px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-indigo-500" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <select id="add-cat-input" class="px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 outline-none focus:border-indigo-500">
+              <option value="Conectores">Conectores</option>
+              <option value="Falsos Cognatos">Falsos Cognatos</option>
+              <option value="TI & Infraestrutura">TI & Infraestrutura</option>
+              <option value="Verbos & Termos Académicos">Verbos & Académicos</option>
+              <option value="Advérbios">Advérbios</option>
+            </select>
+            <input type="text" id="add-pos-input" placeholder="Classe (ex: Conjunction)" class="px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-indigo-500" />
+            <select id="add-diff-input" class="px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 outline-none focus:border-indigo-500">
+              <option value="Fácil">Fácil</option>
+              <option value="Médio" selected>Médio</option>
+              <option value="Difícil">Difícil</option>
+            </select>
+          </div>
+
+          <input type="text" id="add-note-input" placeholder="Observação Gramatical (Opcional)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-indigo-500" />
+          <textarea id="add-example-input" rows="2" placeholder="Exemplo em Inglês" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-indigo-500 resize-none"></textarea>
+          <textarea id="add-example-trans-input" rows="2" placeholder="Tradução do Exemplo" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-indigo-500 resize-none"></textarea>
+
+          <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-md transition-all">
+            Salvar Palavra
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- AI DEEP DIVE MODAL -->
+  <div id="ai-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto hidden">
+    <div class="bg-slate-900 border border-indigo-500/30 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- MODAL HEADER -->
+      <div class="p-5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              Análise Aprofundada IA: <span id="modal-word-title" class="text-indigo-400">-</span>
+            </h3>
+            <p id="modal-word-trans" class="text-xs text-slate-400">-</p>
+          </div>
+        </div>
+        <button onclick="closeAiDeepDiveModal()" class="p-2 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- MODAL BODY -->
+      <div id="modal-body-content" class="p-6 overflow-y-auto flex-1 space-y-6 text-sm">
+        <!-- Content injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-900 bg-slate-950 py-4 px-4 text-center text-[11px] text-slate-500">
+    English Vocab Builder • Integrado com Inteligência Artificial Gemini 3 Flash.
+  </footer>
+
+  <script>
+    // INITIAL VOCABULARY DATASET
+    const initialVocabulary = [
+      // === CONECTIVOS E LINKING WORDS ===
+      { word: "Although", translation: "Embora / Apesar de que", category: "Conectores", pos: "Conjunction", difficulty: "Médio", example: "Although the database was optimized, the queries were still slow.", exampleTranslation: "Embora a base de dados estivesse otimizada, as consultas ainda estavam lentas.", note: "Contraste/Concessão - Seguido de oração (sujeito + verbo)" },
+      { word: "Though", translation: "Embora / Apesar de", category: "Conectores", pos: "Conjunction/Adverb", difficulty: "Médio", example: "The update was safe, though it required a brief network interruption.", exampleTranslation: "A atualização foi segura, embora tenha exigido uma breve interrupção de rede.", note: "Contraste/Concessão - Seguido de oração (sujeito + verbo)" },
+      { word: "Even though", translation: "Muito embora / Apesar de que", category: "Conectores", pos: "Conjunction", difficulty: "Médio", example: "Even though the iDRAC was configured, we still couldn't access the web console.", exampleTranslation: "Muito embora a iDRAC estivesse configurada, ainda não conseguimos acessar o console web.", note: "Contraste/Concessão - Seguido de oração (sujeito + verbo)" },
+      { word: "Whereas", translation: "Ao passo que / Enquanto que", category: "Conectores", pos: "Conjunction", difficulty: "Difícil", example: "SATA uses serial communication, whereas PATA used parallel paths.", exampleTranslation: "O SATA utiliza comunicação em série, ao passo que o PATA utilizava caminhos paralelos.", note: "Contraste/Concessão - Seguido de oração (sujeito + verbo)" },
+      { word: "While", translation: "Enquanto / Ao passo que / Embora", category: "Conectores", pos: "Conjunction", difficulty: "Fácil", example: "The backup runs while the system is idle.", exampleTranslation: "O backup é executado enquanto o sistema está ocioso.", note: "Contraste/Concessão - Seguido de oração (sujeito + verbo)" },
+      { word: "Despite", translation: "Apesar de", category: "Conectores", pos: "Preposition", difficulty: "Médio", example: "Despite the firewall block, the attack succeeded.", exampleTranslation: "Apesar do bloqueio da firewall, o ataque teve sucesso.", note: "Contraste - Seguido de substantivo ou termo terminado em -ing" },
+      { word: "In spite of", translation: "Apesar de", category: "Conectores", pos: "Prepositional Phrase", difficulty: "Médio", example: "In spite of running the command, the BMC error persisted.", exampleTranslation: "Apesar de executar o comando, o erro do BMC persistiu.", note: "Contraste - Seguido de substantivo ou termo terminado em -ing" },
+      { word: "However", translation: "No entanto / Porém / Contudo", category: "Conectores", pos: "Adverb", difficulty: "Fácil", example: "The system is fast; however, it lacks advanced security features.", exampleTranslation: "O sistema é rápido; no entanto, carece de recursos avançados de segurança.", note: "Contraste (entre frases) - Geralmente após ponto ou ponto e vírgula" },
+      { word: "Nevertheless", translation: "Todavia / No entanto", category: "Conectores", pos: "Adverb", difficulty: "Difícil", example: "The credential error was severe; nevertheless, we bypassed it.", exampleTranslation: "O erro de credencial era grave; todavia, nós o contornamos.", note: "Contraste (entre frases) - Geralmente após ponto ou ponto e vírgula" },
+      { word: "On the other hand", translation: "Por outro lado", category: "Conectores", pos: "Prepositional Phrase", difficulty: "Fácil", example: "SATA is cheap; on the other hand, SAS is much more reliable.", exampleTranslation: "O SATA é barato; por outro lado, o SAS é muito mais confiável.", note: "Contraste (entre frases) - Geralmente após ponto ou ponto e vírgula" },
+      { word: "Regardless", translation: "Independentemente / Sem olhar a", category: "Conectores", pos: "Adverb", difficulty: "Médio", example: "The replication process will continue regardless of network fluctuations.", exampleTranslation: "O processo de replicação continuará independentemente das oscilações da rede." },
+      { word: "At least", translation: "Pelo menos", category: "Conectores", pos: "Prepositional Phrase", difficulty: "Fácil", example: "The server needs at least 16GB of RAM to run the virtual machines.", exampleTranslation: "O servidor precisa de pelo menos 16GB de RAM para executar as máquinas virtuais." },
+      { word: "Thanks to", translation: "Graças a", category: "Conectores", pos: "Prepositional Phrase", difficulty: "Fácil", example: "Thanks to the hot spare drive, no data was lost during the disk failure.", exampleTranslation: "Graças ao disco de reserva ativo (hot spare), nenhum dado foi perdido durante a falha do disco." },
+      { word: "Against", translation: "Contra", category: "Conectores", pos: "Preposition", difficulty: "Fácil", example: "The administrator implemented countermeasures against DDoS attacks.", exampleTranslation: "O administrador implementou contramedidas contra ataques DDoS." },
+
+      // === TERMOS TÉCNICOS & INFRAESTRUTURA DE TI ===
+      { word: "Chunk", translation: "Pedaço / Bloco de dados", category: "TI & Infraestrutura", pos: "Noun", difficulty: "Fácil", example: "Large database files are transmitted across the network in small chunks.", exampleTranslation: "Arquivos grandes de banco de dados são transmitidos pela rede em pequenos pedaços." },
+      { word: "Boost", translation: "Impulsionar / Aumentar", category: "TI & Infraestrutura", pos: "Verb/Noun", difficulty: "Fácil", example: "Adding an SSD cache will boost the overall throughput of the RAID array.", exampleTranslation: "Adicionar um cache SSD vai impulsionar a taxa de transferência geral do conjunto RAID." },
+      { word: "Striping", translation: "Agrupamento / Divisão de dados em tiras (RAID 0)", category: "TI & Infraestrutura", pos: "Noun", difficulty: "Médio", example: "RAID 0 uses disk striping to increase read and write performance.", exampleTranslation: "O RAID 0 utiliza o agrupamento em tiras (striping) para aumentar o desempenho de leitura e escrita." },
+      { word: "Hundred", translation: "Cem / 100% de integridade", category: "TI & Infraestrutura", pos: "Number/Adjective", difficulty: "Fácil", example: "The system restored one hundred percent of the encrypted files.", exampleTranslation: "O sistema restaurou cem por cento dos arquivos criptografados." },
+      { word: "Reliable", translation: "Confiável / Seguro", category: "TI & Infraestrutura", pos: "Adjective", difficulty: "Fácil", example: "SAS drives are more reliable than SATA drives for mission-critical databases.", exampleTranslation: "Os discos SAS são mais confiáveis que os discos SATA para bancos de dados de missão crítica." },
+      { word: "Threat", translation: "Ameaça", category: "TI & Infraestrutura", pos: "Noun", difficulty: "Fácil", example: "Unpatched CredSSP vulnerabilities represent a serious security threat.", exampleTranslation: "Vulnerabilidades CredSSP sem patch representam uma séria ameaça de segurança." },
+      { word: "Flaws", translation: "Imperfeições / Falhas", category: "TI & Infraestrutura", pos: "Noun", difficulty: "Médio", example: "The code audit revealed several security flaws in the API authentication flow.", exampleTranslation: "A auditoria de código revelou várias falhas de segurança no fluxo de autenticação da API." },
+      { word: "Embedded", translation: "Integrado / Embutido", category: "TI & Infraestrutura", pos: "Adjective", difficulty: "Médio", example: "The PowerEdge server features an embedded iDRAC controller on the motherboard.", exampleTranslation: "O servidor PowerEdge possui uma controladora iDRAC integrada na placa-mãe." },
+      { word: "Countermeasures", translation: "Contramedidas", category: "TI & Infraestrutura", pos: "Noun", difficulty: "Difícil", example: "The security team implemented countermeasures to stop unauthorized logins.", exampleTranslation: "A equipe de segurança implementou contramedidas para parar logins não autorizados." },
+      { word: "Measures", translation: "Medidas / Ações", category: "TI & Infraestrutura", pos: "Noun", difficulty: "Fácil", example: "Precautionary measures must be taken before upgrading the Active Directory schema.", exampleTranslation: "Medidas de precaução devem ser tomadas antes de atualizar o esquema do Active Directory." },
+      { word: "Seamless", translation: "Contínuo / Sem interrupções", category: "TI & Infraestrutura", pos: "Adjective", difficulty: "Médio", example: "Live migration enables a seamless transition of virtual machines without downtime.", exampleTranslation: "A migração ao vivo permite uma transição contínua de máquinas virtuais sem paralisação." },
+      { word: "Breached", translation: "Violado / Invadido", category: "TI & Infraestrutura", pos: "Verb/Adjective", difficulty: "Médio", example: "The secondary server was breached due to a weak admin password.", exampleTranslation: "O servidor secundário foi violado devido a uma senha de administrador fraca." },
+      { word: "Breach", translation: "Violação / Brecha", category: "TI & Infraestrutura", pos: "Noun/Verb", difficulty: "Médio", example: "A major data breach occurred after the unencrypted backup was stolen.", exampleTranslation: "Uma grande violação de dados ocorreu após o backup não criptografado ser roubado." },
+      { word: "Gathered", translation: "Coletada / Reunida", category: "TI & Infraestrutura", pos: "Verb/Adjective", difficulty: "Médio", example: "Log telemetry gathered from the domain controller helped isolate the attack.", exampleTranslation: "A telemetria de logs coletada do controlador de domínio ajudou a isolar o ataque." },
+      { word: "Assessed", translation: "Avaliada / Analisada", category: "TI & Infraestrutura", pos: "Verb/Adjective", difficulty: "Médio", example: "The risk level was assessed by the auditor before granting system clearance.", exampleTranslation: "O nível de risco foi avaliado pelo auditor antes de conceder a liberação do sistema." },
+      { word: "Averted", translation: "Evitadas / Desviadas", category: "TI & Infraestrutura", pos: "Verb/Adjective", difficulty: "Difícil", example: "The system crash was averted thanks to the automatic failover mechanism.", exampleTranslation: "A queda do sistema foi evitada graças ao mecanismo de failover automático." },
+
+      // === VERBOS & AÇÕES DE TI ===
+      { word: "Employ", translation: "Empregar / Utilizar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "High-availability clusters employ redundant power supplies to ensure uptime.", exampleTranslation: "Clusters de alta disponibilidade empregam fontes de alimentação redundantes para garantir o tempo de atividade." },
+      { word: "Avoid", translation: "Evitar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Always use secure protocols like HTTPS and SSH to avoid data interception.", exampleTranslation: "Sempre use protocolos seguros como HTTPS e SSH para evitar a interceptação de dados." },
+      { word: "Issue", translation: "Emitir / Publicar (ou Problema)", category: "Verbos & Termos Académicos", pos: "Verb/Noun", difficulty: "Médio", example: "The Certificate Authority will issue a new SSL certificate for the domain.", exampleTranslation: "A Autoridade Certificadora vai emitir um novo certificado SSL para o domínio." },
+      { word: "Attempting", translation: "Tentativa / Tentando", category: "Verbos & Termos Académicos", pos: "Verb/Participle", difficulty: "Fácil", example: "The firewall logged a suspicious IP attempting to force access to port 3389.", exampleTranslation: "O firewall registrou um IP suspeito tentando forçar o acesso à porta 3389." },
+      { word: "Relies", translation: "Depende / Baseia-se em", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Kerberos authentication relies on precise time synchronization across servers.", exampleTranslation: "A autenticação Kerberos depende de sincronização precisa de tempo entre os servidores." },
+      { word: "Handling", translation: "Lidar / Tratamento de dados", category: "Verbos & Termos Académicos", pos: "Verb/Noun", difficulty: "Médio", example: "Proper exception handling prevents applications from exposing sensitive stack traces.", exampleTranslation: "O tratamento adequado de exceções impede que as aplicações exponham rastreamentos sensíveis de pilha." },
+      { word: "Hindering", translation: "Dificultando / Impedindo", category: "Verbos & Termos Académicos", pos: "Verb/Participle", difficulty: "Difícil", example: "High disk latency was hindering the database backup job.", exampleTranslation: "A alta latência de disco estava dificultando a rotina de backup do banco de dados." },
+      { word: "Outweigh", translation: "Superar / Ultrapassar em importância", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Difícil", example: "The security benefits of updating CredSSP outweigh the temporary migration costs.", exampleTranslation: "Os benefícios de segurança de atualizar o CredSSP superam os custos temporários de migração." },
+
+      // === 30 VERBOS MAIS UTILIZADOS ===
+      { word: "Provide", translation: "Fornecer / Prover", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "The new API will provide real-time status updates for all active services.", exampleTranslation: "A nova API fornecerá atualizações de status em tempo real para todos os serviços ativos." },
+      { word: "Ensure", translation: "Garantir / Assegurar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Strict access policies help ensure data privacy across the network.", exampleTranslation: "Políticas de acesso estritas ajudam a garantir a privacidade dos dados na rede." },
+      { word: "Maintain", translation: "Manter / Sustentar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Administrators must maintain regular backups to prevent catastrophic data loss.", exampleTranslation: "Os administradores devem manter backups regulares para evitar perdas catastróficas de dados." },
+      { word: "Perform", translation: "Realizar / Desempenhar / Executar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "The system will perform an automated health check every night.", exampleTranslation: "O sistema realizará uma verificação de integridade automatizada todas as noites." },
+      { word: "Require", translation: "Requerer / Exigir / Necessitar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Administrative tasks require multi-factor authentication for security.", exampleTranslation: "Tarefas administrativas exigem autenticação de múltiplos fatores por segurança." },
+      { word: "Implement", translation: "Implementar / Executar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "The security team will implement new firewall rules next weekend.", exampleTranslation: "A equipe de segurança implementará novas regras de firewall no próximo fim de semana." },
+      { word: "Develop", translation: "Desenvolver / Elaborar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Engineers plan to develop a microservice architecture for the application.", exampleTranslation: "Os engenheiros planejam desenvolver uma arquitetura de microsserviços para a aplicação." },
+      { word: "Allow", translation: "Permitir / Autorizar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "The proxy server does not allow unauthorized external connections.", exampleTranslation: "O servidor proxy não permite conexões externas não autorizadas." },
+      { word: "Prevent", translation: "Prevenir / Impedir", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Input validation is essential to prevent SQL injection vulnerabilities.", exampleTranslation: "A validação de entrada é essencial para prevenir vulnerabilidades de injeção de SQL." },
+      { word: "Support", translation: "Suportar / Apoiar / Dar suporte", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Windows Server 2022 does not support legacy FRS replication.", exampleTranslation: "O Windows Server 2022 não suporta a replicação legada FRS." },
+      { word: "Enable", translation: "Habilitar / Ativar / Permitir", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "You must enable BitLocker to encrypt drive volumes.", exampleTranslation: "Você deve habilitar o BitLocker para criptografar volumes de disco." },
+      { word: "Establish", translation: "Estabelecer / Criar / Fundar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "The VPN client needs to establish a secure tunnel to the corporate gateway.", exampleTranslation: "O cliente VPN precisa estabelecer um túnel seguro para o gateway corporativo." },
+      { word: "Reduce", translation: "Reduzir / Diminuir", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Optimizing database indexing will reduce query latency significantly.", exampleTranslation: "Otimizar a indexação do banco de dados reduzirá a latência das consultas significativamente." },
+      { word: "Increase", translation: "Aumentar / Elevar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Upgrading RAM will increase the virtual machine density on the hypervisor.", exampleTranslation: "Aumentar a memória RAM aumentará a densidade de máquinas virtuais no hipervisor." },
+      { word: "Verify", translation: "Verificar / Comprovar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Always verify the checksum before deploying a firmware package.", exampleTranslation: "Sempre verifique o checksum antes de implantar um pacote de firmware." },
+      { word: "Retrieve", translation: "Recuperar / Buscar (dados)", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "The application can retrieve user tokens directly from the cache.", exampleTranslation: "A aplicação pode recuperar tokens de usuário diretamente do cache." },
+      { word: "Trigger", translation: "Disparar / Acionar / Desencadear", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "A sudden spike in CPU usage will trigger an automated alert email.", exampleTranslation: "Um pico repentino no uso da CPU disparará um e-mail de alerta automatizado." },
+      { word: "Execute", translation: "Executar / Cumprir", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "Use the PowerShell console to execute administrative scripts remotely.", exampleTranslation: "Use o console do PowerShell para executar scripts administrativos remotamente." },
+      { word: "Comply", translation: "Cumprir / Estar em conformidade com", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Difícil", example: "All cloud storage policies must comply with data protection regulations.", exampleTranslation: "Todas as políticas de armazenamento na nuvem devem cumprir com as regulamentações de proteção de dados." },
+      { word: "Mitigate", translation: "Mitigar / Atenuar / Suavizar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Difícil", example: "Rate limiting is used to mitigate the impact of brute-force login attacks.", exampleTranslation: "A limitação de taxa é usada para mitigar o impacto de ataques de força bruta no login." },
+      { word: "Disclose", translation: "Divulgar / Revelar / Expor", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Difícil", example: "Responsible security researchers disclose vulnerabilities privately to vendors.", exampleTranslation: "Pesquisadores de segurança responsáveis divulgam vulnerabilidades privadamente aos fornecedores." },
+      { word: "Upgrade", translation: "Atualizar / Fazer upgrade", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Fácil", example: "The sysadmin decided to upgrade the domain functional level.", exampleTranslation: "O administrador decidiu atualizar o nível funcional do domínio." },
+      { word: "Grant", translation: "Conceder / Outorgar / Atribuir", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "Domain Admins can grant read permissions to auditor accounts.", exampleTranslation: "Administradores do domínio podem conceder permissões de leitura a contas de auditores." },
+      { word: "Revoke", translation: "Revogar / Anular / Retirar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "The security system will automatically revoke access upon employee termination.", exampleTranslation: "O sistema de segurança revogará automaticamente o acesso com o desligamento do funcionário." },
+      { word: "Overwrite", translation: "Sobrescrever / Reescrever", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "Be careful not to overwrite the configuration file during deployment.", exampleTranslation: "Cuidado para não sobrescrever o arquivo de configuração durante a implantação." },
+      { word: "Parse", translation: "Analisar / Sintatizar (dados/código)", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Difícil", example: "The log analyzer will parse the JSON telemetry payload to detect errors.", exampleTranslation: "O analisador de logs analisará a carga útil de telemetria em JSON para detectar erros." },
+      { word: "Deploy", translation: "Implantar / Publicar / Distribuir", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "DevOps teams use CI/CD pipelines to deploy updates seamlessly.", exampleTranslation: "Equipes de DevOps usam pipelines de CI/CD para implantar atualizações de forma contínua." },
+      { word: "Determine", translation: "Determinar / Definir / Identificar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "Auditors run diagnostic tools to determine the root cause of the crash.", exampleTranslation: "Auditores executam ferramentas de diagnóstico para determinar a causa raiz da pane." },
+      { word: "Enhance", translation: "Melhorar / Aprimorar / Elevar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "Enabling multi-factor authentication will enhance overall domain security.", exampleTranslation: "Habilitar a autenticação de múltiplos fatores aprimorará a segurança geral do domínio." },
+      { word: "Assess", translation: "Avaliar / Estimar / Analisar", category: "Verbos & Termos Académicos", pos: "Verb", difficulty: "Médio", example: "The audit team will assess system vulnerabilities before issuing the compliance report.", exampleTranslation: "A equipe de auditoria avaliará as vulnerabilidades do sistema antes de emitir o relatório de conformidade." },
+
+      // === ADJETIVOS, ADVÉRBIOS & FALSOS COGNATOS ===
+      { word: "Solely", translation: "Somente / Apenas / Exclusivamente", category: "Advérbios", pos: "Adverb", difficulty: "Médio", example: "The administrator is solely responsible for managing domain controller privileges.", exampleTranslation: "O administrador é o único responsável por gerenciar privilégios do controlador de domínio." },
+      { word: "Comprehensive", translation: "Abrangente / Completo", category: "TI & Infraestrutura", pos: "Adjective", difficulty: "Difícil", example: "The audit provided a comprehensive report on system vulnerabilities.", exampleTranslation: "A auditoria forneceu um relatório abrangente sobre as vulnerabilidades do sistema." },
+      { word: "Challenging", translation: "Desafiador / Complexo", category: "Verbos & Termos Académicos", pos: "Adjective", difficulty: "Fácil", example: "Migrating legacy FRS replication to DFSR can be challenging in large domains.", exampleTranslation: "Migrar a replicação legada FRS para DFSR pode ser desafiador em domínios grandes." },
+      { word: "Overwhelming", translation: "Sobrecarregando / Avassalador", category: "Verbos & Termos Académicos", pos: "Adjective", difficulty: "Difícil", example: "An overwhelming amount of SYN packets crashed the unbuffered network card.", exampleTranslation: "Uma quantidade avassaladora de pacotes SYN travou a placa de rede sem buffer." },
+      { word: "Thoroughly", translation: "Minuciosamente / Completamente", category: "Advérbios", pos: "Adverb", difficulty: "Difícil", example: "The system logs were thoroughly inspected by the forensics team.", exampleTranslation: "Os logs do sistema foram minuciosamente inspecionados pela equipe forense." },
+      { word: "Blurred", translation: "Indefinidos / Embaçados / Tênues", category: "TI & Infraestrutura", pos: "Adjective", difficulty: "Médio", example: "In hybrid cloud environments, security boundaries between local and remote hosts become blurred.", exampleTranslation: "Em ambientes de nuvem híbrida, os limites de segurança entre hosts locais e remotos tornam-se tênues." },
+      { word: "Boundaries", translation: "Limites / Fronteiras", category: "TI & Infraestrutura", pos: "Noun", difficulty: "Médio", example: "Firewalls define the perimeter boundaries of an enterprise intranet.", exampleTranslation: "Os firewalls definem os limites do perímetro de uma intranet corporativa." },
+      { word: "Actually", translation: "Na verdade / Realmente", category: "Falsos Cognatos", pos: "Adverb", difficulty: "Médio", example: "The error message was actually a false alarm.", exampleTranslation: "A mensagem de erro foi, na verdade, um alarme falso." },
+      { word: "Compromise", translation: "Comprometer / Colocar em risco", category: "Falsos Cognatos", pos: "Verb/Noun", difficulty: "Médio", example: "Leaking the password will compromise the entire server security.", exampleTranslation: "Vazar a palavra-passe vai comprometer a segurança de todo o servidor." }
+    ];
+
+    // APPLICATION STATE
+    let vocab = [];
+    let learnedIds = [];
+    let bookmarkIds = [];
+    let activeTab = 'flashcards';
+    let filteredVocab = [];
+    let currentCardIndex = 0;
+    let isFlipped = false;
+
+    // Quiz State
+    let quizQuestions = [];
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let selectedQuizOption = null;
+    let quizSubmitted = false;
+
+    // Simulado Exam State
+    let simuladoData = null;
+    let simuladoUserAnswers = {};
+    let simuladoSubmitted = false;
+
+    /* API Fetch Helper with Exponential Backoff */
+    async function fetchGeminiAPI(payload, retries = 3) {
+      const apiKey = ""; // Canvas runtime auto-injected
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      for (let i = 0; i < retries; i++) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+          const result = await response.json();
+          return result;
+        } catch (err) {
+          if (i === retries - 1) throw err;
+          await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+        }
+      }
+    }
+
+    function initApp() {
+      // Load saved vocabulary or default
+      const savedVocab = localStorage.getItem('vocab_study_data_v4');
+      vocab = savedVocab ? JSON.parse(savedVocab) : initialVocabulary;
+
+      const savedLearned = localStorage.getItem('vocab_learned_ids_v4');
+      learnedIds = savedLearned ? JSON.parse(savedLearned) : [];
+
+      const savedBookmarks = localStorage.getItem('vocab_bookmark_ids_v4');
+      bookmarkIds = savedBookmarks ? JSON.parse(savedBookmarks) : [];
+
+      populateCategories();
+      populateWritingLabDropdown();
+      applyFilters();
+      updateStats();
+    }
+
+    function saveData() {
+      localStorage.setItem('vocab_study_data_v4', JSON.stringify(vocab));
+      localStorage.setItem('vocab_learned_ids_v4', JSON.stringify(learnedIds));
+      localStorage.setItem('vocab_bookmark_ids_v4', JSON.stringify(bookmarkIds));
+      updateStats();
+    }
+
+    function updateStats() {
+      document.getElementById('stat-total').innerText = vocab.length;
+      document.getElementById('stat-learned').innerText = learnedIds.length;
+      document.getElementById('total-count-badge').innerText = vocab.length;
+      
+      const pct = vocab.length > 0 ? Math.round((learnedIds.length / vocab.length) * 100) : 0;
+      document.getElementById('stat-learned-pct').innerText = `(${pct}%)`;
+      document.getElementById('stat-progress-bar').style.width = `${pct}%`;
+      document.getElementById('stat-bookmarks').innerText = bookmarkIds.length;
+    }
+
+    function populateCategories() {
+      const cats = ['Todas', ...new Set(vocab.map(v => v.category))];
+      const select = document.getElementById('category-filter');
+      select.innerHTML = '';
+      cats.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.innerText = c;
+        opt.className = 'bg-slate-950';
+        select.appendChild(opt);
+      });
+    }
+
+    function populateWritingLabDropdown() {
+      const select = document.getElementById('writing-target-select');
+      select.innerHTML = '';
+      vocab.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.word;
+        opt.innerText = `${v.word} (${v.translation})`;
+        opt.className = 'bg-slate-950 text-slate-200';
+        select.appendChild(opt);
+      });
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const cat = document.getElementById('category-filter').value;
+      const diff = document.getElementById('difficulty-filter').value;
+
+      filteredVocab = vocab.filter(item => {
+        const matchCat = cat === 'Todas' || item.category === cat;
+        const matchDiff = diff === 'Todas' || item.difficulty === diff;
+        const matchSearch = item.word.toLowerCase().includes(search) || 
+                            item.translation.toLowerCase().includes(search) ||
+                            item.example.toLowerCase().includes(search);
+        return matchCat && matchDiff && matchSearch;
+      });
+
+      currentCardIndex = 0;
+      isFlipped = false;
+      renderCurrentTab();
+    }
+
+    function onSearchOrFilterChange() {
+      applyFilters();
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+      
+      const tabs = ['flashcards', 'explorer', 'quiz', 'simulado', 'lab', 'add'];
+      tabs.forEach(t => {
+        const navBtn = document.getElementById(`nav-${t}`);
+        const section = document.getElementById(`tab-${t}`);
+        if (t === tabName) {
+          section.classList.remove('hidden');
+          section.classList.add('flex');
+          if (t === 'simulado' || t === 'lab') {
+            navBtn.className = "px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow";
+          } else {
+            navBtn.className = "px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 bg-indigo-600 text-white shadow";
+          }
+        } else {
+          section.classList.add('hidden');
+          section.classList.remove('flex');
+          if (t === 'simulado') navBtn.className = "px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-amber-300 hover:text-white";
+          else if (t === 'lab') navBtn.className = "px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-indigo-300 hover:text-white";
+          else navBtn.className = "px-3.5 py-2 rounded-lg font-medium transition-all shrink-0 text-slate-400 hover:text-slate-200";
+        }
+      });
+
+      // Hide or show filter toolbar
+      const filterToolbar = document.getElementById('filter-toolbar');
+      if (tabName === 'flashcards' || tabName === 'explorer') {
+        filterToolbar.classList.remove('hidden');
+      } else {
+        filterToolbar.classList.add('hidden');
+      }
+
+      renderCurrentTab();
+    }
+
+    function renderCurrentTab() {
+      if (activeTab === 'flashcards') renderFlashcard();
+      else if (activeTab === 'explorer') renderExplorer();
+    }
+
+    function renderFlashcard() {
+      if (filteredVocab.length === 0) {
+        document.getElementById('card-word-display').innerText = "Nenhum termo";
+        document.getElementById('card-translation-display').innerText = "Ajuste os filtros";
+        return;
+      }
+
+      const item = filteredVocab[currentCardIndex];
+      document.getElementById('card-category-display').innerText = item.category;
+      document.getElementById('card-category-back').innerText = item.category;
+      document.getElementById('card-current-num').innerText = currentCardIndex + 1;
+      document.getElementById('card-total-num').innerText = filteredVocab.length;
+
+      document.getElementById('card-word-display').innerText = item.word;
+      document.getElementById('card-pos-display').innerText = item.pos;
+      document.getElementById('card-translation-display').innerText = item.translation;
+      document.getElementById('card-example-display').innerText = `"${item.example}"`;
+      document.getElementById('card-example-trans-display').innerText = item.exampleTranslation;
+
+      // Note display
+      const noteContainer = document.getElementById('card-note-container');
+      if (item.note) {
+        noteContainer.classList.remove('hidden');
+        document.getElementById('card-note-display').innerText = item.note;
+      } else {
+        noteContainer.classList.add('hidden');
+      }
+
+      // Difficulty badge
+      const diffBadge = document.getElementById('card-difficulty-badge');
+      diffBadge.innerText = item.difficulty;
+
+      // Buttons state
+      const isBookmarked = bookmarkIds.includes(item.word);
+      const isLearned = learnedIds.includes(item.word);
+
+      const bookmarkBtn = document.getElementById('card-bookmark-btn');
+      bookmarkBtn.className = isBookmarked 
+        ? "p-2 hover:bg-slate-800 rounded-lg text-amber-400 transition-colors" 
+        : "p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-amber-400 transition-colors";
+
+      const learnedBtn = document.getElementById('card-learned-btn');
+      learnedBtn.className = isLearned 
+        ? "p-2 hover:bg-slate-800 rounded-lg text-emerald-400 transition-colors" 
+        : "p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-emerald-400 transition-colors";
+
+      const markBtn = document.getElementById('card-mark-toggle-btn');
+      const markBtnText = document.getElementById('card-mark-btn-text');
+      if (isLearned) {
+        markBtn.className = "flex-1 py-3 px-4 rounded-xl border font-semibold text-xs flex items-center justify-center gap-2 transition-all bg-emerald-950 border-emerald-500 text-emerald-300";
+        markBtnText.innerText = "Marcar 'Não Estudado'";
+      } else {
+        markBtn.className = "flex-1 py-3 px-4 rounded-xl border font-semibold text-xs flex items-center justify-center gap-2 transition-all bg-slate-900 border-slate-800 text-slate-200 hover:border-slate-700";
+        markBtnText.innerText = "Marcar 'Estudado'";
+      }
+
+      // Reset flip
+      const inner = document.getElementById('card-inner');
+      if (isFlipped) inner.classList.add('rotate-y-180');
+      else inner.classList.remove('rotate-y-180');
+    }
+
+    function flipCard() {
+      isFlipped = !isFlipped;
+      const inner = document.getElementById('card-inner');
+      if (isFlipped) inner.classList.add('rotate-y-180');
+      else inner.classList.remove('rotate-y-180');
+    }
+
+    function prevCard() {
+      if (filteredVocab.length === 0) return;
+      isFlipped = false;
+      currentCardIndex = currentCardIndex > 0 ? currentCardIndex - 1 : filteredVocab.length - 1;
+      renderFlashcard();
+    }
+
+    function nextCard() {
+      if (filteredVocab.length === 0) return;
+      isFlipped = false;
+      currentCardIndex = currentCardIndex + 1 < filteredVocab.length ? currentCardIndex + 1 : 0;
+      renderFlashcard();
+    }
+
+    function toggleBookmarkCurrent() {
+      if (filteredVocab.length === 0) return;
+      const item = filteredVocab[currentCardIndex];
+      if (bookmarkIds.includes(item.word)) {
+        bookmarkIds = bookmarkIds.filter(id => id !== item.word);
+      } else {
+        bookmarkIds.push(item.word);
+      }
+      saveData();
+      renderFlashcard();
+    }
+
+    function toggleLearnedCurrent() {
+      if (filteredVocab.length === 0) return;
+      const item = filteredVocab[currentCardIndex];
+      if (learnedIds.includes(item.word)) {
+        learnedIds = learnedIds.filter(id => id !== item.word);
+      } else {
+        learnedIds.push(item.word);
+      }
+      saveData();
+      renderFlashcard();
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function speakCurrentWord() {
+      if (filteredVocab.length > 0) speakText(filteredVocab[currentCardIndex].word);
+    }
+
+    function speakCurrentExample() {
+      if (filteredVocab.length > 0) speakText(filteredVocab[currentCardIndex].example);
+    }
+
+    function renderExplorer() {
+      const container = document.getElementById('explorer-grid');
+      container.innerHTML = '';
+
+      if (filteredVocab.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 bg-slate-900/50 rounded-2xl border border-slate-800 p-8">
+            <i class="fa-solid fa-triangle-exclamation text-amber-400 text-3xl mb-3"></i>
+            <h3 class="text-lg font-bold text-white mb-1">Nenhum termo encontrado</h3>
+            <p class="text-sm text-slate-400">Ajuste os filtros de pesquisa para visualizar palavras.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredVocab.forEach(item => {
+        const isLearned = learnedIds.includes(item.word);
+        const isBookmarked = bookmarkIds.includes(item.word);
+
+        const card = document.createElement('div');
+        card.className = `p-5 rounded-2xl border flex flex-col justify-between gap-4 ${isLearned ? 'bg-slate-900/40 border-emerald-500/20' : 'bg-slate-900 border-slate-800 hover:border-slate-700'}`;
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <h3 class="text-lg font-bold text-white">${item.word}</h3>
+                <button onclick="speakText('${item.word.replace(/'/g, "\\'")}')" class="p-1 text-slate-400 hover:text-indigo-400">
+                  <i class="fa-solid fa-volume-high text-xs"></i>
+                </button>
+              </div>
+              <span class="text-xs text-slate-400 block">${item.category} • ${item.pos}</span>
+            </div>
+
+            <div class="flex gap-1">
+              <button onclick="toggleBookmarkItem('${item.word.replace(/'/g, "\\'")}')" class="p-1.5 hover:bg-slate-800 rounded text-amber-400">
+                <i class="fa-solid fa-star ${isBookmarked ? 'text-amber-400' : 'text-slate-600'}"></i>
+              </button>
+              <button onclick="toggleLearnedItem('${item.word.replace(/'/g, "\\'")}')" class="p-1.5 hover:bg-slate-800 rounded text-emerald-400">
+                <i class="fa-solid fa-circle-check ${isLearned ? 'text-emerald-400' : 'text-slate-600'}"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <p class="text-sm font-semibold text-indigo-300">${item.translation}</p>
+            ${item.note ? `<p class="text-[11px] text-amber-400 bg-amber-500/10 p-1.5 rounded border border-amber-500/20">📌 ${item.note}</p>` : ''}
+            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs">
+              <p class="text-slate-200 italic">"${item.example}"</p>
+              <p class="text-indigo-400">${item.exampleTranslation}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800/60">
+            <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded border ${item.difficulty === 'Fácil' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : item.difficulty === 'Difícil' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}">
+              ${item.difficulty}
+            </span>
+            <button onclick="openAiDeepDive('${item.word.replace(/'/g, "\\'")}')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-xs"></i> Análise IA
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleBookmarkItem(wordStr) {
+      if (bookmarkIds.includes(wordStr)) bookmarkIds = bookmarkIds.filter(id => id !== wordStr);
+      else bookmarkIds.push(wordStr);
+      saveData();
+      renderExplorer();
+    }
+
+    function toggleLearnedItem(wordStr) {
+      if (learnedIds.includes(wordStr)) learnedIds = learnedIds.filter(id => id !== wordStr);
+      else learnedIds.push(wordStr);
+      saveData();
+      renderExplorer();
+    }
+
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function startQuiz() {
+      if (vocab.length < 4) return;
+      const quizPool = filteredVocab.length >= 4 ? filteredVocab : vocab;
+      const shuffledPool = shuffleArray(quizPool).slice(0, 10);
+
+      quizQuestions = shuffledPool.map(target => {
+        const otherPool = vocab.filter(v => v.word !== target.word);
+        const falses = shuffleArray(otherPool).slice(0, 3);
+        const options = shuffleArray([target.translation, ...falses.map(f => f.translation)]);
+
+        return {
+          word: target.word,
+          correctAnswer: target.translation,
+          options,
+          example: target.example,
+          exampleTranslation: target.exampleTranslation,
+          note: target.note
+        };
+      });
+
+      currentQuizIndex = 0;
+      quizScore = 0;
+      selectedQuizOption = null;
+      quizSubmitted = false;
+
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      if (quizQuestions.length === 0) return;
+      const q = quizQuestions[currentQuizIndex];
+
+      document.getElementById('quiz-question-num').innerText = currentQuizIndex + 1;
+      document.getElementById('quiz-total-num').innerText = quizQuestions.length;
+      document.getElementById('quiz-target-word').innerText = `"${q.word}"`;
+      document.getElementById('quiz-score-val').innerText = quizScore;
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.onclick = () => selectQuizOption(opt);
+        btn.disabled = quizSubmitted;
+
+        let btnClass = "p-3.5 rounded-xl border text-left text-xs sm:text-sm font-semibold transition-all flex items-center justify-between gap-3 bg-slate-950 border-slate-800 text-slate-200 hover:bg-slate-850";
+        if (quizSubmitted) {
+          if (opt === q.correctAnswer) btnClass = "p-3.5 rounded-xl border text-left text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 bg-emerald-950/80 border-emerald-500 text-emerald-300";
+          else if (opt === selectedQuizOption) btnClass = "p-3.5 rounded-xl border text-left text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 bg-rose-950/80 border-rose-500 text-rose-300";
+          else btnClass = "p-3.5 rounded-xl border text-left text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 bg-slate-950/40 text-slate-600";
+        } else if (opt === selectedQuizOption) {
+          btnClass = "p-3.5 rounded-xl border text-left text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 bg-indigo-950 border-indigo-500 text-indigo-200";
+        }
+
+        btn.className = btnClass;
+        btn.innerHTML = `<span>${opt}</span> ${quizSubmitted && opt === q.correctAnswer ? '<i class="fa-solid fa-check text-emerald-400"></i>' : ''}`;
+        container.appendChild(btn);
+      });
+
+      const expBox = document.getElementById('quiz-explanation-box');
+      if (quizSubmitted) {
+        expBox.classList.remove('hidden');
+        document.getElementById('quiz-example-text').innerText = `"${q.example}"`;
+        document.getElementById('quiz-example-trans-text').innerText = q.exampleTranslation;
+        const noteText = document.getElementById('quiz-note-text');
+        if (q.note) {
+          noteText.classList.remove('hidden');
+          noteText.innerText = `📌 ${q.note}`;
+        } else noteText.classList.add('hidden');
+      } else {
+        expBox.classList.add('hidden');
+      }
+
+      const actionBtn = document.getElementById('quiz-action-btn');
+      if (!quizSubmitted) {
+        actionBtn.innerText = "Confirmar Resposta";
+        actionBtn.disabled = selectedQuizOption === null;
+        actionBtn.onclick = submitQuizAnswer;
+      } else {
+        actionBtn.innerText = currentQuizIndex + 1 < quizQuestions.length ? "Próxima Questão" : "Reiniciar Quiz";
+        actionBtn.disabled = false;
+        actionBtn.onclick = currentQuizIndex + 1 < quizQuestions.length ? nextQuizQuestion : startQuiz;
+      }
+    }
+
+    function selectQuizOption(opt) {
+      if (quizSubmitted) return;
+      selectedQuizOption = opt;
+      renderQuizQuestion();
+    }
+
+    function submitQuizAnswer() {
+      if (selectedQuizOption === null || quizSubmitted) return;
+      const q = quizQuestions[currentQuizIndex];
+      if (selectedQuizOption === q.correctAnswer) quizScore++;
+      quizSubmitted = true;
+      renderQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+      currentQuizIndex++;
+      selectedQuizOption = null;
+      quizSubmitted = false;
+      renderQuizQuestion();
+    }
+
+    async function generateAiExam() {
+      const banca = document.getElementById('simulado-banca-select').value;
+      const topic = document.getElementById('simulado-topic-select').value;
+      const btn = document.getElementById('simulado-generate-btn');
+      const container = document.getElementById('simulado-results-container');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Elaborando Prova pela IA do Gemini...`;
+
+      const selectedWords = shuffleArray(vocab).slice(0, 8).map(v => v.word).join(', ');
+
+      const systemPrompt = `Você é uma banca examinadora de elite para concursos públicos de TI do Brasil (${banca}).
+Crie um texto de interpretação em inglês sobre o tema '${topic}' contendo obrigatoriamente alguns destes conectivos/termos: ${selectedWords}.
+Em seguida, elabore 5 questões inéditas de múltipla escolha (A a E) no estilo rigoroso da banca ${banca} com explicação detalhada em português.`;
+
+      const userPrompt = `Gere uma prova completa de Inglês Instrumental com texto e 5 questões no formato JSON.`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userPrompt }] }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              title: { type: "STRING" },
+              banca: { type: "STRING" },
+              passage: { type: "STRING" },
+              passageTranslation: { type: "STRING" },
+              questions: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    id: { type: "NUMBER" },
+                    questionText: { type: "STRING" },
+                    options: { type: "ARRAY", items: { type: "STRING" } },
+                    correctOptionIndex: { type: "NUMBER" },
+                    explanation: { type: "STRING" }
+                  },
+                  propertyOrdering: ["id", "questionText", "options", "correctOptionIndex", "explanation"]
+                }
+              }
+            },
+            propertyOrdering: ["title", "banca", "passage", "passageTranslation", "questions"]
+          }
+        }
+      };
+
+      try {
+        const result = await fetchGeminiAPI(payload);
+        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (jsonText) {
+          simuladoData = JSON.parse(jsonText);
+          simuladoUserAnswers = {};
+          simuladoSubmitted = false;
+          renderSimuladoExam();
+        }
+      } catch (err) {
+        alert("Erro ao gerar o simulado via IA. Tente novamente.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Gerar Prova Inédita com IA`;
+      }
+    }
+
+    function renderSimuladoExam() {
+      if (!simuladoData) return;
+      const container = document.getElementById('simulado-results-container');
+      container.classList.remove('hidden');
+
+      let questionsHtml = '';
+      simuladoData.questions.forEach((q, qIndex) => {
+        let optionsHtml = '';
+        q.options.forEach((opt, optIndex) => {
+          const isSelected = simuladoUserAnswers[qIndex] === optIndex;
+          const isCorrect = optIndex === q.correctOptionIndex;
+
+          let btnStyle = "bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-850";
+          if (simulatedSubmitted) {
+            if (isCorrect) btnStyle = "bg-emerald-950 border-emerald-500 text-emerald-300 font-bold";
+            else if (isSelected) btnStyle = "bg-rose-950 border-rose-500 text-rose-300";
+            else btnStyle = "bg-slate-950/40 text-slate-600";
+          } else if (isSelected) {
+            btnStyle = "bg-indigo-950 border-indigo-500 text-indigo-200 font-semibold";
+          }
+
+          optionsHtml += `
+            <button 
+              ${simulatedSubmitted ? 'disabled' : ''} 
+              onclick="selectSimuladoAnswer(${qIndex}, ${optIndex})"
+              class="w-full p-3 rounded-xl border text-left text-xs transition-all flex items-center justify-between ${btnStyle}"
+            >
+              <span><strong class="mr-2">${String.fromCharCode(65 + optIndex)})</strong> ${opt}</span>
+              ${simulatedSubmitted && isCorrect ? '<i class="fa-solid fa-check text-emerald-400"></i>' : ''}
+            </button>
+          `;
+        });
+
+        questionsHtml += `
+          <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+            <h3 class="text-sm font-bold text-white leading-relaxed">
+              Questão ${qIndex + 1}: ${q.questionText}
+            </h3>
+            <div class="space-y-2">${optionsHtml}</div>
+            ${simulatedSubmitted ? `
+              <div class="bg-slate-950 p-4 rounded-xl border border-indigo-500/20 text-xs space-y-1">
+                <span class="font-bold text-indigo-400 uppercase tracking-wider block text-[10px]">Comentário da Banca / Explicação:</span>
+                <p class="text-slate-300 leading-relaxed">${q.explanation}</p>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = `
+        <!-- PASSAGE BOX -->
+        <div class="bg-slate-900 border border-indigo-500/30 p-6 rounded-2xl space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">
+              PROVA: ${simuladoData.banca} • ${simuladoData.title}
+            </span>
+            <button onclick="speakText('${simuladoData.passage.replace(/'/g, "\\'")}')" class="text-xs text-slate-400 hover:text-indigo-400 flex items-center gap-1">
+              <i class="fa-solid fa-volume-high"></i> Ouvir Texto
+            </button>
+          </div>
+          <p class="text-sm text-slate-200 leading-relaxed italic font-serif">
+            "${simuladoData.passage}"
+          </p>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Tradução de Apoio (Português):</span>
+            <p class="text-xs text-slate-400 leading-relaxed">${simuladoData.passageTranslation}</p>
+          </div>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div class="space-y-6">${questionsHtml}</div>
+
+        <!-- ACTION BUTTON -->
+        ${!simulatedSubmitted ? `
+          <button onclick="submitSimuladoExam()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/20">
+            Corrigir Simulado e Ver Gabarito
+          </button>
+        ` : `
+          <button onclick="generateAiExam()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> Gerar Novo Simulado com IA
+          </button>
+        `}
+      `;
+    }
+
+    let simulatedSubmitted = false;
+    function selectSimuladoAnswer(qIndex, optIndex) {
+      if (simulatedSubmitted) return;
+      simuladoUserAnswers[qIndex] = optIndex;
+      renderSimuladoExam();
+    }
+
+    function submitSimuladoExam() {
+      simulatedSubmitted = true;
+      renderSimuladoExam();
+    }
+
+    async function analyzeWritingLabSentence() {
+      const targetWord = document.getElementById('writing-target-select').value;
+      const sentence = document.getElementById('writing-user-input').value.trim();
+      const btn = document.getElementById('writing-analyze-btn');
+      const container = document.getElementById('writing-feedback-container');
+
+      if (!sentence) {
+        alert("Por favor, digite uma frase em inglês.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Analisando...`;
+
+      const systemPrompt = "Você é um corretor e examinador especialista em Inglês Instrumental para concursos públicos. Avalie a frase criada pelo candidato contendo a palavra solicitada e retorne um feedback em JSON.";
+      const userPrompt = `A palavra-chave é: "${targetWord}". Frase enviada pelo usuário: "${sentence}".`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userPrompt }] }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              score: { type: "NUMBER" },
+              grammarFeedback: { type: "STRING" },
+              usageFeedback: { type: "STRING" },
+              improvedSentence: { type: "STRING" },
+              examTip: { type: "STRING" }
+            },
+            propertyOrdering: ["score", "grammarFeedback", "usageFeedback", "improvedSentence", "examTip"]
+          }
+        }
+      };
+
+      try {
+        const result = await fetchGeminiAPI(payload);
+        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (jsonText) {
+          const data = JSON.parse(jsonText);
+          container.classList.remove('hidden');
+          document.getElementById('writing-score-badge').innerText = `Nota: ${data.score} / 10`;
+          document.getElementById('writing-grammar-text').innerText = data.grammarFeedback;
+          document.getElementById('writing-usage-text').innerText = data.usageFeedback;
+          document.getElementById('writing-improved-text').innerText = `"${data.improvedSentence}"`;
+          document.getElementById('writing-tip-text').innerText = data.examTip;
+        }
+      } catch (err) {
+        alert("Erro ao analisar a frase pela IA.");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-robot"></i> Analisar Frase com IA do Gemini`;
+      }
+    }
+
+    function openAiDeepDiveCurrent() {
+      if (filteredVocab.length > 0) openAiDeepDive(filteredVocab[currentCardIndex].word);
+    }
+
+    async function openAiDeepDive(wordStr) {
+      const modal = document.getElementById('ai-modal');
+      const item = vocab.find(v => v.word === wordStr);
+      if (!item) return;
+
+      document.getElementById('modal-word-title').innerText = item.word;
+      document.getElementById('modal-word-trans').innerText = item.translation;
+
+      const body = document.getElementById('modal-body-content');
+      body.innerHTML = `
+        <div class="py-16 flex flex-col items-center justify-center text-center space-y-4">
+          <i class="fa-solid fa-circle-notch text-indigo-500 text-3xl animate-spin"></i>
+          <p class="text-slate-300 font-medium">A IA do Gemini está gerando mnemonismos e pegadinhas de concurso...</p>
+          <span class="text-xs text-slate-500">Consultando padrões das bancas Cesgranrio e FGV</span>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+
+      const systemPrompt = "Você é um professor especialista em Inglês Instrumental para concursos públicos brasileiros (Cesgranrio, FGV, Cebraspe). Forneça uma análise pedagógica aprofundada em JSON.";
+      const userPrompt = `Analise detalhadamente a palavra/expressão em inglês: "${item.word}" (Tradução: ${item.translation}, Categoria: ${item.category}).`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userPrompt }] }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              word: { type: "STRING" },
+              etymology: { type: "STRING" },
+              mnemonic: { type: "STRING" },
+              examTraps: { type: "STRING" },
+              collocations: { type: "ARRAY", items: { type: "STRING" } },
+              examples: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    context: { type: "STRING" },
+                    english: { type: "STRING" },
+                    portuguese: { type: "STRING" }
+                  },
+                  propertyOrdering: ["context", "english", "portuguese"]
+                }
+              }
+            },
+            propertyOrdering: ["word", "etymology", "mnemonic", "examTraps", "collocations", "examples"]
+          }
+        }
+      };
+
+      try {
+        const result = await fetchGeminiAPI(payload);
+        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (jsonText) {
+          const data = JSON.parse(jsonText);
+          
+          let collocationsHtml = '';
+          if (data.collocations && data.collocations.length > 0) {
+            collocationsHtml = `
+              <div class="space-y-2">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Combinações Frequentes (Collocations)</h4>
+                <div class="flex flex-wrap gap-2">
+                  ${data.collocations.map(col => `<span class="bg-indigo-950/80 text-indigo-300 border border-indigo-500/30 text-xs px-3 py-1 rounded-lg">${col}</span>`).join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          let examplesHtml = '';
+          if (data.examples && data.examples.length > 0) {
+            examplesHtml = `
+              <div class="space-y-3">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Exemplos Práticos por Contexto</h4>
+                <div class="space-y-2">
+                  ${data.examples.map(ex => `
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
+                      <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">${ex.context}</span>
+                      <div class="flex justify-between items-start gap-2">
+                        <p class="text-slate-200 italic">"${ex.english}"</p>
+                        <button onclick="speakText('${ex.english.replace(/'/g, "\\'")}')" class="p-1 hover:bg-slate-800 text-slate-400 hover:text-indigo-400 rounded shrink-0">
+                          <i class="fa-solid fa-volume-high text-xs"></i>
+                        </button>
+                      </div>
+                      <p class="text-slate-400">${ex.portuguese}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          }
+
+          body.innerHTML = `
+            <!-- MNEMONIC -->
+            <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl space-y-1">
+              <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-brain"></i> Macete de Memória (Mnemônica)
+              </h4>
+              <p class="text-slate-200 text-xs leading-relaxed">${data.mnemonic}</p>
+            </div>
+
+            <!-- EXAM TRAP -->
+            <div class="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl space-y-1">
+              <h4 class="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation"></i> Pegadinha de Prova (Cesgranrio/FGV)
+              </h4>
+              <p class="text-slate-200 text-xs leading-relaxed">${data.examTraps}</p>
+            </div>
+
+            <!-- ETYMOLOGY -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+              <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Origem & Etimologia</h4>
+              <p class="text-slate-300 text-xs">${data.etymology}</p>
+            </div>
+
+            ${collocationsHtml}
+            ${examplesHtml}
+          `;
+        }
+      } catch (err) {
+        body.innerHTML = `
+          <div class="py-12 text-center space-y-3">
+            <i class="fa-solid fa-circle-exclamation text-rose-400 text-3xl"></i>
+            <p class="text-slate-300">Não foi possível gerar a análise detalhada no momento.</p>
+            <button onclick="closeAiDeepDiveModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-semibold">Fechar</button>
+          </div>
+        `;
+      }
+    }
+
+    function closeAiDeepDiveModal() {
+      document.getElementById('ai-modal').classList.add('hidden');
+    }
+
+    function handleAddNewWord(e) {
+      e.preventDefault();
+      const word = document.getElementById('add-word-input').value.trim();
+      const trans = document.getElementById('add-trans-input').value.trim();
+      const cat = document.getElementById('add-cat-input').value;
+      const pos = document.getElementById('add-pos-input').value.trim() || 'Noun';
+      const diff = document.getElementById('add-diff-input').value;
+      const note = document.getElementById('add-note-input').value.trim();
+      const example = document.getElementById('add-example-input').value.trim() || 'Example sentence.';
+      const exampleTrans = document.getElementById('add-example-trans-input').value.trim() || 'Tradução do exemplo.';
+
+      if (!word || !trans) return;
+
+      const newObj = { word, translation: trans, category: cat, pos, difficulty: diff, note, example, exampleTranslation: exampleTrans };
+      vocab.unshift(newObj);
+      saveData();
+      populateCategories();
+      populateWritingLabDropdown();
+      applyFilters();
+
+      const msg = document.getElementById('add-feedback-msg');
+      document.getElementById('add-feedback-text').innerText = `Sucesso! "${word}" cadastrada com sucesso.`;
+      msg.classList.remove('hidden');
+
+      e.target.reset();
+      setTimeout(() => msg.classList.add('hidden'), 4000);
+    }
+
+    // INITIALIZATION ON WINDOW LOAD
+    window.onload = function() {
+      initApp();
+    };
+  </script>
+</body>
+</html>
