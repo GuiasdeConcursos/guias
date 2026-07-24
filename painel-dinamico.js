@@ -5,7 +5,7 @@
    Troque aqui se o endereço mudar — o resto do código não precisa
    ser alterado.
    ====================================================================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbySete3wDwtcKQ_iCdDJZEf6ReRstL_S8HX-fSK0WAbBVsaNJnM3lK8_eVYBzRHReJi/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwK7Y6KxVxKkq2Lk08HBWtO5YXxG2tbvb1LWAglKfx9prDMgHO6Q7NGsM_2fSZtZr0/exec";
 
 const COLORS = ['#5cd6d6', '#ffb454', '#4ade80', '#b39ddb', '#f87171', '#7fa8c9'];
 
