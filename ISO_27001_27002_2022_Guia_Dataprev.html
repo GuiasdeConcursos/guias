@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia ISO/IEC 27001:2022 e 27002:2022 — Dataprev/FGV</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --blue:#2E5395;
+    --lightblue:#DCE6F1;
+    --gray:#F2F2F2;
+    --red:#C00000;
+    --green:#1E7B34;
+    --amber:#BF8F00;
+    --amberbg:#FFF2CC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI", Calibri, Arial, sans-serif;
+    color:#222;
+    max-width:900px;
+    margin:0 auto;
+    padding:30px 20px 80px;
+    line-height:1.5;
+    background:#fff;
+  }
+  header{text-align:center; margin-bottom:30px;}
+  header .kicker{color:var(--blue); font-weight:bold; letter-spacing:.5px; font-size:0.95rem;}
+  header h1{color:var(--navy); font-size:2.1rem; margin:8px 0;}
+  header .sub{color:#555; font-style:italic; margin:4px 0;}
+  header .prio{color:var(--red); font-weight:bold; margin-top:6px;}
+
+  nav.toc{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+    padding:14px 18px;
+    border-radius:4px;
+    margin:24px 0;
+    font-size:0.95rem;
+  }
+  nav.toc a{color:var(--navy); text-decoration:none;}
+  nav.toc a:hover{text-decoration:underline;}
+  nav.toc ol{margin:6px 0 0; padding-left:20px;}
+
+  h1{
+    color:var(--navy);
+    font-size:1.6rem;
+    border-bottom:3px solid var(--navy);
+    padding-bottom:6px;
+    margin-top:48px;
+  }
+  h2{color:var(--blue); font-size:1.25rem; margin-top:30px;}
+  h3{color:#333; font-size:1.05rem; margin-top:22px;}
+
+  p{margin:10px 0;}
+
+  ul.bullets{margin:8px 0; padding-left:22px;}
+  ul.bullets li{margin-bottom:6px;}
+  ul.bullets ul{margin-top:6px;}
+
+  .callout{
+    padding:12px 16px;
+    border-radius:4px;
+    margin:14px 0;
+    font-size:0.97rem;
+  }
+  .destaque{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+  }
+  .destaque .tag{font-weight:bold; color:var(--navy);}
+  .pegadinha{
+    background:var(--amberbg);
+    border-left:6px solid var(--amber);
+  }
+  .pegadinha .tag{font-weight:bold; color:var(--amber);}
+
+  table{
+    border-collapse:collapse;
+    width:100%;
+    margin:16px 0;
+    font-size:0.92rem;
+  }
+  thead th{
+    background:var(--navy);
+    color:#fff;
+    padding:10px 12px;
+    text-align:left;
+  }
+  tbody td{
+    padding:9px 12px;
+    border-bottom:1px solid #ddd;
+    vertical-align:top;
+  }
+  tbody tr:nth-child(even){background:var(--gray);}
+
+  .questao{
+    margin:26px 0;
+    padding-bottom:10px;
+    border-bottom:1px dashed #ccc;
+  }
+  .questao .enunciado{font-weight:bold; margin-bottom:8px;}
+  .questao .alternativas{list-style:none; padding-left:0; margin:0 0 8px;}
+  .questao .alternativas li{margin:4px 0 4px 10px;}
+  .questao .alternativas li.correta{font-weight:bold; color:var(--green);}
+  .questao .gabarito{color:var(--green); font-weight:bold; margin:6px 0;}
+  .questao .comentario{
+    background:#EAF1DD;
+    border-left:4px solid var(--green);
+    padding:10px 14px;
+    font-style:italic;
+    font-size:0.93rem;
+    border-radius:3px;
+  }
+
+  .resumo-rapido td:first-child{font-weight:600;}
+
+  footer{
+    margin-top:50px;
+    text-align:center;
+    color:#888;
+    font-size:0.85rem;
+    border-top:1px solid #ddd;
+    padding-top:16px;
+  }
+
+  @media print{
+    body{max-width:100%;}
+    h1{page-break-before:auto;}
+    .questao{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">GUIA DE ESTUDO — CONCURSO DATAPREV / FGV</div>
+  <h1>ISO/IEC 27001:2022 e ISO/IEC 27002:2022</h1>
+  <div class="sub">Sistema de Gestão de Segurança da Informação (SGSI) e Controles de Segurança</div>
+  <div class="prio">Prioridade: ALTA — Guia completo para fechar a prova</div>
+</header>
+
+<div class="callout destaque">
+  <span class="tag">📌</span> Este assunto é recorrente em provas FGV/Cesgranrio/AOCP para TI. As bancas cobram: (1) estrutura das cláusulas 4-10 da 27001, (2) os 4 temas e a contagem de controles do Anexo A, (3) os 5 atributos da 27002, (4) as mudanças da versão 2013 para 2022 (controles novos, mesclados e renomeados), e (5) definições/termos-chave (risco, SoA, PDCA).
+</div>
+
+<nav class="toc">
+  <strong>Sumário</strong>
+  <ol>
+    <li><a href="#s1">Panorama e histórico</a></li>
+    <li><a href="#s2">ISO/IEC 27001:2022 — estrutura HLS (cláusulas 4-10)</a></li>
+    <li><a href="#s3">Anexo A — os 4 temas e os 93 controles</a></li>
+    <li><a href="#s4">ISO/IEC 27002:2022 — atributos dos controles</a></li>
+    <li><a href="#s5">O que mudou de 2013 para 2022</a></li>
+    <li><a href="#s6">Termos e definições-chave</a></li>
+    <li><a href="#s7">Quadro-resumo geral</a></li>
+    <li><a href="#s8">Pegadinhas de prova consolidadas</a></li>
+    <li><a href="#s9">Questões estilo banca com gabarito comentado</a></li>
+  </ol>
+</nav>
+
+<!-- 1. PANORAMA -->
+<h1 id="s1">1. Panorama e Histórico</h1>
+<p>As normas ISO/IEC 27001 e ISO/IEC 27002 pertencem à família ISO/IEC 27000, de gestão de segurança da informação, mantida conjuntamente pela ISO (International Organization for Standardization) e pela IEC (International Electrotechnical Commission).</p>
+
+<table>
+<thead><tr><th>Norma</th><th>Título / Papel</th><th>Natureza</th></tr></thead>
+<tbody>
+<tr><td>ISO/IEC 27000</td><td>Visão geral e vocabulário</td><td>Norma de referência (glossário)</td></tr>
+<tr><td>ISO/IEC 27001:2022</td><td>Requisitos do SGSI</td><td>CERTIFICÁVEL (auditável)</td></tr>
+<tr><td>ISO/IEC 27002:2022</td><td>Código de prática — controles de SI, cibersegurança e proteção da privacidade</td><td>Diretriz/guia (NÃO certificável)</td></tr>
+<tr><td>ISO/IEC 27005</td><td>Gestão de riscos de segurança da informação</td><td>Diretriz</td></tr>
+<tr><td>ISO/IEC 27701</td><td>Extensão para gestão de privacidade (PIMS)</td><td>Certificável (extensão do 27001)</td></tr>
+</tbody>
+</table>
+
+<div class="callout destaque"><span class="tag">📌</span> Só a ISO 27001 é certificável. A organização é auditada e certificada em relação à 27001; a 27002 é consultada como apoio para implementar os controles do Anexo A da 27001.</div>
+
+<ul class="bullets">
+  <li>ISO/IEC 27001:2022 — publicada em 25/10/2022. Título completo: "Segurança da informação, cibersegurança e proteção da privacidade — Sistemas de gestão de segurança da informação — Requisitos".</li>
+  <li>ISO/IEC 27002:2022 — publicada em fevereiro de 2022 (saiu antes da 27001:2022). Título: "Segurança da informação, cibersegurança e proteção da privacidade — Controles de segurança da informação".</li>
+  <li>Ambas substituem as versões de 2013. Note a mudança de escopo no título: as versões 2022 passaram a mencionar explicitamente "cibersegurança e proteção da privacidade", refletindo tendências atuais além da confidencialidade/integridade/disponibilidade clássicas.</li>
+</ul>
+
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> A banca pode inverter as datas de publicação. A 27002:2022 foi publicada ANTES da 27001:2022 (fev/2022 x out/2022), pois o Anexo A da 27001 precisa referenciar os controles já consolidados na 27002.</div>
+
+<!-- 2. ESTRUTURA -->
+<h1 id="s2">2. ISO/IEC 27001:2022 — Estrutura (High Level Structure)</h1>
+<p>A 27001 segue a Estrutura de Alto Nível (High Level Structure – HLS, também chamada Anexo SL), comum a todas as normas de sistemas de gestão ISO (ex.: ISO 9001, ISO 14001). Isso facilita a integração de sistemas de gestão. A norma tem 10 cláusulas; as cláusulas 4 a 10 contêm os REQUISITOS auditáveis ("shall"/"deve").</p>
+
+<table>
+<thead><tr><th>Cláusula</th><th>Título</th><th>Ideia-chave</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Escopo</td><td>Aplicabilidade da norma</td></tr>
+<tr><td>2</td><td>Referência normativa</td><td>Remete à ISO/IEC 27000 (termos e definições)</td></tr>
+<tr><td>3</td><td>Termos e definições</td><td>Remete à ISO/IEC 27000</td></tr>
+<tr><td>4</td><td>Contexto da organização</td><td>Entender a organização, partes interessadas e definir o escopo do SGSI</td></tr>
+<tr><td>5</td><td>Liderança</td><td>Comprometimento da Alta Direção, Política de SI, papéis e responsabilidades</td></tr>
+<tr><td>6</td><td>Planejamento</td><td>Riscos e oportunidades, avaliação/tratamento de riscos, SoA, objetivos de SI, planejamento de mudanças</td></tr>
+<tr><td>7</td><td>Apoio (Suporte)</td><td>Recursos, competência, conscientização, comunicação, informação documentada</td></tr>
+<tr><td>8</td><td>Operação</td><td>Execução do planejamento; avaliação e tratamento de riscos na prática</td></tr>
+<tr><td>9</td><td>Avaliação de desempenho</td><td>Monitoramento, medição, análise, auditoria interna, análise crítica pela direção</td></tr>
+<tr><td>10</td><td>Melhoria</td><td>Não conformidade, ação corretiva e melhoria contínua</td></tr>
+</tbody>
+</table>
+
+<div class="callout destaque"><span class="tag">📌</span> Mnemônico consagrado: "C-L-P-A-O-A-M" → Contexto, Liderança, Planejamento, Apoio, Operação, Avaliação de desempenho, Melhoria (cláusulas 4 a 10). As três primeiras cláusulas (1-3) são introdutórias e não trazem requisitos novos.</div>
+
+<h2>2.1 Cláusula 4 — Contexto da organização</h2>
+<ul class="bullets">
+  <li>4.1 Entendendo a organização e seu contexto (questões internas e externas).</li>
+  <li>4.2 Entendendo as necessidades e expectativas das partes interessadas.</li>
+  <li>4.3 Determinando o escopo do SGSI (deve estar disponível como informação documentada).</li>
+  <li>4.4 Sistema de Gestão de Segurança da Informação — a organização deve estabelecer, implementar, manter e melhorar continuamente o SGSI, incluindo os processos necessários e suas interações (requisito reforçado na versão 2022).</li>
+</ul>
+
+<h2>2.2 Cláusula 5 — Liderança</h2>
+<ul class="bullets">
+  <li>5.1 Liderança e comprometimento — a Alta Direção deve demonstrar liderança, garantindo integração dos requisitos do SGSI aos processos de negócio.</li>
+  <li>5.2 Política — estabelecimento da Política de Segurança da Informação.</li>
+  <li>5.3 Papéis, responsabilidades e autoridades organizacionais.</li>
+</ul>
+
+<h2>2.3 Cláusula 6 — Planejamento</h2>
+<ul class="bullets">
+  <li>6.1.1 Generalidades — ações para tratar riscos e oportunidades.</li>
+  <li>6.1.2 Avaliação de riscos de segurança da informação (processo de identificação, análise e avaliação de riscos).</li>
+  <li>6.1.3 Tratamento de riscos de segurança da informação — inclui a elaboração da Declaração de Aplicabilidade (SoA – Statement of Applicability), documento que relaciona os controles do Anexo A aplicáveis, justifica inclusões/exclusões e o status de implementação.</li>
+  <li>6.2 Objetivos de segurança da informação e planejamento para alcançá-los.</li>
+  <li>6.3 Planejamento de mudanças — CLÁUSULA NOVA na versão 2022. Exige que mudanças no SGSI sejam realizadas de forma planejada.</li>
+</ul>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> A subcláusula 6.3 (Planejamento de mudanças) é uma das principais novidades estruturais da 27001:2022 e é item favorito de prova por ser "o que mudou".</div>
+
+<h2>2.4 Cláusula 7 — Apoio</h2>
+<ul class="bullets">
+  <li>7.1 Recursos | 7.2 Competência | 7.3 Conscientização | 7.4 Comunicação | 7.5 Informação documentada (7.5.1 generalidades, 7.5.2 criação/atualização, 7.5.3 controle).</li>
+</ul>
+
+<h2>2.5 Cláusula 8 — Operação</h2>
+<ul class="bullets">
+  <li>8.1 Planejamento e controle operacionais — inclui controlar mudanças planejadas e analisar consequências de mudanças não intencionais (reforçado em 2022).</li>
+  <li>8.2 Avaliação de riscos de segurança da informação (execução periódica ou quando houver mudanças significativas).</li>
+  <li>8.3 Tratamento de riscos de segurança da informação (execução do plano de tratamento).</li>
+</ul>
+
+<h2>2.6 Cláusula 9 — Avaliação de desempenho</h2>
+<ul class="bullets">
+  <li>9.1 Monitoramento, medição, análise e avaliação.</li>
+  <li>9.2 Auditoria interna — 9.2.1 Generalidades e 9.2.2 Programa de auditoria interna (a 2022 desdobrou em duas subcláusulas).</li>
+  <li>9.3 Análise crítica pela direção — 9.3.1 Generalidades, 9.3.2 Entradas da análise crítica, 9.3.3 Saídas da análise crítica (também desdobrada em 2022).</li>
+</ul>
+
+<h2>2.7 Cláusula 10 — Melhoria</h2>
+<ul class="bullets">
+  <li>10.1 Melhoria contínua.</li>
+  <li>10.2 Não conformidade e ação corretiva.</li>
+</ul>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Na versão 2013 a ordem era 10.1 Não conformidade e ação corretiva → 10.2 Melhoria contínua. Na versão 2022 a ordem foi INVERTIDA: 10.1 Melhoria contínua vem primeiro, 10.2 Não conformidade e ação corretiva vem depois. Bancas adoram trocar essa ordem na alternativa.</div>
+
+<!-- 3. ANEXO A -->
+<h1 id="s3">3. Anexo A da ISO/IEC 27001:2022 — Os 4 Temas e os 93 Controles</h1>
+<p>O Anexo A é a lista de referência de controles de segurança da informação (correspondem, um a um, aos controles detalhados na ISO/IEC 27002:2022). Na versão 2013, o Anexo A tinha 114 controles organizados em 14 domínios (cláusulas A.5 a A.18) e 35 categorias. Na versão 2022, houve uma reestruturação completa:</p>
+
+<table>
+<thead><tr><th>Tema (Anexo A)</th><th>Quantidade de controles</th><th>Exemplos</th></tr></thead>
+<tbody>
+<tr><td>A.5 Controles organizacionais</td><td>37 controles</td><td>Políticas de SI, papéis e responsabilidades, gestão de ativos, controle de acesso, relação com fornecedores, continuidade de negócios</td></tr>
+<tr><td>A.6 Controles de pessoas</td><td>8 controles</td><td>Triagem (screening), termos e condições de trabalho, conscientização/educação/treinamento, processo disciplinar</td></tr>
+<tr><td>A.7 Controles físicos</td><td>14 controles</td><td>Perímetros de segurança física, controle de entrada física, proteção contra ameaças externas/ambientais, mesa e tela limpas</td></tr>
+<tr><td>A.8 Controles tecnológicos</td><td>34 controles</td><td>Dispositivos endpoint, controle de acesso privilegiado, proteção contra malware, criptografia, backup, segurança de redes</td></tr>
+</tbody>
+</table>
+
+<div class="callout destaque"><span class="tag">📌</span> TOTAL: 93 controles (versão 2022), distribuídos em 4 temas (não mais 14 domínios). Redução de 114 → 93 controles em relação a 2013, mas isso não significa "menos segurança": houve fusão (consolidação) de vários controles antigos em controles únicos mais amplos.</div>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Decore a soma: 37 + 8 + 14 + 34 = 93. É extremamente comum a banca pedir "quantos controles tem o tema de controles tecnológicos" (34) ou trocar os números entre os temas.</div>
+
+<h2>3.1 Os 11 controles NOVOS na versão 2022 (não existiam em 2013)</h2>
+<p>Estes 11 controles são o ponto mais cobrado em prova sobre "o que é novo" na 27002:2022:</p>
+
+<table>
+<thead><tr><th>Código</th><th>Nome do controle</th><th>Tema</th></tr></thead>
+<tbody>
+<tr><td>A.5.7</td><td>Inteligência de ameaças (Threat intelligence)</td><td>Organizacional</td></tr>
+<tr><td>A.5.23</td><td>Segurança da informação para uso de serviços em nuvem</td><td>Organizacional</td></tr>
+<tr><td>A.5.30</td><td>Prontidão de TIC para continuidade de negócios</td><td>Organizacional</td></tr>
+<tr><td>A.7.4</td><td>Monitoramento de segurança física</td><td>Físico</td></tr>
+<tr><td>A.8.9</td><td>Gestão de configuração</td><td>Tecnológico</td></tr>
+<tr><td>A.8.10</td><td>Exclusão de informação (Information deletion)</td><td>Tecnológico</td></tr>
+<tr><td>A.8.11</td><td>Mascaramento de dados (Data masking)</td><td>Tecnológico</td></tr>
+<tr><td>A.8.12</td><td>Prevenção de vazamento de dados (Data leakage prevention – DLP)</td><td>Tecnológico</td></tr>
+<tr><td>A.8.16</td><td>Monitoramento de atividades (monitoring activities)</td><td>Tecnológico</td></tr>
+<tr><td>A.8.23</td><td>Filtragem web (Web filtering)</td><td>Tecnológico</td></tr>
+<tr><td>A.8.28</td><td>Codificação segura (Secure coding)</td><td>Tecnológico</td></tr>
+</tbody>
+</table>
+
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Repare que 8 dos 11 controles novos estão no tema Tecnológico (A.8) — reflete a preocupação da norma com nuvem, DevSecOps, DLP e monitoramento. "Codificação segura" (A.8.28) é particularmente visado em provas de desenvolvimento de software (perfil Dataprev).</div>
+
+<!-- 4. ATRIBUTOS -->
+<h1 id="s4">4. ISO/IEC 27002:2022 — Os 5 Atributos dos Controles</h1>
+<p>A grande inovação da ISO/IEC 27002:2022 é a introdução de ATRIBUTOS: cada um dos 93 controles recebe uma tabela de atributos que permite "filtrar" e visualizar os controles sob diferentes perspectivas (ex.: gerar uma visão só dos controles "Detectivos", ou só dos controles ligados a "Governança"). São 5 tipos de atributo:</p>
+
+<table>
+<thead><tr><th>Atributo</th><th>Valores possíveis</th></tr></thead>
+<tbody>
+<tr><td>1. Tipo de controle (Control type)</td><td>Preventivo | Detectivo | Corretivo</td></tr>
+<tr><td>2. Propriedades de segurança da informação</td><td>Confidencialidade | Integridade | Disponibilidade</td></tr>
+<tr><td>3. Conceitos de cibersegurança (alinhado ao NIST CSF)</td><td>Identificar | Proteger | Detectar | Responder | Recuperar</td></tr>
+<tr><td>4. Capacidades operacionais</td><td>Governança, Gestão de ativos, Proteção da informação, Segurança de recursos humanos, Segurança física, Segurança de sistema e rede, Segurança de aplicação, Configuração segura, Gestão de identidade e acesso, Gestão de ameaças e vulnerabilidades, Continuidade, Segurança nas relações com fornecedores, Conformidade legal, Gestão de eventos de SI, Garantia de SI (entre outras)</td></tr>
+<tr><td>5. Domínios de segurança</td><td>Governança e Ecossistema | Proteção | Defesa | Resiliência</td></tr>
+</tbody>
+</table>
+
+<div class="callout destaque"><span class="tag">📌</span> Decoreba clássica: os "Conceitos de cibersegurança" (atributo 3) reproduzem as 5 funções do NIST Cybersecurity Framework: Identify, Protect, Detect, Respond, Recover (Identificar, Proteger, Detectar, Responder, Recuperar).</div>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Não confunda o atributo "Tipo de controle" (Preventivo/Detectivo/Corretivo — 3 valores) com o atributo "Propriedades de SI" (Confidencialidade/Integridade/Disponibilidade — também 3 valores, mas outro atributo). Bancas trocam esses dois atributos entre si nas alternativas.</div>
+
+<!-- 5. MUDANCAS -->
+<h1 id="s5">5. O que Mudou: ISO 27001/27002 (2013) → (2022)</h1>
+
+<table>
+<thead><tr><th>Aspecto</th><th>Versão 2013</th><th>Versão 2022</th></tr></thead>
+<tbody>
+<tr><td>Estrutura do Anexo A</td><td>14 domínios (A.5 a A.18), 35 categorias, 114 controles</td><td>4 temas (A.5 a A.8), 93 controles</td></tr>
+<tr><td>Controles novos</td><td>—</td><td>11 controles novos (ver lista acima)</td></tr>
+<tr><td>Controles mesclados</td><td>—</td><td>57 controles antigos foram fundidos em 24 controles novos</td></tr>
+<tr><td>Controles renomeados</td><td>—</td><td>23 controles apenas com o nome alterado</td></tr>
+<tr><td>Controles inalterados</td><td>—</td><td>35 controles mantidos como estavam</td></tr>
+<tr><td>Atributos</td><td>Não existiam</td><td>5 atributos introduzidos (tipo, propriedades de SI, conceitos de ciberseg., capacidades operacionais, domínios)</td></tr>
+<tr><td>Cláusula 6.3</td><td>Não existia</td><td>"Planejamento de mudanças" — nova subcláusula</td></tr>
+<tr><td>Cláusula 9.2/9.3</td><td>Únicas (não desdobradas)</td><td>Desdobradas em 9.2.1/9.2.2 e 9.3.1/9.3.2/9.3.3</td></tr>
+<tr><td>Ordem da cláusula 10</td><td>10.1 Não conformidade/ação corretiva → 10.2 Melhoria contínua</td><td>10.1 Melhoria contínua → 10.2 Não conformidade/ação corretiva (ordem invertida)</td></tr>
+<tr><td>Título da norma</td><td>"Sistemas de gestão de segurança da informação"</td><td>Inclui "cibersegurança e proteção da privacidade" no título</td></tr>
+</tbody>
+</table>
+
+<div class="callout destaque"><span class="tag">📌</span> Números para decorar sobre a origem dos 93 controles de 2022: 11 novos + 24 resultantes de fusão de 57 controles antigos + 23 renomeados + 35 mantidos sem alteração = 93 controles totais.</div>
+
+<!-- 6. TERMOS -->
+<h1 id="s6">6. Termos e Definições-Chave</h1>
+<table>
+<thead><tr><th>Termo</th><th>Definição resumida</th></tr></thead>
+<tbody>
+<tr><td>SGSI</td><td>Sistema de Gestão de Segurança da Informação — abordagem sistemática para gerenciar informações sensíveis, preservando confidencialidade, integridade e disponibilidade.</td></tr>
+<tr><td>Risco de SI</td><td>Efeito da incerteza nos objetivos de segurança da informação; combinação de probabilidade e impacto de um evento.</td></tr>
+<tr><td>SoA (Declaração de Aplicabilidade)</td><td>Documento obrigatório (cláusula 6.1.3.d) que lista todos os controles do Anexo A aplicáveis ou não, com justificativa de inclusão/exclusão e status de implementação.</td></tr>
+<tr><td>Confidencialidade</td><td>Propriedade de a informação não estar disponível/divulgada a pessoas, entidades ou processos não autorizados.</td></tr>
+<tr><td>Integridade</td><td>Propriedade de exatidão e completude da informação.</td></tr>
+<tr><td>Disponibilidade</td><td>Propriedade de estar acessível e utilizável sob demanda por uma entidade autorizada.</td></tr>
+<tr><td>Ativo</td><td>Qualquer coisa que tenha valor para a organização.</td></tr>
+<tr><td>Vulnerabilidade</td><td>Fragilidade de um ativo que pode ser explorada por uma ou mais ameaças.</td></tr>
+<tr><td>Alta Direção</td><td>Pessoa ou grupo de pessoas que dirige e controla a organização no mais alto nível.</td></tr>
+<tr><td>Melhoria contínua</td><td>Atividade recorrente para melhorar o desempenho do SGSI (cláusula 10.1 na versão 2022).</td></tr>
+</tbody>
+</table>
+
+<!-- 7. QUADRO RESUMO -->
+<h1 id="s7">7. Quadro-Resumo Geral (revisão rápida)</h1>
+<table class="resumo-rapido">
+<thead><tr><th>Pergunta típica de prova</th><th>Resposta</th></tr></thead>
+<tbody>
+<tr><td>Quantos controles tem o Anexo A da 27001:2022?</td><td>93</td></tr>
+<tr><td>Quantos temas (não mais domínios)?</td><td>4 — Organizacionais, Pessoas, Físicos, Tecnológicos</td></tr>
+<tr><td>Quantos controles em cada tema?</td><td>37 / 8 / 14 / 34</td></tr>
+<tr><td>Quantos controles totalmente novos em 2022?</td><td>11</td></tr>
+<tr><td>Quantos atributos cada controle recebe na 27002:2022?</td><td>5</td></tr>
+<tr><td>Qual norma é certificável?</td><td>ISO/IEC 27001 (a 27002 é apenas guia)</td></tr>
+<tr><td>Qual estrutura a 27001 segue?</td><td>High Level Structure / Anexo SL (comum a normas de SGs ISO)</td></tr>
+<tr><td>Quantas cláusulas de requisitos (4 a 10)?</td><td>7 cláusulas</td></tr>
+<tr><td>O que é a SoA e onde está prevista?</td><td>Declaração de Aplicabilidade, cláusula 6.1.3(d)</td></tr>
+<tr><td>O que há de novo na cláusula 6?</td><td>6.3 Planejamento de mudanças</td></tr>
+<tr><td>Data de publicação da 27001:2022</td><td>25 de outubro de 2022</td></tr>
+<tr><td>Data de publicação da 27002:2022</td><td>Fevereiro de 2022 (antes da 27001)</td></tr>
+</tbody>
+</table>
+
+<!-- 8. PEGADINHAS -->
+<h1 id="s8">8. Pegadinhas Consolidadas (revisão de véspera)</h1>
+<ul class="bullets">
+  <li>A 27002 NÃO é certificável — só a 27001. Cuidado com afirmações do tipo "a organização foi certificada na ISO 27002" (FALSO).</li>
+  <li>O Anexo A tem 93 controles em 4 TEMAS (não domínios, não categorias — esses termos eram da versão 2013).</li>
+  <li>A soma 37+8+14+34 = 93 é frequentemente testada trocando os números entre os temas.</li>
+  <li>A cláusula 10.1 (2022) é Melhoria contínua — inverteu com a não conformidade, que virou 10.2.</li>
+  <li>6.3 Planejamento de mudanças é subcláusula NOVA — não existia na estrutura de 2013.</li>
+  <li>Os 5 atributos da 27002:2022 não devem ser confundidos com os 3 pilares da segurança (CID). CID é apenas UM dos 5 atributos ("Propriedades de segurança da informação").</li>
+  <li>Os "Conceitos de cibersegurança" (Identificar/Proteger/Detectar/Responder/Recuperar) são emprestados do NIST CSF — é comum a banca pedir a origem desse alinhamento.</li>
+  <li>Controles novos concentram-se no tema Tecnológico (8 dos 11), refletindo nuvem, DLP e codificação segura.</li>
+  <li>A 27002:2022 saiu ANTES da 27001:2022 (fev. x out. de 2022).</li>
+  <li>Não confundir "tipo de controle" (preventivo/detectivo/corretivo) com "capacidades operacionais" (governança, gestão de ativos etc.) — são atributos diferentes.</li>
+</ul>
+
+<!-- 9. QUESTOES -->
+<h1 id="s9">9. Questões Estilo Banca (FGV / Cesgranrio / AOCP) — com Gabarito Comentado</h1>
+
+<div class="questao">
+  <div class="enunciado">1. De acordo com a ISO/IEC 27001:2022, o Anexo A é composto por controles organizados em:</div>
+  <ul class="alternativas">
+    <li>(A) 14 domínios e 35 categorias, totalizando 114 controles.</li>
+    <li class="correta">(B) 4 temas, totalizando 93 controles.</li>
+    <li>(C) 5 atributos, totalizando 93 controles.</li>
+    <li>(D) 10 cláusulas de requisitos, totalizando 93 controles.</li>
+    <li>(E) 4 categorias e 14 domínios, totalizando 100 controles.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: A estrutura de 14 domínios/35 categorias/114 controles é da versão 2013. Na versão 2022, o Anexo A foi reestruturado em 4 TEMAS (organizacionais, pessoas, físicos e tecnológicos), totalizando 93 controles.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">2. Assinale a alternativa que apresenta corretamente a quantidade de controles do tema "Controles Tecnológicos" (A.8) da ISO/IEC 27001:2022:</div>
+  <ul class="alternativas">
+    <li>(A) 8</li>
+    <li>(B) 14</li>
+    <li class="correta">(C) 34</li>
+    <li>(D) 37</li>
+    <li>(E) 93</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: A.5 Organizacionais = 37; A.6 Pessoas = 8; A.7 Físicos = 14; A.8 Tecnológicos = 34. Soma total = 93.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">3. São exemplos de controles introduzidos como NOVIDADE na ISO/IEC 27002:2022 em relação à versão de 2013, EXCETO:</div>
+  <ul class="alternativas">
+    <li>(A) A.5.7 Inteligência de ameaças.</li>
+    <li>(B) A.8.28 Codificação segura.</li>
+    <li>(C) A.8.12 Prevenção de vazamento de dados.</li>
+    <li class="correta">(D) A.9.1 Política de controle de acesso.</li>
+    <li>(E) A.8.23 Filtragem web.</li>
+  </ul>
+  <div class="gabarito">Gabarito: D</div>
+  <div class="comentario">Comentário: "Política de controle de acesso" é um controle tradicional, presente desde 2013 (na numeração antiga era A.9.1.1); não está entre os 11 controles novos. Os demais itens (Inteligência de ameaças, Codificação segura, Prevenção de vazamento de dados e Filtragem web) estão entre os 11 controles inéditos da versão 2022.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">4. Na estrutura de alto nível (HLS) da ISO/IEC 27001:2022, a cláusula 10 (Melhoria) está organizada da seguinte forma:</div>
+  <ul class="alternativas">
+    <li>(A) 10.1 Não conformidade e ação corretiva; 10.2 Melhoria contínua.</li>
+    <li class="correta">(B) 10.1 Melhoria contínua; 10.2 Não conformidade e ação corretiva.</li>
+    <li>(C) 10.1 Auditoria interna; 10.2 Melhoria contínua.</li>
+    <li>(D) 10.1 Ação preventiva; 10.2 Ação corretiva.</li>
+    <li>(E) 10.1 Análise crítica; 10.2 Melhoria contínua.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: Na versão 2022 houve inversão da ordem em relação a 2013: agora 10.1 é Melhoria contínua e 10.2 é Não conformidade e ação corretiva. Além disso, "ação preventiva" não existe mais como subcláusula desde a versão 2013 (foi substituída pelo próprio ciclo de gestão de riscos).</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">5. A subcláusula 6.3 da ISO/IEC 27001:2022, inexistente na versão anterior da norma, trata de:</div>
+  <ul class="alternativas">
+    <li>(A) Avaliação de riscos de segurança da informação.</li>
+    <li class="correta">(B) Planejamento de mudanças.</li>
+    <li>(C) Tratamento de riscos de segurança da informação.</li>
+    <li>(D) Auditoria interna.</li>
+    <li>(E) Comunicação.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: A subcláusula 6.3 "Planejamento de mudanças" é uma das principais novidades estruturais trazidas pela versão 2022, exigindo que mudanças no SGSI sejam conduzidas de forma planejada.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">6. Os "conceitos de cibersegurança", um dos cinco atributos atribuídos a cada controle pela ISO/IEC 27002:2022, foram estruturados em alinhamento com:</div>
+  <ul class="alternativas">
+    <li>(A) O ciclo PDCA da ISO 9001.</li>
+    <li class="correta">(B) As cinco funções do NIST Cybersecurity Framework (Identificar, Proteger, Detectar, Responder, Recuperar).</li>
+    <li>(C) Os domínios da ITIL v4.</li>
+    <li>(D) Os processos do COBIT 2019.</li>
+    <li>(E) As categorias da ISO/IEC 27005.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: O atributo "Conceitos de cibersegurança" reproduz as cinco funções do NIST CSF: Identify, Protect, Detect, Respond, Recover — em português: Identificar, Proteger, Detectar, Responder, Recuperar.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">7. Sobre a certificabilidade das normas da família ISO/IEC 27000, é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li>(A) Tanto a ISO/IEC 27001 quanto a ISO/IEC 27002 são normas certificáveis.</li>
+    <li>(B) Apenas a ISO/IEC 27002 é certificável, pois contém os controles detalhados.</li>
+    <li class="correta">(C) Apenas a ISO/IEC 27001 é certificável; a ISO/IEC 27002 é uma norma de diretrizes (código de prática).</li>
+    <li>(D) Nenhuma das duas normas é certificável; apenas a ISO/IEC 27005 permite certificação.</li>
+    <li>(E) A certificação depende exclusivamente da ISO/IEC 27000.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: Apenas a ISO/IEC 27001 estabelece requisitos auditáveis para certificação de um SGSI. A ISO/IEC 27002 é um código de prática/diretriz que apoia a implementação dos controles do Anexo A, mas não é, em si, certificável.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">8. O documento previsto na cláusula 6.1.3(d) da ISO/IEC 27001:2022, que relaciona os controles do Anexo A aplicáveis à organização, com as respectivas justificativas de inclusão/exclusão e status de implementação, é denominado:</div>
+  <ul class="alternativas">
+    <li>(A) Plano de Tratamento de Riscos.</li>
+    <li>(B) Política de Segurança da Informação.</li>
+    <li class="correta">(C) Declaração de Aplicabilidade (SoA).</li>
+    <li>(D) Registro de Ativos de Informação.</li>
+    <li>(E) Relatório de Auditoria Interna.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: A Declaração de Aplicabilidade (Statement of Applicability – SoA) é o documento exigido pela cláusula 6.1.3(d), essencial no processo de certificação, pois demonstra a rastreabilidade entre os riscos identificados e os controles do Anexo A selecionados.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">9. Cada um dos 93 controles da ISO/IEC 27002:2022 recebe atributos que permitem classificá-lo, entre outras formas, quanto ao "tipo de controle". Os valores possíveis para esse atributo são:</div>
+  <ul class="alternativas">
+    <li>(A) Confidencialidade, Integridade, Disponibilidade.</li>
+    <li class="correta">(B) Preventivo, Detectivo, Corretivo.</li>
+    <li>(C) Governança, Proteção, Defesa, Resiliência.</li>
+    <li>(D) Identificar, Proteger, Detectar, Responder, Recuperar.</li>
+    <li>(E) Organizacional, Pessoas, Físico, Tecnológico.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: O atributo "Tipo de controle" classifica cada controle como Preventivo, Detectivo ou Corretivo. As demais opções correspondem a outros atributos: (A) Propriedades de SI; (C) Domínios de segurança; (D) Conceitos de cibersegurança; (E) são os 4 temas do Anexo A, não um atributo do controle.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">10. Em relação à evolução da ISO/IEC 27001 da versão 2013 para a versão 2022, assinale a afirmativa CORRETA:</div>
+  <ul class="alternativas">
+    <li>(A) O número de controles do Anexo A aumentou de 93 para 114.</li>
+    <li>(B) A norma passou a adotar 14 domínios em substituição aos 4 temas anteriores.</li>
+    <li class="correta">(C) Houve redução no número de controles (de 114 para 93), decorrente principalmente da fusão de controles correlatos, e não da eliminação de requisitos de segurança.</li>
+    <li>(D) A estrutura de alto nível (HLS) foi abandonada na versão 2022.</li>
+    <li>(E) A avaliação de riscos deixou de ser um requisito da cláusula 6.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: A redução de 114 para 93 controles resultou majoritariamente da fusão (consolidação) de controles: 57 controles antigos foram mesclados em 24 controles novos, além de 23 renomeados e 35 mantidos, com 11 controles totalmente novos — não houve enfraquecimento do escopo de segurança.</div>
+</div>
+
+<footer>Guia de estudo — ISO/IEC 27001:2022 e 27002:2022 — Preparação Dataprev/FGV</footer>
+
+</body>
+</html>

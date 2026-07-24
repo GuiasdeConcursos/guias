@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia Testes SAST e DAST — Dataprev/FGV</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --blue:#2E5395;
+    --lightblue:#DCE6F1;
+    --gray:#F2F2F2;
+    --red:#C00000;
+    --green:#1E7B34;
+    --amber:#BF8F00;
+    --amberbg:#FFF2CC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI", Calibri, Arial, sans-serif;
+    color:#222;
+    max-width:900px;
+    margin:0 auto;
+    padding:30px 20px 80px;
+    line-height:1.5;
+    background:#fff;
+  }
+  header{text-align:center; margin-bottom:30px;}
+  header .kicker{color:var(--blue); font-weight:bold; letter-spacing:.5px; font-size:0.95rem;}
+  header h1{color:var(--navy); font-size:2rem; margin:8px 0;}
+  header .sub{color:#555; font-style:italic; margin:4px 0;}
+  header .prio{color:var(--red); font-weight:bold; margin-top:6px;}
+
+  nav.toc{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+    padding:14px 18px;
+    border-radius:4px;
+    margin:24px 0;
+    font-size:0.95rem;
+  }
+  nav.toc a{color:var(--navy); text-decoration:none;}
+  nav.toc a:hover{text-decoration:underline;}
+  nav.toc ol{margin:6px 0 0; padding-left:20px;}
+
+  h1{
+    color:var(--navy);
+    font-size:1.55rem;
+    border-bottom:3px solid var(--navy);
+    padding-bottom:6px;
+    margin-top:48px;
+  }
+  h2{color:var(--blue); font-size:1.2rem; margin-top:28px;}
+  h3{color:#333; font-size:1.02rem; margin-top:20px;}
+
+  p{margin:10px 0;}
+
+  ul.bullets{margin:8px 0; padding-left:22px;}
+  ul.bullets li{margin-bottom:6px;}
+  ul.bullets ul{margin-top:6px;}
+
+  code{
+    background:#EFEFEF;
+    padding:1px 5px;
+    border-radius:3px;
+    font-family:Consolas, "Courier New", monospace;
+    font-size:0.9em;
+    color:#A5271F;
+  }
+
+  .callout{
+    padding:12px 16px;
+    border-radius:4px;
+    margin:14px 0;
+    font-size:0.97rem;
+  }
+  .destaque{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+  }
+  .destaque .tag{font-weight:bold; color:var(--navy);}
+  .pegadinha{
+    background:var(--amberbg);
+    border-left:6px solid var(--amber);
+  }
+  .pegadinha .tag{font-weight:bold; color:var(--amber);}
+
+  table{
+    border-collapse:collapse;
+    width:100%;
+    margin:16px 0;
+    font-size:0.92rem;
+  }
+  thead th{
+    background:var(--navy);
+    color:#fff;
+    padding:10px 12px;
+    text-align:left;
+  }
+  tbody td{
+    padding:9px 12px;
+    border-bottom:1px solid #ddd;
+    vertical-align:top;
+  }
+  tbody tr:nth-child(even){background:var(--gray);}
+
+  .duocol{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin:16px 0;
+  }
+  .painel{
+    flex:1 1 280px;
+    border-radius:8px;
+    padding:14px 18px;
+    border:1px solid #D6DEE8;
+  }
+  .painel.sast{border-top:5px solid var(--navy);}
+  .painel.dast{border-top:5px solid var(--red);}
+  .painel h3{margin-top:0; color:var(--navy);}
+  .painel.dast h3{color:var(--red);}
+  .painel ul{margin:6px 0; padding-left:20px;}
+  .painel li{margin-bottom:4px; font-size:0.92rem;}
+
+  .fluxo{
+    background:#F7F9FC;
+    border:1px solid #D6DEE8;
+    border-radius:6px;
+    padding:14px 18px;
+    margin:14px 0;
+    font-size:0.93rem;
+  }
+  .fluxo ol{margin:6px 0 0; padding-left:20px;}
+  .fluxo li{margin-bottom:5px;}
+
+  .questao{
+    margin:26px 0;
+    padding-bottom:10px;
+    border-bottom:1px dashed #ccc;
+  }
+  .questao .enunciado{font-weight:bold; margin-bottom:8px;}
+  .questao .alternativas{list-style:none; padding-left:0; margin:0 0 8px;}
+  .questao .alternativas li{margin:4px 0 4px 10px;}
+  .questao .alternativas li.correta{font-weight:bold; color:var(--green);}
+  .questao .gabarito{color:var(--green); font-weight:bold; margin:6px 0;}
+  .questao .comentario{
+    background:#EAF1DD;
+    border-left:4px solid var(--green);
+    padding:10px 14px;
+    font-style:italic;
+    font-size:0.93rem;
+    border-radius:3px;
+  }
+
+  .resumo-rapido td:first-child{font-weight:600;}
+
+  footer{
+    margin-top:50px;
+    text-align:center;
+    color:#888;
+    font-size:0.85rem;
+    border-top:1px solid #ddd;
+    padding-top:16px;
+  }
+
+  @media print{
+    body{max-width:100%;}
+    .questao{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">GUIA DE ESTUDO — CONCURSO DATAPREV / FGV</div>
+  <h1>Testes SAST e DAST</h1>
+  <div class="sub">Análise Estática e Dinâmica de Segurança de Aplicações — e suas complementares (IAST, SCA, RASP, Pentest)</div>
+  <div class="prio">Prioridade: ALTA — Guia completo para gabaritar a prova</div>
+</header>
+
+<div class="callout destaque">
+  <span class="tag">📌</span> Este é um dos temas mais "decoreba direta" de segurança de aplicações: a banca testa a definição exata, o momento do ciclo em que cada teste é aplicado, o tipo de "caixa" (branca/preta/cinza), a necessidade (ou não) de código-fonte, e a diferenciação frente a IAST, SCA e RASP. Praticamente todo item de prova pode ser resolvido com uma tabela comparativa bem decorada.
+</div>
+
+<nav class="toc">
+  <strong>Sumário</strong>
+  <ol>
+    <li><a href="#s1">Panorama: testes de segurança no ciclo de desenvolvimento</a></li>
+    <li><a href="#s2">Tipos de "caixa" em testes de segurança</a></li>
+    <li><a href="#s3">SAST — Static Application Security Testing</a></li>
+    <li><a href="#s4">DAST — Dynamic Application Security Testing</a></li>
+    <li><a href="#s5">SAST x DAST — comparação direta</a></li>
+    <li><a href="#s6">IAST — a ponte entre SAST e DAST</a></li>
+    <li><a href="#s7">SCA — Software Composition Analysis</a></li>
+    <li><a href="#s8">RASP — proteção em produção</a></li>
+    <li><a href="#s9">DAST x Teste de Penetração (Pentest)</a></li>
+    <li><a href="#s10">Onde cada teste entra no pipeline (DevSecOps)</a></li>
+    <li><a href="#s11">Termos-chave</a></li>
+    <li><a href="#s12">Quadro-resumo geral</a></li>
+    <li><a href="#s13">Pegadinhas de prova consolidadas</a></li>
+    <li><a href="#s14">Questões estilo banca com gabarito comentado</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<h1 id="s1">1. Panorama: Testes de Segurança no Ciclo de Desenvolvimento</h1>
+<p>Não existe uma única ferramenta capaz de cobrir todo o espectro de vulnerabilidades de uma aplicação. Por isso, práticas de DevSecOps combinam diferentes tipos de teste de segurança, cada um atuando em um momento e sob uma perspectiva diferente do software: código-fonte parado, aplicação em execução, componentes de terceiros, ou o ambiente já em produção.</p>
+<ul class="bullets">
+  <li><strong>SAST</strong> — analisa o código-fonte, sem executar a aplicação.</li>
+  <li><strong>DAST</strong> — analisa a aplicação em execução, de fora, como um atacante externo.</li>
+  <li><strong>IAST</strong> — combina elementos de SAST e DAST, com instrumentação em tempo de execução.</li>
+  <li><strong>SCA</strong> — analisa bibliotecas e dependências de terceiros.</li>
+  <li><strong>RASP</strong> — protege a aplicação já em produção, em tempo real.</li>
+</ul>
+<div class="callout destaque"><span class="tag">📌</span> Regra de ouro para prova: quanto mais cedo uma vulnerabilidade é encontrada no ciclo de desenvolvimento, mais barato é corrigi-la. Por isso o princípio "Shift Left" recomenda priorizar SAST e SCA (que atuam cedo, sobre código/dependências) sem abrir mão de DAST e testes em ambientes mais próximos de produção.</div>
+
+<!-- 2 -->
+<h1 id="s2">2. Tipos de "Caixa" em Testes de Segurança</h1>
+<table>
+<thead><tr><th>Tipo</th><th>O testador enxerga o quê?</th><th>Testes relacionados</th></tr></thead>
+<tbody>
+<tr><td><strong>Caixa branca</strong> (White-box)</td><td>Acesso total ao código-fonte e à estrutura interna</td><td>SAST</td></tr>
+<tr><td><strong>Caixa preta</strong> (Black-box)</td><td>Nenhum acesso ao código — apenas interage externamente com a aplicação em execução</td><td>DAST, muitos testes de penetração</td></tr>
+<tr><td><strong>Caixa cinza</strong> (Gray-box)</td><td>Acesso parcial — combina conhecimento interno (instrumentação) com testes em tempo de execução</td><td>IAST</td></tr>
+</tbody>
+</table>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> SAST = caixa BRANCA (com o código); DAST = caixa PRETA (sem o código); IAST = caixa CINZA (híbrido). É extremamente comum a banca trocar essas associações.</div>
+
+<!-- 3 -->
+<h1 id="s3">3. SAST — Static Application Security Testing</h1>
+<p><strong>SAST</strong> (Teste de Segurança de Aplicação Estático) analisa o código-fonte, bytecode ou binário de uma aplicação SEM executá-la, procurando padrões que indiquem vulnerabilidades — de forma análoga a um "corretor ortográfico" de segurança aplicado ao código.</p>
+
+<h3>3.1 Como funciona</h3>
+<ul class="bullets">
+  <li>Constrói representações internas do código, como a <strong>AST</strong> (Abstract Syntax Tree — árvore de sintaxe abstrata), o grafo de fluxo de controle (control flow graph) e o grafo de fluxo de dados (data flow graph).</li>
+  <li>Realiza <strong>análise de taint (taint analysis)</strong> — rastreia se um dado que entra por uma fonte não confiável (ex.: parâmetro de usuário) chega, sem sanitização, a um "sumidouro" perigoso (ex.: uma query SQL), indicando um possível ponto de injeção.</li>
+</ul>
+
+<h3>3.2 Quando é usado</h3>
+<p>Cedo no ciclo — geralmente durante a codificação (fase de Implementation do SDL), muitas vezes integrado ao próprio editor (IDE) do desenvolvedor ou disparado a cada commit/pull request no pipeline de CI.</p>
+
+<h3>3.3 Vantagens e limitações</h3>
+<div class="duocol">
+  <div class="painel sast">
+    <h3>Vantagens</h3>
+    <ul>
+      <li>Detecta a falha na origem exata (arquivo e linha de código).</li>
+      <li>Pode ser aplicado muito cedo — antes mesmo da aplicação estar completa/executável.</li>
+      <li>Cobertura ampla de código (inclusive caminhos raramente executados em testes funcionais).</li>
+      <li>Não depende de um ambiente de execução configurado.</li>
+    </ul>
+  </div>
+  <div class="painel sast">
+    <h3>Limitações</h3>
+    <ul>
+      <li>Tende a gerar mais <strong>falsos positivos</strong> (aponta problemas que não são exploráveis na prática).</li>
+      <li>Não identifica falhas que só se manifestam em tempo de execução (ex.: erros de configuração do ambiente).</li>
+      <li>Depende da linguagem/tecnologia suportada pela ferramenta.</li>
+      <li>Não avalia a aplicação já integrada a toda a infraestrutura real.</li>
+    </ul>
+  </div>
+</div>
+<p><strong>Exemplos de ferramentas:</strong> SonarQube, Checkmarx, Fortify Static Code Analyzer, Veracode Static Analysis, Semgrep.</p>
+
+<!-- 4 -->
+<h1 id="s4">4. DAST — Dynamic Application Security Testing</h1>
+<p><strong>DAST</strong> (Teste de Segurança de Aplicação Dinâmico) testa a aplicação já EM EXECUÇÃO, interagindo com ela externamente — geralmente via requisições HTTP — sem qualquer conhecimento do código-fonte interno, simulando o comportamento de um atacante real.</p>
+
+<h3>4.1 Como funciona</h3>
+<div class="fluxo">
+<ol>
+  <li>A ferramenta mapeia (crawling/spidering) as páginas, formulários e endpoints da aplicação em execução.</li>
+  <li>Envia payloads maliciosos/inesperados a cada ponto de entrada identificado (ex.: tentativas de SQL Injection, XSS).</li>
+  <li>Analisa as respostas HTTP da aplicação em busca de comportamentos que indiquem vulnerabilidade (erros expostos, reflexão de scripts, mudanças de comportamento).</li>
+</ol>
+</div>
+
+<h3>4.2 Quando é usado</h3>
+<p>Mais tarde no ciclo — em ambientes de teste/homologação/staging com a aplicação já rodando (fase de Verification do SDL), ou mesmo continuamente contra ambientes de produção.</p>
+
+<h3>4.3 Vantagens e limitações</h3>
+<div class="duocol">
+  <div class="painel dast">
+    <h3>Vantagens</h3>
+    <ul>
+      <li>Independe de linguagem de programação — testa qualquer aplicação exposta via HTTP/HTTPS.</li>
+      <li>Não precisa de acesso ao código-fonte.</li>
+      <li>Detecta problemas de configuração de ambiente/infraestrutura que o SAST não enxerga.</li>
+      <li>Menor taxa de falsos positivos, já que confirma o comportamento real da aplicação.</li>
+    </ul>
+  </div>
+  <div class="painel dast">
+    <h3>Limitações</h3>
+    <ul>
+      <li>Não aponta a linha exata do código com a falha — apenas o sintoma externo.</li>
+      <li>Requer uma aplicação já funcional e implantada para ser testada.</li>
+      <li>Cobertura limitada às rotas efetivamente alcançadas pelo crawler (pode não achar código morto ou funcionalidades ocultas).</li>
+      <li>Execução geralmente mais lenta que o SAST.</li>
+    </ul>
+  </div>
+</div>
+<p><strong>Exemplos de ferramentas:</strong> OWASP ZAP, Burp Suite, Acunetix, Netsparker (Invicti).</p>
+
+<!-- 5 -->
+<h1 id="s5">5. SAST x DAST — Comparação Direta</h1>
+<table>
+<thead><tr><th>Critério</th><th>SAST</th><th>DAST</th></tr></thead>
+<tbody>
+<tr><td>Tipo de caixa</td><td>Branca (com código)</td><td>Preta (sem código)</td></tr>
+<tr><td>Precisa executar a aplicação?</td><td>Não</td><td>Sim</td></tr>
+<tr><td>Precisa do código-fonte?</td><td>Sim</td><td>Não</td></tr>
+<tr><td>Momento típico no ciclo</td><td>Cedo — codificação/build</td><td>Mais tarde — homologação/produção</td></tr>
+<tr><td>Localiza a linha exata do código?</td><td>Sim</td><td>Não (apenas o sintoma externo)</td></tr>
+<tr><td>Dependência de linguagem</td><td>Alta (precisa suportar a linguagem)</td><td>Baixa (agnóstico — usa HTTP)</td></tr>
+<tr><td>Taxa de falso positivo</td><td>Geralmente mais alta</td><td>Geralmente mais baixa</td></tr>
+<tr><td>Detecta falhas de configuração de ambiente?</td><td>Não</td><td>Sim</td></tr>
+<tr><td>Detecta código morto/caminhos não expostos?</td><td>Sim</td><td>Não</td></tr>
+</tbody>
+</table>
+<div class="callout destaque"><span class="tag">📌</span> SAST e DAST são COMPLEMENTARES, não concorrentes — programas maduros de AppSec usam os dois (além de SCA, IAST e RASP conforme o contexto), pois cada um cobre pontos cegos do outro.</div>
+
+<!-- 6 -->
+<h1 id="s6">6. IAST — A Ponte Entre SAST e DAST</h1>
+<p><strong>IAST</strong> (Interactive Application Security Testing) usa um AGENTE instrumentado DENTRO da aplicação em execução (ex.: um agente Java/.NET carregado junto com o runtime), observando o código internamente enquanto a aplicação roda testes funcionais reais (manuais ou automatizados).</p>
+<ul class="bullets">
+  <li>Combina visibilidade interna do código (como o SAST) com a observação do comportamento real em execução (como o DAST) — por isso é classificado como caixa CINZA.</li>
+  <li>Tende a ter taxa de falso positivo mais baixa que o SAST puro, pois confirma se o caminho vulnerável é de fato alcançado em tempo de execução.</li>
+  <li>Depende da cobertura dos testes funcionais executados — só encontra o que os testes efetivamente "tocam".</li>
+</ul>
+
+<!-- 7 -->
+<h1 id="s7">7. SCA — Software Composition Analysis</h1>
+<p><strong>SCA</strong> não analisa o código escrito pela própria equipe, e sim os COMPONENTES DE TERCEIROS (bibliotecas, frameworks, pacotes open-source) usados pela aplicação, identificando versões com vulnerabilidades conhecidas publicamente (CVEs) e problemas de licenciamento.</p>
+<ul class="bullets">
+  <li>Mantém, tipicamente, um <strong>SBOM</strong> (Software Bill of Materials) — inventário de todos os componentes e suas versões.</li>
+  <li>Costuma ser executado no build/CI, junto com o SAST.</li>
+</ul>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> SAST analisa o código PRÓPRIO da equipe; SCA analisa as DEPENDÊNCIAS DE TERCEIROS. Não confundir os alvos de análise dessas duas ferramentas.</div>
+
+<!-- 8 -->
+<h1 id="s8">8. RASP — Proteção em Produção</h1>
+<p><strong>RASP</strong> (Runtime Application Self-Protection) não é propriamente um "teste": é um mecanismo de PROTEÇÃO que roda dentro da aplicação já em PRODUÇÃO, monitorando e podendo bloquear ataques em tempo real, a partir de dentro do próprio processo da aplicação.</p>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> DAST TESTA a aplicação (geralmente antes de produção, buscando vulnerabilidades); RASP PROTEGE a aplicação (já em produção, bloqueando explorações em tempo real). Não são a mesma coisa, embora ambos atuem com a aplicação "viva" em execução.</div>
+
+<!-- 9 -->
+<h1 id="s9">9. DAST x Teste de Penetração (Pentest)</h1>
+<table>
+<thead><tr><th>Aspecto</th><th>DAST</th><th>Pentest (Teste de Penetração)</th></tr></thead>
+<tbody>
+<tr><td>Execução</td><td>Automatizada por ferramenta</td><td>Conduzido por especialista humano (com apoio de ferramentas)</td></tr>
+<tr><td>Escopo</td><td>Foca em padrões conhecidos de vulnerabilidade web</td><td>Pode explorar lógica de negócio, encadear falhas, engenharia social etc.</td></tr>
+<tr><td>Frequência</td><td>Pode rodar a cada build/deploy, de forma contínua</td><td>Pontual — geralmente periódico (ex.: anual, ou antes de um go-live crítico)</td></tr>
+<tr><td>Criatividade</td><td>Limitada aos casos programados na ferramenta</td><td>Alta — o analista adapta a estratégia de ataque durante o teste</td></tr>
+</tbody>
+</table>
+<div class="callout destaque"><span class="tag">📌</span> Um Pentest costuma usar ferramentas de DAST como APOIO, mas vai além delas: envolve análise manual, exploração de lógica de negócio e encadeamento de vulnerabilidades que uma ferramenta automatizada não identificaria sozinha.</div>
+
+<!-- 10 -->
+<h1 id="s10">10. Onde Cada Teste Entra no Pipeline (DevSecOps)</h1>
+<div class="fluxo">
+<ol>
+  <li><strong>Codificação (IDE / commit):</strong> SAST (plugin de IDE) e SCA já podem alertar o desenvolvedor.</li>
+  <li><strong>Build / Integração Contínua (CI):</strong> SAST completo + SCA rodam automaticamente a cada pull request.</li>
+  <li><strong>Testes funcionais / QA:</strong> IAST pode atuar em paralelo aos testes funcionais já existentes.</li>
+  <li><strong>Homologação / Staging (aplicação já no ar):</strong> DAST é executado contra o ambiente implantado.</li>
+  <li><strong>Pré-produção / eventos críticos:</strong> Pentest manual, quando aplicável.</li>
+  <li><strong>Produção:</strong> RASP protege em tempo real; monitoramento e logging (cobertos por outra categoria de segurança) complementam a defesa.</li>
+</ol>
+</div>
+
+<!-- 11 -->
+<h1 id="s11">11. Termos-Chave</h1>
+<table>
+<thead><tr><th>Termo</th><th>Definição resumida</th></tr></thead>
+<tbody>
+<tr><td>Falso positivo</td><td>A ferramenta aponta uma vulnerabilidade que, na prática, não existe ou não é explorável.</td></tr>
+<tr><td>Falso negativo</td><td>A ferramenta deixa de identificar uma vulnerabilidade real, existente no sistema.</td></tr>
+<tr><td>AST (Abstract Syntax Tree)</td><td>Representação em árvore da estrutura sintática do código-fonte, usada internamente pelas ferramentas de SAST.</td></tr>
+<tr><td>Taint analysis (análise de contaminação)</td><td>Técnica que rastreia se dados de uma fonte não confiável alcançam um "sumidouro" perigoso sem sanitização.</td></tr>
+<tr><td>Crawling/Spidering</td><td>Mapeamento automatizado das páginas e endpoints de uma aplicação web, usado por ferramentas DAST.</td></tr>
+<tr><td>CVE</td><td>Common Vulnerabilities and Exposures — identificador público padronizado de uma vulnerabilidade conhecida.</td></tr>
+<tr><td>SBOM</td><td>Software Bill of Materials — inventário formal dos componentes/dependências usados em um software.</td></tr>
+<tr><td>Payload</td><td>Dado de entrada malicioso/inesperado enviado por uma ferramenta de teste para provocar e revelar uma vulnerabilidade.</td></tr>
+</tbody>
+</table>
+
+<!-- 12 -->
+<h1 id="s12">12. Quadro-Resumo Geral (revisão rápida)</h1>
+<table class="resumo-rapido">
+<thead><tr><th>Pergunta típica de prova</th><th>Resposta</th></tr></thead>
+<tbody>
+<tr><td>SAST é caixa branca ou preta?</td><td>Branca (analisa o código-fonte)</td></tr>
+<tr><td>DAST é caixa branca ou preta?</td><td>Preta (não usa o código-fonte, testa de fora)</td></tr>
+<tr><td>IAST é caixa branca, preta ou cinza?</td><td>Cinza (híbrido)</td></tr>
+<tr><td>Qual teste precisa da aplicação em execução?</td><td>DAST (e IAST)</td></tr>
+<tr><td>Qual teste aponta a linha exata do código com a falha?</td><td>SAST</td></tr>
+<tr><td>Qual teste é agnóstico de linguagem de programação?</td><td>DAST</td></tr>
+<tr><td>Qual ferramenta analisa dependências de terceiros?</td><td>SCA</td></tr>
+<tr><td>Qual mecanismo protege (não apenas testa) a aplicação em produção?</td><td>RASP</td></tr>
+<tr><td>Qual técnica rastreia dados de fonte não confiável até um sumidouro perigoso?</td><td>Taint analysis (usada pelo SAST)</td></tr>
+<tr><td>Qual teste tende a gerar mais falsos positivos?</td><td>SAST</td></tr>
+<tr><td>Pentest é sempre automatizado?</td><td>Não — é conduzido por especialista humano, com apoio de ferramentas (inclusive DAST)</td></tr>
+</tbody>
+</table>
+
+<!-- 13 -->
+<h1 id="s13">13. Pegadinhas Consolidadas (revisão de véspera)</h1>
+<ul class="bullets">
+  <li>SAST = código PARADO (estático), caixa BRANCA, PRECISA do código-fonte, NÃO precisa executar a aplicação.</li>
+  <li>DAST = aplicação EM EXECUÇÃO (dinâmico), caixa PRETA, NÃO precisa do código-fonte, PRECISA que a aplicação esteja rodando.</li>
+  <li>IAST é caixa CINZA — combina instrumentação interna com execução real, e não deve ser confundido nem com SAST puro nem com DAST puro.</li>
+  <li>SCA mira DEPENDÊNCIAS DE TERCEIROS, não o código escrito pela própria equipe (isso é papel do SAST).</li>
+  <li>RASP PROTEGE em produção (ação/bloqueio em tempo real); DAST TESTA (geralmente antes de produção, buscando vulnerabilidades) — não são sinônimos, mesmo ambos atuando com a aplicação "viva".</li>
+  <li>SAST tende a ter MAIS falsos positivos (por não confirmar exploração real); DAST tende a ter MENOS, pois observa o comportamento de fato.</li>
+  <li>DAST não aponta a linha do código com o problema — apenas evidencia o sintoma externo (ex.: resposta HTTP anômala).</li>
+  <li>Pentest não é sinônimo de DAST: o Pentest é um processo mais amplo, manual/humano, que pode usar o DAST como ferramenta de apoio, mas vai além dele.</li>
+  <li>"Shift Left" recomenda priorizar SAST e SCA cedo no ciclo, mas isso não elimina a necessidade de DAST (e de Pentest) em fases posteriores — os testes se complementam, não se substituem.</li>
+  <li>Taint analysis é a técnica típica usada internamente pelo SAST para rastrear fluxo de dados não confiáveis — não confundir com o crawling/spidering, técnica usada pelo DAST para mapear a aplicação.</li>
+</ul>
+
+<!-- 14 -->
+<h1 id="s14">14. Questões Estilo Banca (FGV / Cesgranrio / AOCP) — com Gabarito Comentado</h1>
+
+<div class="questao">
+  <div class="enunciado">1. Uma ferramenta de teste de segurança que analisa o código-fonte de uma aplicação SEM executá-la, sendo classificada como uma abordagem de caixa branca, é denominada:</div>
+  <ul class="alternativas">
+    <li class="correta">(A) SAST.</li>
+    <li>(B) DAST.</li>
+    <li>(C) RASP.</li>
+    <li>(D) Pentest black-box.</li>
+    <li>(E) SCA.</li>
+  </ul>
+  <div class="gabarito">Gabarito: A</div>
+  <div class="comentario">Comentário: SAST (Static Application Security Testing) é a ferramenta de caixa branca que analisa código-fonte, bytecode ou binário sem necessidade de executar a aplicação.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">2. Assinale a alternativa que descreve corretamente uma característica do DAST (Dynamic Application Security Testing):</div>
+  <ul class="alternativas">
+    <li>(A) Exige acesso ao código-fonte da aplicação para funcionar.</li>
+    <li>(B) É executado antes de a aplicação estar compilável.</li>
+    <li class="correta">(C) Testa a aplicação já em execução, de forma externa, simulando o comportamento de um atacante real.</li>
+    <li>(D) Aponta com precisão a linha exata do código onde está a falha.</li>
+    <li>(E) É dependente da linguagem de programação usada no back-end.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: DAST testa a aplicação já em execução, de forma black-box (sem código-fonte), simulando ataques externos via requisições HTTP — por isso é agnóstico de linguagem e não indica a linha exata da falha no código.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">3. A técnica utilizada internamente por ferramentas SAST, que rastreia se um dado proveniente de uma fonte não confiável chega, sem sanitização adequada, a um ponto sensível do código (como uma consulta SQL), é denominada:</div>
+  <ul class="alternativas">
+    <li>(A) Crawling.</li>
+    <li>(B) Fuzzing.</li>
+    <li class="correta">(C) Taint analysis (análise de contaminação).</li>
+    <li>(D) Spidering.</li>
+    <li>(E) Threat modeling.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: Taint analysis é a técnica de rastreamento de fluxo de dados usada pelo SAST para identificar caminhos entre fontes não confiáveis (taint sources) e sumidouros perigosos (taint sinks) sem sanitização adequada.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">4. Em relação à taxa de falsos positivos entre as ferramentas de teste de segurança de aplicações, é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li class="correta">(A) O SAST tende a apresentar taxa mais alta de falsos positivos, por não confirmar a exploração real da vulnerabilidade em tempo de execução.</li>
+    <li>(B) O DAST sempre apresenta mais falsos positivos que o SAST, por não ter acesso ao código-fonte.</li>
+    <li>(C) IAST e SAST possuem exatamente a mesma taxa de falsos positivos, por analisarem o mesmo tipo de artefato.</li>
+    <li>(D) Falsos positivos não ocorrem em ferramentas de análise dinâmica.</li>
+    <li>(E) A taxa de falso positivo independe do tipo de teste utilizado.</li>
+  </ul>
+  <div class="gabarito">Gabarito: A</div>
+  <div class="comentario">Comentário: Por analisar o código de forma estática, sem confirmar se o caminho identificado é de fato alcançável e explorável em tempo de execução, o SAST tende a apresentar taxa de falsos positivos mais alta que o DAST, que valida o comportamento real da aplicação.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">5. Uma ferramenta que utiliza um agente instrumentado dentro da aplicação em execução, combinando visibilidade interna do código com observação do comportamento real durante os testes funcionais, sendo classificada como abordagem de caixa cinza, é denominada:</div>
+  <ul class="alternativas">
+    <li>(A) SAST.</li>
+    <li>(B) DAST.</li>
+    <li class="correta">(C) IAST.</li>
+    <li>(D) RASP.</li>
+    <li>(E) SCA.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: IAST (Interactive Application Security Testing) combina elementos de SAST e DAST via instrumentação em tempo de execução, sendo classificado como uma abordagem de caixa cinza (gray-box).</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">6. A análise de vulnerabilidades conhecidas em bibliotecas e componentes de terceiros/open-source utilizados por uma aplicação, tipicamente apoiada pela manutenção de um SBOM (Software Bill of Materials), é realizada por meio de:</div>
+  <ul class="alternativas">
+    <li>(A) SAST.</li>
+    <li>(B) DAST.</li>
+    <li>(C) RASP.</li>
+    <li class="correta">(D) SCA.</li>
+    <li>(E) Fuzzing.</li>
+  </ul>
+  <div class="gabarito">Gabarito: D</div>
+  <div class="comentario">Comentário: SCA (Software Composition Analysis) é a categoria de ferramenta voltada especificamente para identificação de vulnerabilidades conhecidas (CVEs) em dependências de terceiros, diferente do SAST, que foca no código próprio da equipe.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">7. Diferentemente do DAST, que busca identificar vulnerabilidades antes da aplicação entrar (ou permanecer) em produção, o RASP (Runtime Application Self-Protection) caracteriza-se por:</div>
+  <ul class="alternativas">
+    <li>(A) Analisar exclusivamente o código-fonte da aplicação, sem executá-la.</li>
+    <li class="correta">(B) Atuar como mecanismo de proteção em tempo real, monitorando e podendo bloquear ataques a partir de dentro da própria aplicação já em produção.</li>
+    <li>(C) Ser executado apenas uma única vez, durante a fase de Requirements do SDL.</li>
+    <li>(D) Substituir integralmente a necessidade de testes de penetração.</li>
+    <li>(E) Analisar exclusivamente bibliotecas de terceiros.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: O RASP não é uma ferramenta de teste, mas um mecanismo de proteção em tempo de execução (runtime), atuando de dentro da aplicação já em produção para monitorar e bloquear tentativas de exploração em tempo real.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">8. Sobre a diferença entre um teste DAST automatizado e um Teste de Penetração (Pentest) conduzido por um especialista, é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li>(A) São exatamente a mesma atividade, apenas com nomes diferentes.</li>
+    <li class="correta">(B) O Pentest pode utilizar ferramentas de DAST como apoio, mas vai além delas, incluindo análise manual e exploração de falhas de lógica de negócio.</li>
+    <li>(C) O DAST é sempre conduzido manualmente por um especialista, sem uso de ferramentas automatizadas.</li>
+    <li>(D) O Pentest não pode, em hipótese alguma, ser executado de forma periódica.</li>
+    <li>(E) O DAST substitui integralmente a necessidade de um Pentest em qualquer contexto.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: O Pentest é um processo mais amplo e criativo, conduzido por um profissional, que pode incorporar ferramentas DAST como apoio, mas também explora lógica de negócio, encadeamento de falhas e outras técnicas que uma ferramenta automatizada isolada não cobre.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">9. No contexto de um pipeline de DevSecOps, considerando o princípio de "Shift Left", é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li>(A) O DAST deve substituir totalmente o SAST, por ser mais rápido.</li>
+    <li class="correta">(B) SAST e SCA devem ser priorizados nas etapas mais cedo do ciclo (codificação/build), sem eliminar a necessidade de DAST em etapas posteriores.</li>
+    <li>(C) Nenhum teste de segurança deve ser automatizado no pipeline de CI/CD.</li>
+    <li>(D) RASP deve ser utilizado somente durante a fase de codificação, antes de qualquer commit.</li>
+    <li>(E) "Shift Left" significa que apenas testes manuais devem ser realizados.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: "Shift Left" recomenda antecipar a segurança para etapas mais cedo do ciclo (SAST e SCA no código/build), mas isso não elimina a importância de DAST e outros testes em etapas posteriores — os diferentes tipos de teste são complementares.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">10. Assinale a alternativa que apresenta corretamente a classificação de "caixa" (box testing) de cada abordagem:</div>
+  <ul class="alternativas">
+    <li>(A) SAST é caixa preta; DAST é caixa branca; IAST é caixa cinza.</li>
+    <li class="correta">(B) SAST é caixa branca; DAST é caixa preta; IAST é caixa cinza.</li>
+    <li>(C) SAST é caixa cinza; DAST é caixa branca; IAST é caixa preta.</li>
+    <li>(D) SAST, DAST e IAST são todos classificados como caixa preta.</li>
+    <li>(E) SAST é caixa branca; DAST é caixa cinza; IAST é caixa preta.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: SAST (com acesso ao código) é caixa branca; DAST (sem acesso ao código, testando de fora) é caixa preta; IAST (instrumentação interna + execução real) é caixa cinza, combinando características das outras duas abordagens.</div>
+</div>
+
+<footer>Guia de estudo — Testes SAST e DAST — Preparação Dataprev/FGV</footer>
+
+</body>
+</html>

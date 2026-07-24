@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia OWASP Top 10 — Dataprev/FGV</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --blue:#2E5395;
+    --lightblue:#DCE6F1;
+    --gray:#F2F2F2;
+    --red:#C00000;
+    --green:#1E7B34;
+    --amber:#BF8F00;
+    --amberbg:#FFF2CC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI", Calibri, Arial, sans-serif;
+    color:#222;
+    max-width:900px;
+    margin:0 auto;
+    padding:30px 20px 80px;
+    line-height:1.5;
+    background:#fff;
+  }
+  header{text-align:center; margin-bottom:30px;}
+  header .kicker{color:var(--blue); font-weight:bold; letter-spacing:.5px; font-size:0.95rem;}
+  header h1{color:var(--navy); font-size:2rem; margin:8px 0;}
+  header .sub{color:#555; font-style:italic; margin:4px 0;}
+  header .prio{color:var(--red); font-weight:bold; margin-top:6px;}
+
+  nav.toc{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+    padding:14px 18px;
+    border-radius:4px;
+    margin:24px 0;
+    font-size:0.95rem;
+  }
+  nav.toc a{color:var(--navy); text-decoration:none;}
+  nav.toc a:hover{text-decoration:underline;}
+  nav.toc ol{margin:6px 0 0; padding-left:20px;}
+
+  h1{
+    color:var(--navy);
+    font-size:1.55rem;
+    border-bottom:3px solid var(--navy);
+    padding-bottom:6px;
+    margin-top:48px;
+  }
+  h2{color:var(--blue); font-size:1.2rem; margin-top:28px;}
+  h3{color:#333; font-size:1.02rem; margin-top:20px;}
+
+  p{margin:10px 0;}
+
+  ul.bullets{margin:8px 0; padding-left:22px;}
+  ul.bullets li{margin-bottom:6px;}
+  ul.bullets ul{margin-top:6px;}
+
+  code{
+    background:#EFEFEF;
+    padding:1px 5px;
+    border-radius:3px;
+    font-family:Consolas, "Courier New", monospace;
+    font-size:0.9em;
+    color:#A5271F;
+  }
+
+  .callout{
+    padding:12px 16px;
+    border-radius:4px;
+    margin:14px 0;
+    font-size:0.97rem;
+  }
+  .destaque{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+  }
+  .destaque .tag{font-weight:bold; color:var(--navy);}
+  .pegadinha{
+    background:var(--amberbg);
+    border-left:6px solid var(--amber);
+  }
+  .pegadinha .tag{font-weight:bold; color:var(--amber);}
+
+  table{
+    border-collapse:collapse;
+    width:100%;
+    margin:16px 0;
+    font-size:0.92rem;
+  }
+  thead th{
+    background:var(--navy);
+    color:#fff;
+    padding:10px 12px;
+    text-align:left;
+  }
+  tbody td{
+    padding:9px 12px;
+    border-bottom:1px solid #ddd;
+    vertical-align:top;
+  }
+  tbody tr:nth-child(even){background:var(--gray);}
+
+  .cat{
+    border:1px solid #D6DEE8;
+    border-radius:8px;
+    margin:18px 0;
+    overflow:hidden;
+  }
+  .cat .cathead{
+    background:var(--navy);
+    color:#fff;
+    padding:10px 16px;
+    font-weight:bold;
+    font-size:1.02rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .cat .catbody{padding:12px 16px;}
+  .cat .catbody p{margin:6px 0;}
+  .cat .badge{
+    background:#fff;
+    color:var(--navy);
+    border-radius:12px;
+    padding:2px 10px;
+    font-size:0.8rem;
+    font-weight:bold;
+  }
+
+  .questao{
+    margin:26px 0;
+    padding-bottom:10px;
+    border-bottom:1px dashed #ccc;
+  }
+  .questao .enunciado{font-weight:bold; margin-bottom:8px;}
+  .questao .alternativas{list-style:none; padding-left:0; margin:0 0 8px;}
+  .questao .alternativas li{margin:4px 0 4px 10px;}
+  .questao .alternativas li.correta{font-weight:bold; color:var(--green);}
+  .questao .gabarito{color:var(--green); font-weight:bold; margin:6px 0;}
+  .questao .comentario{
+    background:#EAF1DD;
+    border-left:4px solid var(--green);
+    padding:10px 14px;
+    font-style:italic;
+    font-size:0.93rem;
+    border-radius:3px;
+  }
+
+  .resumo-rapido td:first-child{font-weight:600;}
+
+  footer{
+    margin-top:50px;
+    text-align:center;
+    color:#888;
+    font-size:0.85rem;
+    border-top:1px solid #ddd;
+    padding-top:16px;
+  }
+
+  @media print{
+    body{max-width:100%;}
+    .questao{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">GUIA DE ESTUDO — CONCURSO DATAPREV / FGV</div>
+  <h1>OWASP Top 10</h1>
+  <div class="sub">Principais riscos de segurança em aplicações web (edição 2021)</div>
+  <div class="prio">Prioridade: ALTA — Guia completo para gabaritar a prova</div>
+</header>
+
+<div class="callout destaque">
+  <span class="tag">📌</span> A banca cobra sobretudo: (1) a ordem e o nome exato das 10 categorias da edição 2021, (2) o que mudou em relação à edição 2017 (o que subiu, desceu, foi renomeado, mesclado ou é novo), (3) exemplos concretos de vulnerabilidade em cada categoria, e (4) a metodologia de elaboração da lista (dados reais + pesquisa com a comunidade).
+</div>
+
+<nav class="toc">
+  <strong>Sumário</strong>
+  <ol>
+    <li><a href="#s1">O que é o OWASP e o Top 10</a></li>
+    <li><a href="#s2">As 10 categorias da edição 2021 (detalhado)</a></li>
+    <li><a href="#s3">O que mudou: 2017 → 2021</a></li>
+    <li><a href="#s4">Histórico das edições</a></li>
+    <li><a href="#s5">Termos-chave</a></li>
+    <li><a href="#s6">Quadro-resumo geral</a></li>
+    <li><a href="#s7">Pegadinhas de prova consolidadas</a></li>
+    <li><a href="#s8">Questões estilo banca com gabarito comentado</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<h1 id="s1">1. O que é o OWASP e o Top 10</h1>
+<p>O <strong>OWASP</strong> (Open Web Application Security Project — atualmente também referido como "Open Worldwide Application Security Project") é uma fundação/comunidade sem fins lucrativos dedicada a melhorar a segurança de software, mantendo projetos, ferramentas e documentação gratuitos e abertos.</p>
+<p>O <strong>OWASP Top 10</strong> é um documento de CONSCIENTIZAÇÃO (awareness document) — não é uma norma certificável nem uma checklist exaustiva — que lista os 10 riscos de segurança mais críticos e recorrentes em aplicações web, atualizado periodicamente com base em dados reais de vulnerabilidades e pesquisa com especialistas.</p>
+<div class="callout destaque"><span class="tag">📌</span> A edição vigente cobrada em concursos é a <strong>OWASP Top 10:2021</strong>, publicada em 2021. É a mais recente edição estável da lista.</div>
+
+<h3>1.1 Metodologia da edição 2021</h3>
+<ul class="bullets">
+  <li><strong>8 das 10 categorias</strong> foram definidas a partir de dados reais (dados submetidos por organizações parceiras, com base em CWEs mapeadas em milhares de aplicações).</li>
+  <li><strong>2 das 10 categorias</strong> foram incluídas a partir de uma pesquisa de opinião (community survey) com especialistas em segurança — são elas <strong>A04 Insecure Design</strong> e <strong>A10 Server-Side Request Forgery (SSRF)</strong>.</li>
+</ul>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Nem todas as categorias vieram de dados estatísticos — duas foram incluídas por votação/pesquisa com a comunidade de segurança, justamente por representarem riscos emergentes ainda pouco capturados nos dados históricos de vulnerabilidades.</div>
+
+<!-- 2 -->
+<h1 id="s2">2. As 10 Categorias da Edição 2021 (Detalhado)</h1>
+
+<div class="cat">
+  <div class="cathead">A01:2021 — Broken Access Control <span class="badge">#1 (subiu do #5)</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> falhas que permitem que um usuário atue fora das permissões pretendidas — acessando dados ou funções de outros usuários, ou de administração, sem autorização.</p>
+    <p><strong>Exemplos:</strong> alteração de parâmetros de URL/ID para acessar registros de outro usuário (IDOR — Insecure Direct Object Reference); elevação de privilégio; CORS mal configurado; ausência de verificação de autorização em endpoints de API.</p>
+    <p><strong>Prevenção:</strong> negar por padrão (deny by default); aplicar verificação de autorização no servidor a cada requisição; usar controle de acesso baseado em papéis (RBAC); registrar falhas de controle de acesso.</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A02:2021 — Cryptographic Failures <span class="badge">renomeada (era "Sensitive Data Exposure")</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> falhas relacionadas à criptografia (ou à sua ausência) que levam à exposição de dados sensíveis — trata da CAUSA (falha criptográfica), e não apenas do SINTOMA (exposição).</p>
+    <p><strong>Exemplos:</strong> transmissão de dados sensíveis em texto claro (sem TLS); uso de algoritmos criptográficos fracos ou obsoletos (MD5, SHA1, DES); chaves criptográficas fracas ou reutilizadas; ausência de criptografia em dados em repouso.</p>
+    <p><strong>Prevenção:</strong> classificar dados sensíveis; cifrar dados em trânsito (TLS) e em repouso; usar algoritmos e tamanhos de chave atualizados; não armazenar dados sensíveis desnecessariamente.</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A03:2021 — Injection <span class="badge">caiu do #1 (2017) — absorveu o XSS</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> dados não confiáveis enviados como parte de um comando ou consulta são interpretados/executados pelo interpretador de destino sem validação/sanitização adequada.</p>
+    <p><strong>Exemplos:</strong> SQL Injection, Command Injection, LDAP Injection, NoSQL Injection e <strong>Cross-Site Scripting (XSS)</strong>, que na edição 2021 passou a ser tratado como um tipo de Injection.</p>
+    <p><strong>Prevenção:</strong> uso de APIs parametrizadas/prepared statements; validação de entrada do lado do servidor (allow-list); escaping de saída apropriado ao contexto (HTML, JS, SQL).</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A04:2021 — Insecure Design <span class="badge">NOVA categoria</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> riscos relacionados a falhas de PROJETO (design) do sistema — problemas que nenhuma implementação perfeita conseguiria corrigir, pois a falha está na concepção da arquitetura/lógica de negócio, e não em um bug de código.</p>
+    <p><strong>Exemplos:</strong> ausência de modelagem de ameaças; fluxos de negócio que permitem abuso (ex.: sem limite de tentativas de recuperação de senha); falta de segregação de perfis já na concepção do sistema.</p>
+    <p><strong>Prevenção:</strong> uso de threat modeling e de padrões de projeto seguro (secure design patterns) desde as fases iniciais do SDL; princípio de "secure by design".</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A05:2021 — Security Misconfiguration <span class="badge">subiu do #6 — absorveu o XXE</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> configurações de segurança ausentes, incorretas ou incompletas em qualquer nível da pilha de aplicação (servidor, framework, banco de dados, nuvem).</p>
+    <p><strong>Exemplos:</strong> contas/senhas padrão não alteradas; mensagens de erro detalhadas expostas ao usuário; recursos desnecessários habilitados (portas, serviços); ausência de cabeçalhos de segurança HTTP; <strong>XXE (XML External Entities)</strong>, que na edição 2021 passou a ser tratada dentro desta categoria.</p>
+    <p><strong>Prevenção:</strong> processo de hardening repetível/automatizado; ambientes mínimos (sem recursos desnecessários); atualização e revisão periódica de configurações.</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A06:2021 — Vulnerable and Outdated Components <span class="badge">subiu do #9 — renomeada</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> uso de componentes (bibliotecas, frameworks, módulos) desatualizados ou com vulnerabilidades já conhecidas publicamente.</p>
+    <p><strong>Exemplos:</strong> dependências open-source sem patch de segurança aplicado; frameworks fora de suporte (EOL — end of life); ausência de inventário de componentes usados.</p>
+    <p><strong>Prevenção:</strong> uso de SCA (Software Composition Analysis); manter SBOM (Software Bill of Materials); monitoramento contínuo de CVEs; política de atualização de dependências.</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A07:2021 — Identification and Authentication Failures <span class="badge">caiu do #2 — renomeada (era "Broken Authentication")</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> falhas na confirmação da identidade do usuário, na autenticação e na gestão de sessão.</p>
+    <p><strong>Exemplos:</strong> permissão de senhas fracas/padrão; ausência de proteção contra força bruta e credential stuffing; IDs de sessão expostos na URL; ausência de MFA em funções críticas; expiração de sessão inadequada.</p>
+    <p><strong>Prevenção:</strong> implementar MFA; políticas de senha robustas; limitar tentativas de login; usar gerenciamento de sessão seguro (tokens aleatórios, invalidação no logout).</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A08:2021 — Software and Data Integrity Failures <span class="badge">NOVA categoria — absorveu Insecure Deserialization</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> falhas relacionadas a código e infraestrutura que não protegem contra violações de integridade — inclui a antiga categoria "Insecure Deserialization" (2017), agora ampliada.</p>
+    <p><strong>Exemplos:</strong> deserialização insegura de dados não confiáveis; pipelines de CI/CD sem verificação de integridade; atualizações de software/plugins sem validação de assinatura digital (ex.: ataques à cadeia de suprimentos de software — supply chain attacks).</p>
+    <p><strong>Prevenção:</strong> verificação de assinatura digital/checksums em atualizações e dependências; restringir/evitar deserialização de dados não confiáveis; proteger pipelines de CI/CD.</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A09:2021 — Security Logging and Monitoring Failures <span class="badge">subiu do #10 — renomeada</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> ausência ou insuficiência de registro (logging), detecção, monitoramento e resposta ativa a incidentes, o que retarda ou impede a detecção de ataques em andamento.</p>
+    <p><strong>Exemplos:</strong> eventos auditáveis (login, falhas de acesso, validações de entrada) não registrados; logs armazenados apenas localmente, sem alertas; ausência de resposta a incidentes.</p>
+    <p><strong>Prevenção:</strong> registrar eventos relevantes com contexto suficiente para investigação; monitoramento e alertas em tempo real; plano de resposta a incidentes testado.</p>
+  </div>
+</div>
+
+<div class="cat">
+  <div class="cathead">A10:2021 — Server-Side Request Forgery (SSRF) <span class="badge">NOVA categoria</span></div>
+  <div class="catbody">
+    <p><strong>Definição:</strong> ocorre quando uma aplicação busca um recurso remoto sem validar a URL fornecida pelo usuário, permitindo que um atacante force o servidor a enviar requisições para destinos não intencionados (inclusive recursos internos protegidos por firewall).</p>
+    <p><strong>Exemplos:</strong> atacante fornece uma URL apontando para serviços internos (ex.: metadados de nuvem, painel administrativo interno) que a aplicação busca em nome dele.</p>
+    <p><strong>Prevenção:</strong> validar e sanitizar todas as URLs fornecidas pelo usuário (allow-list de domínios); segmentar rede/firewall para limitar o alcance de requisições saindo do servidor de aplicação.</p>
+  </div>
+</div>
+
+<!-- 3 -->
+<h1 id="s3">3. O que Mudou: 2017 → 2021</h1>
+<table>
+<thead><tr><th>2017</th><th>2021</th><th>O que aconteceu</th></tr></thead>
+<tbody>
+<tr><td>A5 Broken Access Control</td><td>A01 Broken Access Control</td><td>Subiu do #5 para #1 (maior incidência nos dados analisados)</td></tr>
+<tr><td>A3 Sensitive Data Exposure</td><td>A02 Cryptographic Failures</td><td>Renomeada — foco na causa (falha criptográfica), não no sintoma</td></tr>
+<tr><td>A1 Injection</td><td>A03 Injection</td><td>Caiu do #1 para #3; passou a incluir o XSS (antigo A7)</td></tr>
+<tr><td>(não existia)</td><td>A04 Insecure Design</td><td>NOVA — falhas de projeto/arquitetura</td></tr>
+<tr><td>A6 Security Misconfiguration</td><td>A05 Security Misconfiguration</td><td>Subiu do #6 para #5; absorveu o XXE (antigo A4)</td></tr>
+<tr><td>A9 Using Components with Known Vulnerabilities</td><td>A06 Vulnerable and Outdated Components</td><td>Subiu do #9 para #6; renomeada</td></tr>
+<tr><td>A2 Broken Authentication</td><td>A07 Identification and Authentication Failures</td><td>Caiu do #2 para #7; renomeada</td></tr>
+<tr><td>A8 Insecure Deserialization</td><td>A08 Software and Data Integrity Failures</td><td>Ampliada/renomeada; passou a incluir falhas de cadeia de suprimentos (supply chain)</td></tr>
+<tr><td>A10 Insufficient Logging &amp; Monitoring</td><td>A09 Security Logging and Monitoring Failures</td><td>Subiu do #10 para #9; renomeada</td></tr>
+<tr><td>(não existia)</td><td>A10 Server-Side Request Forgery (SSRF)</td><td>NOVA — incluída por pesquisa com a comunidade</td></tr>
+<tr><td>A4 XML External Entities (XXE)</td><td>— (absorvida)</td><td>Passou a ser tratada dentro de A05 Security Misconfiguration</td></tr>
+<tr><td>A7 Cross-Site Scripting (XSS)</td><td>— (absorvida)</td><td>Passou a ser tratada dentro de A03 Injection</td></tr>
+</tbody>
+</table>
+<div class="callout destaque"><span class="tag">📌</span> Resumo mnemônico das mudanças estruturais: 2 categorias NOVAS (Insecure Design, SSRF); 2 categorias ANTIGAS foram absorvidas/desapareceram como itens isolados (XXE → dentro de Misconfiguration; XSS → dentro de Injection); as demais 8 apenas mudaram de posição e/ou nome.</div>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> "Broken Access Control" foi para o TOPO da lista em 2021 (posição #1), superando "Injection", que liderava desde 2010/2013/2017. É um dos fatos mais cobrados sobre a atualização da lista.</div>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> XSS NÃO desapareceu — ele continua existindo como vulnerabilidade, mas deixou de ser uma categoria isolada e passou a ser tratado DENTRO da categoria A03 Injection. O mesmo vale para XXE, absorvida por A05 Security Misconfiguration.</div>
+
+<!-- 4 -->
+<h1 id="s4">4. Histórico das Edições</h1>
+<table>
+<thead><tr><th>Edição</th><th>Ano</th></tr></thead>
+<tbody>
+<tr><td>1ª edição</td><td>2003</td></tr>
+<tr><td>2ª edição</td><td>2004</td></tr>
+<tr><td>3ª edição</td><td>2007</td></tr>
+<tr><td>4ª edição</td><td>2010</td></tr>
+<tr><td>5ª edição</td><td>2013</td></tr>
+<tr><td>6ª edição</td><td>2017</td></tr>
+<tr><td>7ª edição (vigente)</td><td>2021</td></tr>
+</tbody>
+</table>
+<p>O OWASP também mantém listas Top 10 especializadas para outros contextos (ex.: OWASP API Security Top 10, OWASP Mobile Top 10, OWASP Top 10 for LLM Applications), que não devem ser confundidas com o Top 10 "clássico" de aplicações web.</p>
+
+<!-- 5 -->
+<h1 id="s5">5. Termos-Chave</h1>
+<table>
+<thead><tr><th>Termo</th><th>Definição resumida</th></tr></thead>
+<tbody>
+<tr><td>CWE</td><td>Common Weakness Enumeration — catalogação padronizada de tipos de fraquezas de software, usada como base de mapeamento para as categorias do Top 10.</td></tr>
+<tr><td>IDOR</td><td>Insecure Direct Object Reference — exposição direta de um identificador interno (ex.: ID de registro), permitindo acesso não autorizado ao alterá-lo na requisição.</td></tr>
+<tr><td>XSS</td><td>Cross-Site Scripting — injeção de scripts maliciosos executados no navegador de outros usuários; hoje tratado dentro de A03 Injection.</td></tr>
+<tr><td>XXE</td><td>XML External Entities — exploração de processadores XML mal configurados para ler arquivos locais ou realizar SSRF; hoje tratado dentro de A05 Security Misconfiguration.</td></tr>
+<tr><td>SSRF</td><td>Server-Side Request Forgery — força o servidor a fazer requisições para destinos escolhidos pelo atacante.</td></tr>
+<tr><td>Supply chain attack</td><td>Ataque à cadeia de suprimentos de software — compromete dependências, pipelines de build ou processos de atualização.</td></tr>
+<tr><td>Deny by default</td><td>Princípio de negar acesso por padrão, exigindo autorização explícita para liberar qualquer ação.</td></tr>
+</tbody>
+</table>
+
+<!-- 6 -->
+<h1 id="s6">6. Quadro-Resumo Geral (revisão rápida)</h1>
+<table class="resumo-rapido">
+<thead><tr><th>Pergunta típica de prova</th><th>Resposta</th></tr></thead>
+<tbody>
+<tr><td>Qual a categoria #1 do OWASP Top 10:2021?</td><td>A01 Broken Access Control</td></tr>
+<tr><td>Qual categoria liderava em 2017 e caiu para #3 em 2021?</td><td>Injection (que absorveu o XSS)</td></tr>
+<tr><td>Quais as 2 categorias totalmente NOVAS em 2021?</td><td>A04 Insecure Design e A10 SSRF</td></tr>
+<tr><td>Quais 2 categorias antigas "desapareceram" (foram absorvidas)?</td><td>XSS (para dentro de Injection) e XXE (para dentro de Security Misconfiguration)</td></tr>
+<tr><td>Como "Sensitive Data Exposure" (2017) foi renomeada em 2021?</td><td>Cryptographic Failures</td></tr>
+<tr><td>Como "Broken Authentication" (2017) foi renomeada em 2021?</td><td>Identification and Authentication Failures</td></tr>
+<tr><td>Como "Insecure Deserialization" (2017) foi ampliada em 2021?</td><td>Software and Data Integrity Failures</td></tr>
+<tr><td>Como "Insufficient Logging & Monitoring" (2017) foi renomeada?</td><td>Security Logging and Monitoring Failures</td></tr>
+<tr><td>Quantas categorias vieram de dados x pesquisa com comunidade?</td><td>8 de dados reais + 2 de pesquisa (Insecure Design e SSRF)</td></tr>
+<tr><td>Ano da edição vigente?</td><td>2021</td></tr>
+</tbody>
+</table>
+
+<!-- 7 -->
+<h1 id="s7">7. Pegadinhas Consolidadas (revisão de véspera)</h1>
+<ul class="bullets">
+  <li>O OWASP Top 10 é um documento de CONSCIENTIZAÇÃO, não uma norma certificável (diferente da ISO 27001, por exemplo).</li>
+  <li>Broken Access Control assumiu a posição #1 em 2021 — não é mais Injection.</li>
+  <li>XSS não é mais uma categoria isolada: está dentro de A03 Injection.</li>
+  <li>XXE não é mais uma categoria isolada: está dentro de A05 Security Misconfiguration.</li>
+  <li>"Sensitive Data Exposure" mudou de nome para "Cryptographic Failures" — o novo nome enfatiza a CAUSA raiz (criptografia malfeita/ausente), não apenas a consequência (exposição).</li>
+  <li>"Broken Authentication" mudou de nome para "Identification and Authentication Failures" e caiu do #2 para o #7.</li>
+  <li>Insecure Design (A04) e SSRF (A10) são as únicas categorias 100% novas na edição 2021, e ambas vieram de pesquisa com a comunidade, não apenas de dados estatísticos.</li>
+  <li>Vulnerable and Outdated Components (antigo "Using Components with Known Vulnerabilities") subiu do #9 para o #6.</li>
+  <li>Security Logging and Monitoring Failures (antigo "Insufficient Logging & Monitoring") subiu do #10 para o #9.</li>
+  <li>Não confundir o OWASP Top 10 "clássico" (aplicações web) com listas especializadas do próprio OWASP, como o API Security Top 10 ou o Mobile Top 10 — são documentos distintos.</li>
+</ul>
+
+<!-- 8 -->
+<h1 id="s8">8. Questões Estilo Banca (FGV / Cesgranrio / AOCP) — com Gabarito Comentado</h1>
+
+<div class="questao">
+  <div class="enunciado">1. Na edição 2021 do OWASP Top 10, a categoria classificada na posição #1 (a mais crítica) é:</div>
+  <ul class="alternativas">
+    <li>(A) Injection.</li>
+    <li class="correta">(B) Broken Access Control.</li>
+    <li>(C) Cryptographic Failures.</li>
+    <li>(D) Security Misconfiguration.</li>
+    <li>(E) Insecure Design.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: Na edição 2021, Broken Access Control assumiu a posição #1, subindo da posição #5 que ocupava em 2017 — foi a categoria com maior incidência nos dados analisados. Injection, que liderava desde 2017 (e antes), caiu para a posição #3.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">2. Assinale a alternativa que apresenta corretamente as DUAS categorias totalmente NOVAS introduzidas na edição 2021 do OWASP Top 10 (sem equivalente direto em 2017):</div>
+  <ul class="alternativas">
+    <li>(A) Injection e Broken Access Control.</li>
+    <li class="correta">(B) Insecure Design e Server-Side Request Forgery (SSRF).</li>
+    <li>(C) Cross-Site Scripting (XSS) e XML External Entities (XXE).</li>
+    <li>(D) Cryptographic Failures e Broken Authentication.</li>
+    <li>(E) Security Misconfiguration e Vulnerable Components.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: Insecure Design (A04) e Server-Side Request Forgery (A10) são as duas categorias inéditas da edição 2021, ambas incluídas a partir de pesquisa com a comunidade de segurança, e não apenas de dados estatísticos de vulnerabilidades.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">3. Na edição 2021, a categoria "Cross-Site Scripting (XSS)", que era isolada em 2017, passou a ser tratada dentro de qual categoria?</div>
+  <ul class="alternativas">
+    <li>(A) A01 Broken Access Control.</li>
+    <li>(B) A05 Security Misconfiguration.</li>
+    <li class="correta">(C) A03 Injection.</li>
+    <li>(D) A08 Software and Data Integrity Failures.</li>
+    <li>(E) A10 Server-Side Request Forgery.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: O XSS foi absorvido pela categoria A03 Injection na edição 2021, já que consiste, tecnicamente, na injeção de scripts maliciosos interpretados no navegador da vítima. Já o XXE (XML External Entities) foi absorvido por A05 Security Misconfiguration.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">4. A categoria "Sensitive Data Exposure", presente na edição 2017 do OWASP Top 10, foi renomeada na edição 2021 para:</div>
+  <ul class="alternativas">
+    <li>(A) Security Logging and Monitoring Failures.</li>
+    <li class="correta">(B) Cryptographic Failures.</li>
+    <li>(C) Identification and Authentication Failures.</li>
+    <li>(D) Software and Data Integrity Failures.</li>
+    <li>(E) Insecure Design.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: A categoria foi renomeada para "Cryptographic Failures", deslocando o foco do sintoma (exposição de dados) para a causa raiz (falhas no uso ou ausência de criptografia adequada).</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">5. Segundo a metodologia da edição 2021 do OWASP Top 10, as categorias A04 (Insecure Design) e A10 (SSRF) foram incluídas na lista principalmente por meio de:</div>
+  <ul class="alternativas">
+    <li>(A) Análise exclusiva de dados de vulnerabilidades submetidos por organizações parceiras.</li>
+    <li class="correta">(B) Pesquisa de opinião (community survey) com especialistas em segurança da informação.</li>
+    <li>(C) Determinação unilateral do fundador da OWASP.</li>
+    <li>(D) Requisitos obrigatórios da norma ISO/IEC 27001.</li>
+    <li>(E) Resultados de testes de penetração automatizados de uma única empresa.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: Diferentemente das outras 8 categorias, que vieram principalmente de dados reais de vulnerabilidades, essas duas categorias foram incluídas a partir de uma pesquisa (survey) com a comunidade de segurança, por representarem riscos emergentes.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">6. Um ataque em que a aplicação busca um recurso remoto a partir de uma URL fornecida pelo usuário, sem validação adequada, permitindo que o servidor seja induzido a acessar recursos internos protegidos por firewall, é categorizado no OWASP Top 10:2021 como:</div>
+  <ul class="alternativas">
+    <li>(A) A03 Injection.</li>
+    <li>(B) A06 Vulnerable and Outdated Components.</li>
+    <li>(C) A08 Software and Data Integrity Failures.</li>
+    <li class="correta">(D) A10 Server-Side Request Forgery (SSRF).</li>
+    <li>(E) A02 Cryptographic Failures.</li>
+  </ul>
+  <div class="gabarito">Gabarito: D</div>
+  <div class="comentario">Comentário: Esse é exatamente o cenário descrito para SSRF (A10) — o servidor é induzido a fazer requisições para destinos escolhidos pelo atacante, podendo acessar recursos internos normalmente inacessíveis externamente.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">7. A categoria "Insecure Deserialization", presente isoladamente na edição 2017, foi ampliada e passou a integrar, na edição 2021, a categoria:</div>
+  <ul class="alternativas">
+    <li>(A) A04 Insecure Design.</li>
+    <li>(B) A05 Security Misconfiguration.</li>
+    <li class="correta">(C) A08 Software and Data Integrity Failures.</li>
+    <li>(D) A09 Security Logging and Monitoring Failures.</li>
+    <li>(E) A01 Broken Access Control.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: A08 Software and Data Integrity Failures ampliou o escopo da antiga "Insecure Deserialization", passando a abranger também falhas de integridade em pipelines de CI/CD e ataques à cadeia de suprimentos de software (supply chain attacks).</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">8. Em relação à categoria "Broken Authentication" (2017), é correto afirmar que, na edição 2021:</div>
+  <ul class="alternativas">
+    <li>(A) Manteve exatamente o mesmo nome e a mesma posição (#2).</li>
+    <li class="correta">(B) Foi renomeada para "Identification and Authentication Failures" e caiu da posição #2 para a #7.</li>
+    <li>(C) Foi eliminada da lista, sem substituição.</li>
+    <li>(D) Foi fundida com a categoria de Injection.</li>
+    <li>(E) Passou a ser a categoria #1 da lista.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: A categoria foi renomeada para "Identification and Authentication Failures" e caiu significativamente de posição, do #2 (2017) para o #7 (2021), refletindo a redução relativa de incidência nos dados analisados frente a outras categorias.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">9. A categoria do OWASP Top 10:2021 que trata de riscos originados na fase de PROJETO (design) da aplicação — problemas que persistiriam mesmo com uma implementação de código perfeita — é:</div>
+  <ul class="alternativas">
+    <li>(A) A03 Injection.</li>
+    <li class="correta">(B) A04 Insecure Design.</li>
+    <li>(C) A06 Vulnerable and Outdated Components.</li>
+    <li>(D) A09 Security Logging and Monitoring Failures.</li>
+    <li>(E) A02 Cryptographic Failures.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: A04 Insecure Design trata especificamente de falhas de concepção/arquitetura, que exigem mitigação por meio de práticas como threat modeling e padrões de projeto seguro, e não apenas correção de bugs de implementação.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">10. Considerando a evolução do OWASP Top 10 de 2017 para 2021, assinale a afirmativa CORRETA:</div>
+  <ul class="alternativas">
+    <li>(A) A categoria XML External Entities (XXE) permanece isolada e independente na edição 2021.</li>
+    <li>(B) A categoria "Using Components with Known Vulnerabilities" caiu de posição e foi renomeada para "Insecure Design".</li>
+    <li class="correta">(C) A categoria "Insufficient Logging & Monitoring" (posição #10 em 2017) foi renomeada para "Security Logging and Monitoring Failures" e subiu para a posição #9 em 2021.</li>
+    <li>(D) O OWASP Top 10:2021 é uma norma certificável equivalente à ISO/IEC 27001.</li>
+    <li>(E) Todas as 10 categorias de 2021 foram definidas exclusivamente por pesquisa de opinião com a comunidade.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: A antiga "Insufficient Logging & Monitoring" (#10 em 2017) foi renomeada para "Security Logging and Monitoring Failures", subindo para a posição #9 em 2021. As demais alternativas contêm erros: XXE foi absorvida por Security Misconfiguration; "Using Components with Known Vulnerabilities" foi renomeada para "Vulnerable and Outdated Components" (não para "Insecure Design"); o Top 10 é documento de conscientização, não norma certificável; e apenas 2 das 10 categorias vieram de pesquisa com a comunidade.</div>
+</div>
+
+<footer>Guia de estudo — OWASP Top 10 (edição 2021) — Preparação Dataprev/FGV</footer>
+
+</body>
+</html>

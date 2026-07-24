@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia SDL — Ciclo de Vida de Desenvolvimento Seguro — Dataprev/FGV</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --blue:#2E5395;
+    --lightblue:#DCE6F1;
+    --gray:#F2F2F2;
+    --red:#C00000;
+    --green:#1E7B34;
+    --amber:#BF8F00;
+    --amberbg:#FFF2CC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI", Calibri, Arial, sans-serif;
+    color:#222;
+    max-width:900px;
+    margin:0 auto;
+    padding:30px 20px 80px;
+    line-height:1.5;
+    background:#fff;
+  }
+  header{text-align:center; margin-bottom:30px;}
+  header .kicker{color:var(--blue); font-weight:bold; letter-spacing:.5px; font-size:0.95rem;}
+  header h1{color:var(--navy); font-size:2rem; margin:8px 0;}
+  header .sub{color:#555; font-style:italic; margin:4px 0;}
+  header .prio{color:var(--red); font-weight:bold; margin-top:6px;}
+
+  nav.toc{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+    padding:14px 18px;
+    border-radius:4px;
+    margin:24px 0;
+    font-size:0.95rem;
+  }
+  nav.toc a{color:var(--navy); text-decoration:none;}
+  nav.toc a:hover{text-decoration:underline;}
+  nav.toc ol{margin:6px 0 0; padding-left:20px;}
+
+  h1{
+    color:var(--navy);
+    font-size:1.55rem;
+    border-bottom:3px solid var(--navy);
+    padding-bottom:6px;
+    margin-top:48px;
+  }
+  h2{color:var(--blue); font-size:1.2rem; margin-top:28px;}
+  h3{color:#333; font-size:1.02rem; margin-top:20px;}
+
+  p{margin:10px 0;}
+
+  ul.bullets{margin:8px 0; padding-left:22px;}
+  ul.bullets li{margin-bottom:6px;}
+  ul.bullets ul{margin-top:6px;}
+
+  code{
+    background:#EFEFEF;
+    padding:1px 5px;
+    border-radius:3px;
+    font-family:Consolas, "Courier New", monospace;
+    font-size:0.9em;
+    color:#A5271F;
+  }
+
+  .callout{
+    padding:12px 16px;
+    border-radius:4px;
+    margin:14px 0;
+    font-size:0.97rem;
+  }
+  .destaque{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+  }
+  .destaque .tag{font-weight:bold; color:var(--navy);}
+  .pegadinha{
+    background:var(--amberbg);
+    border-left:6px solid var(--amber);
+  }
+  .pegadinha .tag{font-weight:bold; color:var(--amber);}
+
+  table{
+    border-collapse:collapse;
+    width:100%;
+    margin:16px 0;
+    font-size:0.92rem;
+  }
+  thead th{
+    background:var(--navy);
+    color:#fff;
+    padding:10px 12px;
+    text-align:left;
+  }
+  tbody td{
+    padding:9px 12px;
+    border-bottom:1px solid #ddd;
+    vertical-align:top;
+  }
+  tbody tr:nth-child(even){background:var(--gray);}
+
+  .fases{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:16px 0;
+  }
+  .fase{
+    flex:1 1 120px;
+    background:var(--navy);
+    color:#fff;
+    text-align:center;
+    padding:10px 6px;
+    border-radius:6px;
+    font-size:0.85rem;
+    font-weight:bold;
+  }
+  .fase span{display:block; font-weight:normal; font-size:0.78rem; margin-top:4px; opacity:0.85;}
+
+  .questao{
+    margin:26px 0;
+    padding-bottom:10px;
+    border-bottom:1px dashed #ccc;
+  }
+  .questao .enunciado{font-weight:bold; margin-bottom:8px;}
+  .questao .alternativas{list-style:none; padding-left:0; margin:0 0 8px;}
+  .questao .alternativas li{margin:4px 0 4px 10px;}
+  .questao .alternativas li.correta{font-weight:bold; color:var(--green);}
+  .questao .gabarito{color:var(--green); font-weight:bold; margin:6px 0;}
+  .questao .comentario{
+    background:#EAF1DD;
+    border-left:4px solid var(--green);
+    padding:10px 14px;
+    font-style:italic;
+    font-size:0.93rem;
+    border-radius:3px;
+  }
+
+  .resumo-rapido td:first-child{font-weight:600;}
+
+  footer{
+    margin-top:50px;
+    text-align:center;
+    color:#888;
+    font-size:0.85rem;
+    border-top:1px solid #ddd;
+    padding-top:16px;
+  }
+
+  @media print{
+    body{max-width:100%;}
+    .questao{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">GUIA DE ESTUDO — CONCURSO DATAPREV / FGV</div>
+  <h1>SDL — Ciclo de Vida de Desenvolvimento Seguro</h1>
+  <div class="sub">Security Development Lifecycle, Threat Modeling, DevSecOps, SAMM e BSIMM</div>
+  <div class="prio">Prioridade: ALTA — Guia completo para gabaritar a prova</div>
+</header>
+
+<div class="callout destaque">
+  <span class="tag">📌</span> A banca costuma cobrar: (1) as 7 fases do SDL da Microsoft e suas atividades-chave, (2) o mnemônico STRIDE para modelagem de ameaças e sua relação com propriedades de segurança, (3) a diferença entre SAST/DAST/IAST/SCA, (4) o conceito de "Shift Left"/DevSecOps, e (5) a diferença entre modelos prescritivos (SAMM) e descritivos (BSIMM) de maturidade em segurança de software.
+</div>
+
+<nav class="toc">
+  <strong>Sumário</strong>
+  <ol>
+    <li><a href="#s1">O que é SDL e por que existe</a></li>
+    <li><a href="#s2">Microsoft SDL — as 7 fases</a></li>
+    <li><a href="#s3">Modelagem de Ameaças (Threat Modeling) — STRIDE e DREAD</a></li>
+    <li><a href="#s4">DevSecOps e "Shift Left"</a></li>
+    <li><a href="#s5">Testes de segurança: SAST, DAST, IAST, SCA, RASP</a></li>
+    <li><a href="#s6">OWASP SAMM</a></li>
+    <li><a href="#s7">BSIMM</a></li>
+    <li><a href="#s8">SAMM x BSIMM — comparação</a></li>
+    <li><a href="#s9">Outras práticas de codificação segura</a></li>
+    <li><a href="#s10">Termos-chave</a></li>
+    <li><a href="#s11">Quadro-resumo geral</a></li>
+    <li><a href="#s12">Pegadinhas de prova consolidadas</a></li>
+    <li><a href="#s13">Questões estilo banca com gabarito comentado</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<h1 id="s1">1. O que é SDL e por que existe</h1>
+<p><strong>SDL</strong> (Security Development Lifecycle, ou "Ciclo de Vida de Desenvolvimento Seguro") é um conjunto de práticas que insere atividades de segurança em TODAS as fases do desenvolvimento de software — e não apenas em uma revisão final antes do lançamento. O objetivo é reduzir o número e a gravidade das vulnerabilidades no software desde a concepção, em vez de tentar "consertar" a segurança depois de pronto.</p>
+<ul class="bullets">
+  <li>O modelo mais citado em prova é o <strong>Microsoft SDL</strong>, criado em 2004 dentro da iniciativa "Trustworthy Computing" da Microsoft, e publicado no livro <em>The Security Development Lifecycle</em> (Michael Howard e Steve Lipner).</li>
+  <li>Princípio central: <strong>"Shift Left"</strong> — mover as atividades de segurança para o mais cedo possível no ciclo de vida (a "esquerda" da linha do tempo do projeto), pois corrigir uma falha na fase de projeto é ordens de grandeza mais barato do que corrigi-la em produção.</li>
+</ul>
+<div class="callout destaque"><span class="tag">📌</span> Frase-chave para prova: o SDL busca "construir segurança desde o início" (security by design), integrando segurança a cada fase do SDLC (Software Development Life Cycle) tradicional, em vez de tratá-la como uma etapa isolada de teste.</div>
+
+<!-- 2 -->
+<h1 id="s2">2. Microsoft SDL — As 7 Fases</h1>
+<p>O Microsoft SDL clássico é dividido em 7 fases sequenciais, cada uma com práticas específicas:</p>
+
+<div class="fases">
+  <div class="fase">1. Training<span>Treinamento</span></div>
+  <div class="fase">2. Requirements<span>Requisitos</span></div>
+  <div class="fase">3. Design<span>Projeto</span></div>
+  <div class="fase">4. Implementation<span>Implementação</span></div>
+  <div class="fase">5. Verification<span>Verificação</span></div>
+  <div class="fase">6. Release<span>Lançamento</span></div>
+  <div class="fase">7. Response<span>Resposta</span></div>
+</div>
+
+<table>
+<thead><tr><th>Fase</th><th>Principais atividades</th></tr></thead>
+<tbody>
+<tr><td><strong>1. Training</strong></td><td>Treinamento básico obrigatório de segurança para toda a equipe de desenvolvimento (conceitos de ameaças, codificação segura, privacidade), antes de iniciar qualquer projeto.</td></tr>
+<tr><td><strong>2. Requirements</strong></td><td>Definição dos requisitos de segurança e privacidade; estabelecimento de "quality gates"/"bug bars" (critérios mínimos de qualidade de segurança que não podem ser violados); avaliação de risco de segurança e privacidade do projeto.</td></tr>
+<tr><td><strong>3. Design</strong></td><td>Definição dos requisitos de projeto (design requirements); análise da superfície de ataque (attack surface analysis/reduction); <strong>modelagem de ameaças</strong> (threat modeling) — normalmente usando STRIDE.</td></tr>
+<tr><td><strong>4. Implementation</strong></td><td>Uso de ferramentas aprovadas; banimento de funções inseguras (ex.: funções de manipulação de string vulneráveis a overflow); execução de análise estática de código (SAST).</td></tr>
+<tr><td><strong>5. Verification</strong></td><td>Análise dinâmica (DAST); teste de fuzzing; revisão da superfície de ataque para confirmar que o estado do projeto (design) corresponde ao que foi de fato implementado.</td></tr>
+<tr><td><strong>6. Release</strong></td><td>Plano de resposta a incidentes (Incident Response Plan); Revisão Final de Segurança (Final Security Review – FSR); arquivamento de todos os dados relevantes de segurança do release.</td></tr>
+<tr><td><strong>7. Response</strong></td><td>Execução do plano de resposta a incidentes já preparado, tratando vulnerabilidades relatadas após o lançamento (fase pós-release, contínua).</td></tr>
+</tbody>
+</table>
+
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> A ordem exata é Training → Requirements → Design → Implementation → Verification → Release → Response. A banca costuma embaralhar essa sequência ou inserir uma fase inexistente (ex.: "Homologação" ou "Aquisição") no meio das 7 fases oficiais.</div>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> A Modelagem de Ameaças (Threat Modeling) ocorre na fase de DESIGN, não na fase de Requirements nem na de Verification — é um erro comum de prova posicioná-la incorretamente.</div>
+
+<!-- 3 -->
+<h1 id="s3">3. Modelagem de Ameaças (Threat Modeling) — STRIDE e DREAD</h1>
+<p>A modelagem de ameaças é uma atividade estruturada, realizada na fase de Design, para identificar, categorizar e priorizar ameaças a um sistema ANTES de ele ser construído.</p>
+
+<h2>3.1 STRIDE — categorização das ameaças</h2>
+<p><strong>STRIDE</strong> é um mnemônico criado pela Microsoft para classificar tipos de ameaça, cada um relacionado à violação de uma propriedade de segurança:</p>
+<table>
+<thead><tr><th>Letra</th><th>Ameaça</th><th>Propriedade de segurança violada</th></tr></thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>Spoofing (falsificação de identidade)</td><td>Autenticação</td></tr>
+<tr><td><strong>T</strong></td><td>Tampering (adulteração de dados)</td><td>Integridade</td></tr>
+<tr><td><strong>R</strong></td><td>Repudiation (repúdio)</td><td>Não repúdio (Non-repudiation)</td></tr>
+<tr><td><strong>I</strong></td><td>Information Disclosure (vazamento de informação)</td><td>Confidencialidade</td></tr>
+<tr><td><strong>D</strong></td><td>Denial of Service (negação de serviço)</td><td>Disponibilidade</td></tr>
+<tr><td><strong>E</strong></td><td>Elevation of Privilege (elevação de privilégio)</td><td>Autorização</td></tr>
+</tbody>
+</table>
+<div class="callout destaque"><span class="tag">📌</span> STRIDE mapeia diretamente para as propriedades clássicas de segurança (CID) mais Autenticação, Não repúdio e Autorização — por isso é fácil de decorar em pares: Spoofing↔Autenticação, Tampering↔Integridade, Repudiation↔Não repúdio, Information Disclosure↔Confidencialidade, Denial of Service↔Disponibilidade, Elevation of Privilege↔Autorização.</div>
+
+<h2>3.2 DREAD — priorização/pontuação do risco</h2>
+<p>Enquanto o STRIDE CATEGORIZA o tipo de ameaça, o <strong>DREAD</strong> é usado para PONTUAR/priorizar o risco de cada ameaça identificada, atribuindo uma nota (geralmente de 1 a 10) a cada critério:</p>
+<ul class="bullets">
+  <li><strong>D</strong>amage potential — qual o potencial de dano?</li>
+  <li><strong>R</strong>eproducibility — quão fácil é reproduzir o ataque?</li>
+  <li><strong>E</strong>xploitability — quão fácil é explorar a ameaça?</li>
+  <li><strong>A</strong>ffected users — quantos usuários seriam afetados?</li>
+  <li><strong>D</strong>iscoverability — quão fácil é descobrir a vulnerabilidade?</li>
+</ul>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> STRIDE classifica o TIPO de ameaça (categorização qualitativa); DREAD pontua o RISCO da ameaça já identificada (priorização quantitativa). São ferramentas complementares e sequenciais, não sinônimos — a banca costuma trocar as definições dos dois.</div>
+
+<!-- 4 -->
+<h1 id="s4">4. DevSecOps e "Shift Left"</h1>
+<p><strong>DevSecOps</strong> é a extensão da cultura DevOps que integra segurança de forma contínua e automatizada em todas as etapas do pipeline de CI/CD (Integração Contínua/Entrega Contínua), em vez de tratá-la como um "gate" isolado antes do deploy.</p>
+<ul class="bullets">
+  <li><strong>"Shift Left"</strong> — literalmente "deslocar para a esquerda": mover os testes e controles de segurança para etapas mais cedo do pipeline (código/build), em vez de deixá-los apenas para o final (produção).</li>
+  <li>Objetivo: segurança como responsabilidade de TODOS ("everyone is responsible for security"), não apenas de uma equipe de segurança isolada no fim do processo.</li>
+  <li>Automatização de verificações de segurança no próprio pipeline de CI/CD (ex.: scanners SAST/SCA rodando a cada commit/pull request).</li>
+</ul>
+
+<!-- 5 -->
+<h1 id="s5">5. Testes de Segurança: SAST, DAST, IAST, SCA, RASP</h1>
+<table>
+<thead><tr><th>Sigla</th><th>Nome</th><th>Como funciona</th><th>Quando é usado</th></tr></thead>
+<tbody>
+<tr><td><strong>SAST</strong></td><td>Static Application Security Testing</td><td>Analisa o código-fonte (ou bytecode) SEM executar a aplicação — abordagem "caixa branca"</td><td>Cedo no ciclo — durante a implementação/codificação</td></tr>
+<tr><td><strong>DAST</strong></td><td>Dynamic Application Security Testing</td><td>Testa a aplicação EM EXECUÇÃO, simulando ataques externos — abordagem "caixa preta", não precisa do código-fonte</td><td>Fase de verificação/homologação, com a aplicação já rodando</td></tr>
+<tr><td><strong>IAST</strong></td><td>Interactive Application Security Testing</td><td>Combina elementos de SAST e DAST: usa um agente instrumentado dentro da aplicação em execução, com visibilidade do código internamente — abordagem "caixa cinza"</td><td>Durante testes funcionais/QA, com instrumentação em tempo real</td></tr>
+<tr><td><strong>SCA</strong></td><td>Software Composition Analysis</td><td>Identifica vulnerabilidades conhecidas em bibliotecas, frameworks e dependências de terceiros/open-source</td><td>Em qualquer etapa que use gerenciadores de pacotes (build, CI)</td></tr>
+<tr><td><strong>RASP</strong></td><td>Runtime Application Self-Protection</td><td>Monitora e bloqueia ataques em tempo real DENTRO do ambiente de produção, a partir de dentro da própria aplicação</td><td>Produção (proteção em tempo de execução)</td></tr>
+</tbody>
+</table>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> SAST = código parado, caixa branca, não precisa executar. DAST = aplicação rodando, caixa preta, não precisa do código-fonte. É clássico a banca inverter essas duas definições.</div>
+
+<!-- 6 -->
+<h1 id="s6">6. OWASP SAMM</h1>
+<p><strong>OWASP SAMM</strong> (Software Assurance Maturity Model) é um modelo ABERTO e PRESCRITIVO — indica O QUE uma organização DEVERIA fazer para amadurecer sua segurança de software, independentemente do tamanho ou setor.</p>
+<p>É organizado em 5 <strong>funções de negócio</strong> (business functions), cada uma com 3 práticas de segurança:</p>
+<table>
+<thead><tr><th>Função de negócio</th><th>Práticas de segurança</th></tr></thead>
+<tbody>
+<tr><td>Governance (Governança)</td><td>Strategy &amp; Metrics; Policy &amp; Compliance; Education &amp; Guidance</td></tr>
+<tr><td>Design (Projeto)</td><td>Threat Assessment; Security Requirements; Security Architecture</td></tr>
+<tr><td>Implementation (Implementação)</td><td>Secure Build; Secure Deployment; Defect Management</td></tr>
+<tr><td>Verification (Verificação)</td><td>Architecture Assessment; Requirements-driven Testing; Security Testing</td></tr>
+<tr><td>Operations (Operações)</td><td>Incident Management; Environment Management; Operational Management</td></tr>
+</tbody>
+</table>
+<p>Cada prática é avaliada em <strong>níveis de maturidade de 0 a 3</strong> (0 = prática não realizada; 3 = nível mais avançado/otimizado).</p>
+
+<!-- 7 -->
+<h1 id="s7">7. BSIMM</h1>
+<p><strong>BSIMM</strong> (Building Security In Maturity Model) é um modelo DESCRITIVO/OBSERVACIONAL — ele não prescreve o que fazer, mas sim MEDE e documenta o que organizações reais (centenas de empresas participantes) efetivamente já praticam em segurança de software. Funciona como um "espelho" (benchmark) para comparação entre organizações.</p>
+<p>É organizado em 4 <strong>domínios</strong>, cada um com 3 práticas (12 práticas no total):</p>
+<table>
+<thead><tr><th>Domínio</th><th>Práticas</th></tr></thead>
+<tbody>
+<tr><td>Governance</td><td>Estratégia e métricas; Conformidade e políticas; Treinamento</td></tr>
+<tr><td>Intelligence</td><td>Modelos de ataque; Padrões e requisitos de segurança; Segurança do ciclo de vida (biblioteca de conhecimento)</td></tr>
+<tr><td>SSDL Touchpoints (pontos de contato no SDLC)</td><td>Revisão de arquitetura; Revisão de código; Testes de segurança</td></tr>
+<tr><td>Deployment</td><td>Testes de penetração; Segurança de software em operação; Gestão de configuração e vulnerabilidades</td></tr>
+</tbody>
+</table>
+
+<!-- 8 -->
+<h1 id="s8">8. SAMM x BSIMM — Comparação</h1>
+<table>
+<thead><tr><th>Aspecto</th><th>OWASP SAMM</th><th>BSIMM</th></tr></thead>
+<tbody>
+<tr><td>Natureza</td><td>PRESCRITIVO — diz o que a organização deveria fazer</td><td>DESCRITIVO/OBSERVACIONAL — mede o que organizações realmente fazem</td></tr>
+<tr><td>Origem</td><td>Comunidade aberta OWASP</td><td>Estudo com organizações reais (empresas participantes)</td></tr>
+<tr><td>Estrutura</td><td>5 funções de negócio × 3 práticas cada</td><td>4 domínios × 3 práticas cada (12 práticas)</td></tr>
+<tr><td>Uso típico</td><td>Roteiro/plano de melhoria (roadmap) para qualquer organização, mesmo iniciante</td><td>Benchmark comparativo entre organizações já maduras em segurança</td></tr>
+<tr><td>Custo/acesso</td><td>Gratuito e aberto (projeto OWASP)</td><td>Dados publicados, mas com metodologia baseada em estudo fechado de participantes</td></tr>
+</tbody>
+</table>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> SAMM = prescritivo ("o que fazer"); BSIMM = descritivo ("o que se faz na prática"). A banca costuma trocar essas duas classificações entre si.</div>
+
+<!-- 9 -->
+<h1 id="s9">9. Outras Práticas de Codificação Segura</h1>
+<ul class="bullets">
+  <li><strong>Code review / revisão de código por pares</strong> — identificação manual de falhas de segurança antes do merge.</li>
+  <li><strong>Security Champions</strong> — desenvolvedores de cada equipe com treinamento extra em segurança, atuando como ponte entre o time de segurança e o time de desenvolvimento.</li>
+  <li><strong>Redução da superfície de ataque</strong> (attack surface reduction) — desabilitar/remover funcionalidades, portas e serviços desnecessários.</li>
+  <li><strong>Privacidade desde a concepção</strong> (Privacy by Design) — tratamento de dados pessoais já considerado nas fases iniciais, alinhado a normas como a LGPD.</li>
+  <li><strong>Gestão de dependências de terceiros</strong> — manter inventário (SBOM – Software Bill of Materials) e monitorar vulnerabilidades conhecidas em bibliotecas (CVE).</li>
+</ul>
+
+<!-- 10 -->
+<h1 id="s10">10. Termos-Chave</h1>
+<table>
+<thead><tr><th>Termo</th><th>Definição resumida</th></tr></thead>
+<tbody>
+<tr><td>SDL</td><td>Security Development Lifecycle — integra atividades de segurança a todas as fases do desenvolvimento de software.</td></tr>
+<tr><td>Bug bar / quality gate</td><td>Critério mínimo de segurança que não pode ser violado para o software avançar de fase.</td></tr>
+<tr><td>Attack surface</td><td>Conjunto de todos os pontos por onde um atacante poderia tentar interagir com o sistema.</td></tr>
+<tr><td>FSR (Final Security Review)</td><td>Revisão final de segurança feita na fase de Release do Microsoft SDL, antes do lançamento.</td></tr>
+<tr><td>Shift Left</td><td>Mover atividades/testes de segurança para etapas mais cedo do ciclo de desenvolvimento.</td></tr>
+<tr><td>SBOM</td><td>Software Bill of Materials — inventário formal de todos os componentes/dependências de um software.</td></tr>
+<tr><td>CVE</td><td>Common Vulnerabilities and Exposures — identificador padronizado de vulnerabilidades conhecidas publicamente.</td></tr>
+<tr><td>Fuzzing</td><td>Técnica de teste que envia entradas malformadas/aleatórias a um sistema para descobrir falhas.</td></tr>
+</tbody>
+</table>
+
+<!-- 11 -->
+<h1 id="s11">11. Quadro-Resumo Geral (revisão rápida)</h1>
+<table class="resumo-rapido">
+<thead><tr><th>Pergunta típica de prova</th><th>Resposta</th></tr></thead>
+<tbody>
+<tr><td>Quantas fases tem o Microsoft SDL clássico?</td><td>7 — Training, Requirements, Design, Implementation, Verification, Release, Response</td></tr>
+<tr><td>Em qual fase ocorre a modelagem de ameaças?</td><td>Design</td></tr>
+<tr><td>O que significa STRIDE?</td><td>Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege</td></tr>
+<tr><td>Para que serve o DREAD?</td><td>Pontuar/priorizar o risco de ameaças já identificadas</td></tr>
+<tr><td>Qual teste analisa o código-fonte sem executar a aplicação?</td><td>SAST</td></tr>
+<tr><td>Qual teste analisa a aplicação em execução, caixa preta?</td><td>DAST</td></tr>
+<tr><td>Qual ferramenta identifica vulnerabilidades em bibliotecas de terceiros?</td><td>SCA (Software Composition Analysis)</td></tr>
+<tr><td>Modelo prescritivo de maturidade em segurança de software?</td><td>OWASP SAMM</td></tr>
+<tr><td>Modelo descritivo/observacional, baseado em empresas reais?</td><td>BSIMM</td></tr>
+<tr><td>Quantas funções de negócio tem o SAMM?</td><td>5 (Governance, Design, Implementation, Verification, Operations)</td></tr>
+<tr><td>Quantos domínios/práticas tem o BSIMM?</td><td>4 domínios × 3 práticas = 12 práticas</td></tr>
+<tr><td>O que significa "Shift Left"?</td><td>Mover a segurança para etapas mais cedo do ciclo de desenvolvimento</td></tr>
+</tbody>
+</table>
+
+<!-- 12 -->
+<h1 id="s12">12. Pegadinhas Consolidadas (revisão de véspera)</h1>
+<ul class="bullets">
+  <li>A ordem das 7 fases do Microsoft SDL é fixa: Training → Requirements → Design → Implementation → Verification → Release → Response. Não existe fase de "Homologação" ou "Aquisição" no modelo oficial.</li>
+  <li>Threat Modeling acontece na fase de DESIGN, não em Requirements nem em Verification.</li>
+  <li>STRIDE categoriza o TIPO de ameaça; DREAD PONTUA/prioriza o risco — não são a mesma coisa nem etapas alternativas entre si (DREAD normalmente vem depois do STRIDE).</li>
+  <li>SAST = código parado (estático), caixa branca, sem necessidade de executar a aplicação. DAST = aplicação em execução (dinâmico), caixa preta, sem necessidade do código-fonte.</li>
+  <li>IAST combina elementos de SAST e DAST via instrumentação em tempo de execução (caixa cinza) — não confundir com RASP, que atua em produção bloqueando ataques (proteção, não apenas teste).</li>
+  <li>SCA foca em vulnerabilidades de bibliotecas/dependências de TERCEIROS, não no código próprio da organização (isso é papel do SAST).</li>
+  <li>SAMM é PRESCRITIVO (o que fazer); BSIMM é DESCRITIVO/observacional (o que se faz na prática, com base em empresas reais).</li>
+  <li>SAMM tem 5 funções de negócio × 3 práticas; BSIMM tem 4 domínios × 3 práticas (12 práticas) — não troque os números entre os dois modelos.</li>
+  <li>"Shift Left" não significa eliminar testes em produção, mas ANTECIPAR a maior parte das verificações de segurança para fases mais cedo do ciclo.</li>
+  <li>O SDL da Microsoft nasceu da iniciativa "Trustworthy Computing" (2004), formalizado no livro de Michael Howard e Steve Lipner — não confundir a origem com a OWASP (organização diferente, responsável por SAMM e pelo OWASP Top 10).</li>
+</ul>
+
+<!-- 13 -->
+<h1 id="s13">13. Questões Estilo Banca (FGV / Cesgranrio / AOCP) — com Gabarito Comentado</h1>
+
+<div class="questao">
+  <div class="enunciado">1. No modelo Microsoft SDL (Security Development Lifecycle), a atividade de Modelagem de Ameaças (Threat Modeling) é realizada em qual fase?</div>
+  <ul class="alternativas">
+    <li>(A) Training.</li>
+    <li>(B) Requirements.</li>
+    <li class="correta">(C) Design.</li>
+    <li>(D) Verification.</li>
+    <li>(E) Release.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: A modelagem de ameaças ocorre na fase de Design, junto com a definição dos requisitos de projeto e a análise da superfície de ataque, antes de a implementação (codificação) começar.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">2. Assinale a alternativa que apresenta corretamente a sequência das 7 fases do Microsoft SDL:</div>
+  <ul class="alternativas">
+    <li>(A) Requirements → Training → Design → Verification → Implementation → Release → Response.</li>
+    <li class="correta">(B) Training → Requirements → Design → Implementation → Verification → Release → Response.</li>
+    <li>(C) Design → Training → Requirements → Implementation → Release → Verification → Response.</li>
+    <li>(D) Training → Design → Requirements → Verification → Implementation → Response → Release.</li>
+    <li>(E) Training → Requirements → Implementation → Design → Verification → Release → Response.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: A sequência oficial é Training, Requirements, Design, Implementation, Verification, Release e Response — cada fase constrói sobre as anteriores, terminando com a fase de resposta pós-lançamento.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">3. No mnemônico STRIDE, usado para classificação de ameaças em modelagem de ameaças, a letra "S" (Spoofing) está associada à violação de qual propriedade de segurança?</div>
+  <ul class="alternativas">
+    <li>(A) Integridade.</li>
+    <li>(B) Disponibilidade.</li>
+    <li class="correta">(C) Autenticação.</li>
+    <li>(D) Confidencialidade.</li>
+    <li>(E) Não repúdio.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: Spoofing (falsificação de identidade) viola a Autenticação. As demais letras do STRIDE correspondem a: Tampering→Integridade, Repudiation→Não repúdio, Information Disclosure→Confidencialidade, Denial of Service→Disponibilidade, Elevation of Privilege→Autorização.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">4. O modelo utilizado para PONTUAR/priorizar o risco de uma ameaça já identificada, atribuindo notas a critérios como Damage potential, Reproducibility, Exploitability, Affected users e Discoverability, é denominado:</div>
+  <ul class="alternativas">
+    <li>(A) STRIDE.</li>
+    <li class="correta">(B) DREAD.</li>
+    <li>(C) SAMM.</li>
+    <li>(D) BSIMM.</li>
+    <li>(E) CVSS.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: DREAD é o acrônimo para os cinco critérios de pontuação de risco citados. Diferencia-se do STRIDE, que categoriza (não pontua) o tipo de ameaça.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">5. Uma ferramenta de segurança que analisa o código-fonte de uma aplicação SEM executá-la, identificando padrões de código potencialmente vulneráveis, é classificada como:</div>
+  <ul class="alternativas">
+    <li class="correta">(A) SAST — Static Application Security Testing.</li>
+    <li>(B) DAST — Dynamic Application Security Testing.</li>
+    <li>(C) IAST — Interactive Application Security Testing.</li>
+    <li>(D) RASP — Runtime Application Self-Protection.</li>
+    <li>(E) SCA — Software Composition Analysis.</li>
+  </ul>
+  <div class="gabarito">Gabarito: A</div>
+  <div class="comentario">Comentário: SAST atua em modo estático (caixa branca), sobre o código-fonte ou bytecode, sem necessidade de executar a aplicação — geralmente aplicado ainda na fase de implementação/codificação.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">6. Diferentemente do SAST, uma ferramenta DAST (Dynamic Application Security Testing) caracteriza-se por:</div>
+  <ul class="alternativas">
+    <li>(A) Exigir acesso ao código-fonte da aplicação para funcionar.</li>
+    <li class="correta">(B) Testar a aplicação em execução, simulando ataques externos, em abordagem caixa preta.</li>
+    <li>(C) Atuar exclusivamente sobre bibliotecas de terceiros e dependências open-source.</li>
+    <li>(D) Ser executada apenas durante o treinamento (Training) da equipe de desenvolvimento.</li>
+    <li>(E) Substituir integralmente a necessidade de testes de penetração.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: DAST testa a aplicação já em execução, sem necessidade do código-fonte (caixa preta), simulando o comportamento de um atacante externo — o oposto do SAST.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">7. Sobre os modelos de maturidade em segurança de software OWASP SAMM e BSIMM, é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li>(A) Ambos são modelos puramente descritivos, baseados apenas em observação de empresas.</li>
+    <li>(B) O BSIMM é prescritivo, enquanto o SAMM é descritivo.</li>
+    <li class="correta">(C) O SAMM é prescritivo (indica o que fazer), enquanto o BSIMM é descritivo/observacional (mede o que organizações reais praticam).</li>
+    <li>(D) Ambos exigem, obrigatoriamente, certificação ISO para serem aplicados.</li>
+    <li>(E) O SAMM foi desenvolvido a partir de dados coletados exclusivamente do setor público.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: O OWASP SAMM é um modelo prescritivo, servindo como roteiro de melhoria; o BSIMM é descritivo, funcionando como um "raio-x"/benchmark do que organizações reais efetivamente fazem em segurança de software.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">8. O OWASP SAMM organiza suas práticas de segurança em cinco funções de negócio. Assinale a alternativa que apresenta corretamente essas cinco funções:</div>
+  <ul class="alternativas">
+    <li>(A) Governance, Intelligence, SSDL Touchpoints, Deployment, Response.</li>
+    <li class="correta">(B) Governance, Design, Implementation, Verification, Operations.</li>
+    <li>(C) Training, Requirements, Design, Implementation, Verification.</li>
+    <li>(D) Strategy, Policy, Education, Architecture, Testing.</li>
+    <li>(E) Governance, Deployment, Verification, Response, Release.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: As cinco funções de negócio do SAMM são Governance, Design, Implementation, Verification e Operations, cada uma com 3 práticas de segurança específicas. A alternativa (A) descreve os 4 domínios do BSIMM (que teria apenas 4, não 5, funções), o que a torna incorreta neste contexto.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">9. A técnica de teste de segurança que consiste em enviar entradas malformadas, inesperadas ou aleatórias a um sistema, com o objetivo de descobrir falhas de robustez e possíveis vulnerabilidades, é conhecida como:</div>
+  <ul class="alternativas">
+    <li>(A) Threat modeling.</li>
+    <li>(B) Code review.</li>
+    <li class="correta">(C) Fuzzing.</li>
+    <li>(D) Penetration testing estrutural.</li>
+    <li>(E) Attack surface reduction.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: Fuzzing é a técnica de submeter entradas malformadas/aleatórias a um sistema para expor falhas de tratamento de dados. No Microsoft SDL, o fuzz testing é uma atividade típica da fase de Verification.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">10. O conceito de "Shift Left" em DevSecOps refere-se a:</div>
+  <ul class="alternativas">
+    <li>(A) Eliminar totalmente os testes de segurança em produção, concentrando tudo apenas no código-fonte.</li>
+    <li class="correta">(B) Antecipar as atividades e testes de segurança para etapas mais cedo do ciclo de desenvolvimento, em vez de concentrá-los apenas no final.</li>
+    <li>(C) Transferir a responsabilidade pela segurança exclusivamente para a equipe de operações (Ops).</li>
+    <li>(D) Substituir a fase de Design do SDL por uma etapa de testes de penetração.</li>
+    <li>(E) Adiar a correção de vulnerabilidades para o próximo ciclo de release.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: "Shift Left" significa mover a segurança para mais cedo no pipeline (código, build, CI), tornando-a responsabilidade contínua de toda a equipe, e não apenas um gate isolado antes do deploy.</div>
+</div>
+
+<footer>Guia de estudo — SDL (Ciclo de Vida de Desenvolvimento Seguro) — Preparação Dataprev/FGV</footer>
+
+</body>
+</html>

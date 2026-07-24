@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia Controle de Acesso, HTTPS, SSL/TLS, OAuth2 e SSO — Dataprev/FGV</title>
+<style>
+  :root{
+    --navy:#1F3864;
+    --blue:#2E5395;
+    --lightblue:#DCE6F1;
+    --gray:#F2F2F2;
+    --red:#C00000;
+    --green:#1E7B34;
+    --amber:#BF8F00;
+    --amberbg:#FFF2CC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI", Calibri, Arial, sans-serif;
+    color:#222;
+    max-width:900px;
+    margin:0 auto;
+    padding:30px 20px 80px;
+    line-height:1.5;
+    background:#fff;
+  }
+  header{text-align:center; margin-bottom:30px;}
+  header .kicker{color:var(--blue); font-weight:bold; letter-spacing:.5px; font-size:0.95rem;}
+  header h1{color:var(--navy); font-size:2rem; margin:8px 0;}
+  header .sub{color:#555; font-style:italic; margin:4px 0;}
+  header .prio{color:var(--red); font-weight:bold; margin-top:6px;}
+
+  nav.toc{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+    padding:14px 18px;
+    border-radius:4px;
+    margin:24px 0;
+    font-size:0.95rem;
+  }
+  nav.toc a{color:var(--navy); text-decoration:none;}
+  nav.toc a:hover{text-decoration:underline;}
+  nav.toc ol{margin:6px 0 0; padding-left:20px;}
+
+  h1{
+    color:var(--navy);
+    font-size:1.55rem;
+    border-bottom:3px solid var(--navy);
+    padding-bottom:6px;
+    margin-top:48px;
+  }
+  h2{color:var(--blue); font-size:1.2rem; margin-top:28px;}
+  h3{color:#333; font-size:1.02rem; margin-top:20px;}
+
+  p{margin:10px 0;}
+
+  ul.bullets{margin:8px 0; padding-left:22px;}
+  ul.bullets li{margin-bottom:6px;}
+  ul.bullets ul{margin-top:6px;}
+
+  code{
+    background:#EFEFEF;
+    padding:1px 5px;
+    border-radius:3px;
+    font-family:Consolas, "Courier New", monospace;
+    font-size:0.9em;
+    color:#A5271F;
+  }
+
+  .callout{
+    padding:12px 16px;
+    border-radius:4px;
+    margin:14px 0;
+    font-size:0.97rem;
+  }
+  .destaque{
+    background:var(--lightblue);
+    border-left:6px solid var(--navy);
+  }
+  .destaque .tag{font-weight:bold; color:var(--navy);}
+  .pegadinha{
+    background:var(--amberbg);
+    border-left:6px solid var(--amber);
+  }
+  .pegadinha .tag{font-weight:bold; color:var(--amber);}
+
+  table{
+    border-collapse:collapse;
+    width:100%;
+    margin:16px 0;
+    font-size:0.92rem;
+  }
+  thead th{
+    background:var(--navy);
+    color:#fff;
+    padding:10px 12px;
+    text-align:left;
+  }
+  tbody td{
+    padding:9px 12px;
+    border-bottom:1px solid #ddd;
+    vertical-align:top;
+  }
+  tbody tr:nth-child(even){background:var(--gray);}
+
+  .fluxo{
+    background:#F7F9FC;
+    border:1px solid #D6DEE8;
+    border-radius:6px;
+    padding:14px 18px;
+    margin:14px 0;
+    font-size:0.93rem;
+  }
+  .fluxo ol{margin:6px 0 0; padding-left:20px;}
+  .fluxo li{margin-bottom:5px;}
+
+  .questao{
+    margin:26px 0;
+    padding-bottom:10px;
+    border-bottom:1px dashed #ccc;
+  }
+  .questao .enunciado{font-weight:bold; margin-bottom:8px;}
+  .questao .alternativas{list-style:none; padding-left:0; margin:0 0 8px;}
+  .questao .alternativas li{margin:4px 0 4px 10px;}
+  .questao .alternativas li.correta{font-weight:bold; color:var(--green);}
+  .questao .gabarito{color:var(--green); font-weight:bold; margin:6px 0;}
+  .questao .comentario{
+    background:#EAF1DD;
+    border-left:4px solid var(--green);
+    padding:10px 14px;
+    font-style:italic;
+    font-size:0.93rem;
+    border-radius:3px;
+  }
+
+  .resumo-rapido td:first-child{font-weight:600;}
+
+  footer{
+    margin-top:50px;
+    text-align:center;
+    color:#888;
+    font-size:0.85rem;
+    border-top:1px solid #ddd;
+    padding-top:16px;
+  }
+
+  @media print{
+    body{max-width:100%;}
+    .questao{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">GUIA DE ESTUDO — CONCURSO DATAPREV / FGV</div>
+  <h1>Controle de Acesso, HTTPS, SSL/TLS, OAuth 2.0 e SSO</h1>
+  <div class="sub">Autenticação, Autorização e Segurança em Trânsito</div>
+  <div class="prio">Prioridade: ALTA — Guia completo para fechar a prova</div>
+</header>
+
+<div class="callout destaque">
+  <span class="tag">📌</span> Este bloco costuma cair em conjunto porque forma a cadeia de confiança de qualquer aplicação web moderna: controle de acesso define QUEM pode fazer O QUÊ; TLS/HTTPS protege o CANAL; OAuth2/OIDC/SSO definem COMO a identidade é delegada e propagada entre sistemas. As bancas adoram testar a diferença entre autenticação x autorização e entre SSL x TLS x OAuth x SAML x OIDC.
+</div>
+
+<nav class="toc">
+  <strong>Sumário</strong>
+  <ol>
+    <li><a href="#s1">Fundamentos: AAA, autenticação x autorização</a></li>
+    <li><a href="#s2">Modelos de Controle de Acesso (DAC, MAC, RBAC, ABAC)</a></li>
+    <li><a href="#s3">HTTPS</a></li>
+    <li><a href="#s4">SSL/TLS</a></li>
+    <li><a href="#s5">OAuth 2.0</a></li>
+    <li><a href="#s6">OpenID Connect (OIDC) — a camada de identidade sobre o OAuth2</a></li>
+    <li><a href="#s7">SSO (Single Sign-On) e SAML</a></li>
+    <li><a href="#s8">Tabela comparativa final</a></li>
+    <li><a href="#s9">Termos-chave</a></li>
+    <li><a href="#s10">Quadro-resumo geral</a></li>
+    <li><a href="#s11">Pegadinhas de prova consolidadas</a></li>
+    <li><a href="#s12">Questões estilo banca com gabarito comentado</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<h1 id="s1">1. Fundamentos: AAA, Autenticação x Autorização</h1>
+<p>O modelo clássico de segurança de acesso é descrito pela sigla <strong>AAA</strong>:</p>
+<table>
+<thead><tr><th>Componente</th><th>Pergunta que responde</th><th>Exemplos</th></tr></thead>
+<tbody>
+<tr><td>Authentication (Autenticação)</td><td>"Quem é você?"</td><td>Login/senha, certificado digital, biometria, MFA</td></tr>
+<tr><td>Authorization (Autorização)</td><td>"O que você pode fazer?"</td><td>Permissões, papéis (roles), políticas de acesso</td></tr>
+<tr><td>Accounting/Auditing (Registro/Auditoria)</td><td>"O que você fez?"</td><td>Logs, trilhas de auditoria, non-repudiation</td></tr>
+</tbody>
+</table>
+
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Autenticação ≠ Autorização. Autenticação prova identidade (ex.: login bem-sucedido); autorização decide o que essa identidade pode acessar. É comum a banca trocar os dois termos, ou afirmar que "o OAuth 2.0 é um protocolo de autenticação" (FALSO — OAuth 2.0 é um framework de <em>autorização</em>).</div>
+
+<h2>1.1 Fatores de autenticação e MFA</h2>
+<ul class="bullets">
+  <li><strong>Algo que você sabe</strong> (knowledge) — senha, PIN, pergunta de segurança.</li>
+  <li><strong>Algo que você tem</strong> (possession) — token físico, smart card, celular (OTP/app autenticador).</li>
+  <li><strong>Algo que você é</strong> (inherence) — biometria (digital, face, íris).</li>
+  <li><em>(fatores complementares às vezes citados: "algo que você faz" — comportamento — e "onde você está" — localização/contexto).</em></li>
+</ul>
+<p><strong>MFA</strong> (Multi-Factor Authentication) exige 2 ou mais fatores de <em>categorias diferentes</em>. Duas senhas não configuram MFA, pois pertencem à mesma categoria ("algo que você sabe").</p>
+
+<h2>1.2 Princípios de controle de acesso</h2>
+<ul class="bullets">
+  <li><strong>Princípio do menor privilégio</strong> (least privilege) — conceder apenas o acesso mínimo necessário para a função.</li>
+  <li><strong>Need-to-know</strong> — acesso apenas à informação estritamente necessária.</li>
+  <li><strong>Segregação de funções</strong> (Segregation/Separation of Duties – SoD) — dividir tarefas críticas entre pessoas diferentes para evitar fraude/erro.</li>
+  <li><strong>Defesa em profundidade</strong> (defense in depth) — múltiplas camadas de controle, não dependência de um único mecanismo.</li>
+</ul>
+
+<!-- 2 -->
+<h1 id="s2">2. Modelos de Controle de Acesso</h1>
+<table>
+<thead><tr><th>Modelo</th><th>Como funciona</th><th>Quem decide o acesso</th></tr></thead>
+<tbody>
+<tr><td><strong>DAC</strong> — Discretionary Access Control</td><td>O proprietário do recurso define quem acessa, geralmente via ACL (Access Control List)</td><td>O dono do recurso (discricionário)</td></tr>
+<tr><td><strong>MAC</strong> — Mandatory Access Control</td><td>Acesso definido por rótulos/classificações de sigilo impostos centralmente pelo sistema (ex.: "confidencial", "secreto")</td><td>Sistema/política central — usuário não pode alterar</td></tr>
+<tr><td><strong>RBAC</strong> — Role-Based Access Control</td><td>Permissões atribuídas a papéis (roles); usuários recebem papéis</td><td>Administrador, via definição de papéis</td></tr>
+<tr><td><strong>ABAC</strong> — Attribute-Based Access Control</td><td>Regras/políticas avaliam atributos do usuário, do recurso, da ação e do ambiente (ex.: hora do dia, localização)</td><td>Motor de políticas (policy engine), dinâmico</td></tr>
+</tbody>
+</table>
+
+<div class="callout destaque"><span class="tag">📌</span> MAC é o modelo mais rígido/centralizado (típico de ambientes militares/governamentais); DAC é o mais flexível (típico de sistemas de arquivos comuns, ex.: permissões do Windows/Linux); RBAC é o mais comum em ambientes corporativos; ABAC é o mais granular e dinâmico (usado em Zero Trust).</div>
+
+<h3>2.1 Modelos formais associados ao MAC</h3>
+<ul class="bullets">
+  <li><strong>Bell-LaPadula</strong> — foca CONFIDENCIALIDADE. Regras: "no read up" (não pode ler nível acima) e "no write down" (não pode escrever em nível abaixo).</li>
+  <li><strong>Biba</strong> — foca INTEGRIDADE. Regras invertidas: "no write up" e "no read down".</li>
+</ul>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Bell-LaPadula (confidencialidade) e Biba (integridade) têm regras EXATAMENTE opostas entre si. A banca troca as regras de um modelo pelo outro — decore que Bell-LaPadula começa com "B" de "blindar leitura de cima" (no read up).</div>
+
+<!-- 3 -->
+<h1 id="s3">3. HTTPS</h1>
+<p><strong>HTTPS</strong> (HTTP Secure) é o protocolo HTTP transmitido sobre uma camada de segurança <strong>TLS</strong> (Transport Layer Security), garantindo três propriedades:</p>
+<ul class="bullets">
+  <li><strong>Confidencialidade</strong> — dados cifrados em trânsito, ilegíveis para interceptadores.</li>
+  <li><strong>Integridade</strong> — detecção de qualquer alteração dos dados no meio do caminho (MAC/AEAD).</li>
+  <li><strong>Autenticação</strong> — o cliente verifica a identidade do servidor via certificado digital (e, opcionalmente, o servidor verifica o cliente — <em>mutual TLS/mTLS</em>).</li>
+</ul>
+<table>
+<thead><tr><th>Item</th><th>HTTP</th><th>HTTPS</th></tr></thead>
+<tbody>
+<tr><td>Porta padrão</td><td>80</td><td>443</td></tr>
+<tr><td>Camada de segurança</td><td>Nenhuma</td><td>TLS (antigamente SSL)</td></tr>
+<tr><td>Dados em trânsito</td><td>Texto claro (plaintext)</td><td>Cifrados</td></tr>
+</tbody>
+</table>
+<div class="callout destaque"><span class="tag">📌</span> <strong>HSTS</strong> (HTTP Strict Transport Security) é um cabeçalho de resposta que força o navegador a só se comunicar via HTTPS com aquele domínio pelo tempo definido, mitigando ataques de downgrade (ex.: SSL stripping).</div>
+
+<h3>3.1 Certificados digitais e PKI</h3>
+<ul class="bullets">
+  <li>Certificados são emitidos por uma <strong>Autoridade Certificadora</strong> (CA – Certificate Authority) dentro de uma <strong>PKI</strong> (Public Key Infrastructure).</li>
+  <li><strong>DV</strong> (Domain Validated) — valida apenas a posse do domínio (mais simples/rápido).</li>
+  <li><strong>OV</strong> (Organization Validated) — valida também dados da organização.</li>
+  <li><strong>EV</strong> (Extended Validation) — validação mais rigorosa da identidade jurídica da organização.</li>
+  <li>Cadeia de confiança: Root CA → CA(s) intermediária(s) → Certificado do servidor (folha).</li>
+</ul>
+
+<!-- 4 -->
+<h1 id="s4">4. SSL/TLS</h1>
+<p><strong>SSL</strong> (Secure Sockets Layer) foi criado pela Netscape nos anos 1990. Todas as versões do SSL estão hoje <strong>obsoletas e desaconselhadas</strong> (SSL 3.0 foi formalmente depreciado pela RFC 7568, de 2015, devido à vulnerabilidade POODLE). O sucessor é o <strong>TLS</strong> (Transport Layer Security), padronizado pela IETF.</p>
+
+<table>
+<thead><tr><th>Versão</th><th>Ano</th><th>Situação</th></tr></thead>
+<tbody>
+<tr><td>SSL 2.0</td><td>1995</td><td>Obsoleto/inseguro</td></tr>
+<tr><td>SSL 3.0</td><td>1996</td><td>Depreciado (RFC 7568) — vulnerável ao POODLE</td></tr>
+<tr><td>TLS 1.0</td><td>1999</td><td>Obsoleto (essencialmente "SSL 3.1")</td></tr>
+<tr><td>TLS 1.1</td><td>2006</td><td>Obsoleto</td></tr>
+<tr><td>TLS 1.2</td><td>2008</td><td>Ainda amplamente usado</td></tr>
+<tr><td>TLS 1.3</td><td>2018 (RFC 8446)</td><td>Atual — mais rápido e mais seguro</td></tr>
+</tbody>
+</table>
+
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> Na linguagem popular ainda se fala em "certificado SSL", mas tecnicamente as conexões HTTPS modernas usam TLS, não SSL. Afirmar que "o HTTPS usa o protocolo SSL" é impreciso/desatualizado para fins de prova técnica — o termo correto atual é TLS.</div>
+
+<h3>4.1 Criptografia híbrida no TLS</h3>
+<p>O TLS combina os dois mundos da criptografia:</p>
+<ul class="bullets">
+  <li><strong>Assimétrica</strong> (ex.: RSA, ECDHE/Diffie-Hellman) — usada na fase de handshake, para autenticação do servidor e troca/acordo da chave de sessão.</li>
+  <li><strong>Simétrica</strong> (ex.: AES) — usada para cifrar o volume de dados da sessão (muito mais rápida que a assimétrica).</li>
+</ul>
+
+<h3>4.2 Handshake TLS 1.2 x TLS 1.3</h3>
+<div class="fluxo">
+<strong>TLS 1.2 (2 RTT — duas idas e voltas):</strong>
+<ol>
+  <li>ClientHello (cifras suportadas, número aleatório)</li>
+  <li>ServerHello + Certificate + ServerKeyExchange + ServerHelloDone</li>
+  <li>ClientKeyExchange + ChangeCipherSpec + Finished</li>
+  <li>ChangeCipherSpec + Finished (servidor) → início dos dados cifrados</li>
+</ol>
+</div>
+<div class="fluxo">
+<strong>TLS 1.3 (1 RTT — uma ida e volta; e 0-RTT em retomada de sessão):</strong>
+<ol>
+  <li>ClientHello já inclui o "key share" (chave para Diffie-Hellman efêmero)</li>
+  <li>ServerHello + key share + Certificate + Finished (já cifrados após o key share)</li>
+  <li>Cliente confirma com Finished → início imediato dos dados de aplicação</li>
+</ol>
+</div>
+<div class="callout destaque"><span class="tag">📌</span> Principais avanços do TLS 1.3 em relação ao TLS 1.2:
+<ul class="bullets">
+  <li>Handshake reduzido de 2 RTT para 1 RTT (mais rápido); suporte a 0-RTT na retomada de sessão.</li>
+  <li>Eliminação de algoritmos fracos/obsoletos (RC4, MD5, SHA-1 no handshake, cifras de bloco CBC problemáticas).</li>
+  <li>Removida a troca de chaves RSA estática — agora o <strong>forward secrecy</strong> (sigilo futuro/perfeito) é obrigatório via Diffie-Hellman efêmero (ECDHE), impedindo que a captura futura da chave privada do servidor descriptografe tráfego passado.</li>
+  <li>Conjuntos de cifras (cipher suites) simplificados.</li>
+</ul>
+</div>
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> "Forward secrecy" (sigilo perfeito) significa que, mesmo que a chave privada do servidor seja comprometida no futuro, as sessões TLS passadas continuam protegidas — porque cada sessão usa uma chave efêmera diferente (Diffie-Hellman), nunca a chave privada de longo prazo diretamente para cifrar o tráfego.</div>
+
+<!-- 5 -->
+<h1 id="s5">5. OAuth 2.0</h1>
+<p>O <strong>OAuth 2.0</strong> (RFC 6749) é um framework de <strong>autorização</strong> (não de autenticação) que permite que uma aplicação obtenha acesso limitado a recursos de um usuário em outro serviço, sem que o usuário precise compartilhar sua senha com a aplicação.</p>
+
+<h2>5.1 Papéis (Roles)</h2>
+<table>
+<thead><tr><th>Papel</th><th>Função</th></tr></thead>
+<tbody>
+<tr><td>Resource Owner</td><td>O usuário dono dos dados/recursos</td></tr>
+<tr><td>Client</td><td>A aplicação que quer acessar o recurso em nome do usuário</td></tr>
+<tr><td>Authorization Server</td><td>Servidor que autentica o usuário e emite os tokens</td></tr>
+<tr><td>Resource Server</td><td>Servidor de API que hospeda os recursos protegidos e valida o token</td></tr>
+</tbody>
+</table>
+
+<h2>5.2 Principais grant types (fluxos)</h2>
+<table>
+<thead><tr><th>Grant type</th><th>Uso típico</th></tr></thead>
+<tbody>
+<tr><td><strong>Authorization Code</strong></td><td>Fluxo padrão para aplicações web com back-end confiável; troca um "código" por um token via chamada servidor-a-servidor</td></tr>
+<tr><td><strong>Authorization Code + PKCE</strong></td><td>Recomendado para SPAs (aplicações de página única) e apps mobile, que não conseguem guardar segredo com segurança</td></tr>
+<tr><td><strong>Client Credentials</strong></td><td>Comunicação máquina-a-máquina (M2M), sem usuário envolvido</td></tr>
+<tr><td><strong>Device Code</strong></td><td>Dispositivos sem navegador/teclado completo (ex.: smart TVs) — usuário autoriza em outro dispositivo</td></tr>
+<tr><td><strong>Refresh Token</strong></td><td>Usado para obter um novo access token sem novo login, quando o anterior expira</td></tr>
+<tr><td>Implicit (obsoleto)</td><td>Antigo fluxo para SPAs, hoje desaconselhado em favor de Authorization Code + PKCE</td></tr>
+<tr><td>Resource Owner Password Credentials (legado)</td><td>Usuário fornece login/senha diretamente ao client — uso desaconselhado</td></tr>
+</tbody>
+</table>
+
+<h2>5.3 Tokens</h2>
+<ul class="bullets">
+  <li><strong>Access Token</strong> — token de curta duração usado para acessar o recurso protegido (tipicamente um "bearer token").</li>
+  <li><strong>Refresh Token</strong> — token de longa duração, usado apenas para obter um novo access token, sem novo login do usuário.</li>
+  <li><strong>Scope</strong> — define o conjunto de permissões que o token concede.</li>
+</ul>
+
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> OAuth 2.0 NÃO é um protocolo de autenticação — ele delega AUTORIZAÇÃO de acesso a recursos. Usar OAuth 2.0 puro para "logar" um usuário (sem OpenID Connect) é considerado uma prática incorreta/insegura, pois o Access Token não garante informações confiáveis de identidade.</div>
+
+<!-- 6 -->
+<h1 id="s6">6. OpenID Connect (OIDC) — a camada de identidade sobre o OAuth 2.0</h1>
+<p><strong>OpenID Connect</strong> é uma camada de <strong>autenticação</strong> construída sobre o OAuth 2.0. Ele resolve exatamente a limitação citada acima, introduzindo o conceito de identidade verificável.</p>
+<ul class="bullets">
+  <li>Adiciona o <strong>ID Token</strong>, um token no formato <strong>JWT</strong> (JSON Web Token) contendo "claims" (afirmações) sobre a identidade do usuário autenticado (ex.: nome, e-mail, horário de autenticação).</li>
+  <li>Um <strong>JWT</strong> tem 3 partes separadas por ponto: <code>header.payload.signature</code>, codificadas em Base64URL.</li>
+  <li>Adiciona também o endpoint <code>UserInfo</code>, para consultar dados adicionais do usuário.</li>
+</ul>
+<div class="callout destaque"><span class="tag">📌</span> Resumo da relação: <strong>OAuth 2.0 = autorização</strong> (o que a app pode acessar) → <strong>OpenID Connect = autenticação</strong> (quem é o usuário), construída como uma extensão do próprio OAuth 2.0.</div>
+
+<!-- 7 -->
+<h1 id="s7">7. SSO (Single Sign-On) e SAML</h1>
+<p><strong>SSO</strong> é o mecanismo que permite ao usuário autenticar-se uma única vez e obter acesso a múltiplos sistemas/aplicações independentes, sem precisar reinserir credenciais em cada um.</p>
+
+<h2>7.1 Principais protocolos usados para implementar SSO</h2>
+<table>
+<thead><tr><th>Protocolo</th><th>Formato</th><th>Uso típico</th></tr></thead>
+<tbody>
+<tr><td><strong>SAML 2.0</strong> (Security Assertion Markup Language)</td><td>XML</td><td>SSO corporativo/empresarial clássico, integração entre organizações (federação)</td></tr>
+<tr><td><strong>OAuth 2.0 / OpenID Connect</strong></td><td>JSON / JWT</td><td>SSO moderno em aplicações web e mobile</td></tr>
+<tr><td><strong>Kerberos</strong></td><td>Tickets binários</td><td>SSO dentro de uma rede corporativa/Active Directory (KDC, TGT, tickets de serviço)</td></tr>
+</tbody>
+</table>
+
+<h3>7.2 Fluxo típico do SAML</h3>
+<div class="fluxo">
+<ol>
+  <li>Usuário tenta acessar o Service Provider (SP – a aplicação).</li>
+  <li>SP redireciona o usuário ao Identity Provider (IdP).</li>
+  <li>Usuário se autentica no IdP (login único).</li>
+  <li>IdP gera uma <strong>SAML Assertion</strong> (documento XML assinado digitalmente) e a envia de volta ao navegador do usuário.</li>
+  <li>O navegador entrega a Assertion ao SP (tipicamente via POST automático de um formulário).</li>
+  <li>SP valida a assinatura da Assertion e concede acesso.</li>
+</ol>
+</div>
+
+<h3>7.3 Federação de identidades</h3>
+<p>A <strong>federação</strong> é a relação de confiança estabelecida entre um IdP e um ou mais SPs (podendo cruzar fronteiras organizacionais), permitindo que a identidade validada em um domínio seja aceita em outro, sem duplicar cadastros de usuário.</p>
+
+<div class="callout pegadinha"><span class="tag">⚠ PEGADINHA:</span> SSO é um CONCEITO (autenticar uma vez, acessar vários sistemas); SAML, OAuth2/OIDC e Kerberos são PROTOCOLOS/mecanismos que podem implementar esse conceito. A banca pode tentar fazer você confundir "SSO" com "SAML" como se fossem sinônimos — SAML é apenas um dos meios de se obter SSO.</div>
+
+<!-- 8 -->
+<h1 id="s8">8. Tabela Comparativa Final</h1>
+<table>
+<thead><tr><th>Aspecto</th><th>SAML</th><th>OAuth 2.0</th><th>OpenID Connect</th></tr></thead>
+<tbody>
+<tr><td>Finalidade principal</td><td>Autenticação (SSO corporativo)</td><td>Autorização (acesso delegado a recursos)</td><td>Autenticação (construída sobre o OAuth2)</td></tr>
+<tr><td>Formato de dados</td><td>XML</td><td>JSON</td><td>JSON / JWT</td></tr>
+<tr><td>Artefato de identidade</td><td>SAML Assertion</td><td>Access Token (sem identidade garantida)</td><td>ID Token (JWT)</td></tr>
+<tr><td>Público típico</td><td>Ambientes corporativos/legados</td><td>APIs modernas, apps móveis</td><td>Web/mobile modernos com necessidade de login</td></tr>
+</tbody>
+</table>
+
+<!-- 9 -->
+<h1 id="s9">9. Termos-Chave</h1>
+<table>
+<thead><tr><th>Termo</th><th>Definição resumida</th></tr></thead>
+<tbody>
+<tr><td>ACL (Access Control List)</td><td>Lista associada a um recurso, indicando quais sujeitos têm quais permissões sobre ele — típica do modelo DAC.</td></tr>
+<tr><td>Bearer token</td><td>Token que concede acesso a quem o "portar" (apresentar), sem prova adicional de posse — por isso deve trafegar sempre sobre TLS.</td></tr>
+<tr><td>JWT (JSON Web Token)</td><td>Formato compacto e autocontido para representar claims entre duas partes, estruturado em header.payload.signature.</td></tr>
+<tr><td>PKI (Public Key Infrastructure)</td><td>Conjunto de hardware, software, políticas e procedimentos para criar, gerenciar e revogar certificados digitais.</td></tr>
+<tr><td>mTLS (mutual TLS)</td><td>TLS em que tanto servidor quanto cliente apresentam certificados, autenticando-se mutuamente.</td></tr>
+<tr><td>Cipher suite</td><td>Conjunto de algoritmos negociados no handshake TLS (troca de chaves, cifra simétrica, função hash).</td></tr>
+<tr><td>Forward secrecy</td><td>Propriedade que garante que a captura futura de uma chave de longo prazo não compromete sessões passadas.</td></tr>
+<tr><td>IdP / SP</td><td>Identity Provider (autentica o usuário) / Service Provider (aplicação que consome a identidade) — termos do modelo de federação SAML.</td></tr>
+</tbody>
+</table>
+
+<!-- 10 -->
+<h1 id="s10">10. Quadro-Resumo Geral (revisão rápida)</h1>
+<table class="resumo-rapido">
+<thead><tr><th>Pergunta típica de prova</th><th>Resposta</th></tr></thead>
+<tbody>
+<tr><td>OAuth 2.0 é protocolo de autenticação ou autorização?</td><td>Autorização</td></tr>
+<tr><td>O que adiciona identidade/autenticação ao OAuth2?</td><td>OpenID Connect (OIDC), via ID Token (JWT)</td></tr>
+<tr><td>Porta padrão do HTTPS?</td><td>443</td></tr>
+<tr><td>Versão de SSL depreciada pela RFC 7568?</td><td>SSL 3.0</td></tr>
+<tr><td>Quantos RTTs o handshake do TLS 1.3 usa?</td><td>1 RTT (0-RTT em retomada)</td></tr>
+<tr><td>O que o TLS 1.3 tornou obrigatório?</td><td>Forward secrecy (via Diffie-Hellman efêmero); removeu RSA estático</td></tr>
+<tr><td>Modelo de controle de acesso baseado em papéis?</td><td>RBAC</td></tr>
+<tr><td>Modelo de controle de acesso centralizado/imposto pelo sistema?</td><td>MAC</td></tr>
+<tr><td>Modelo formal de confidencialidade ("no read up")?</td><td>Bell-LaPadula</td></tr>
+<tr><td>Modelo formal de integridade ("no write up")?</td><td>Biba</td></tr>
+<tr><td>Protocolo de SSO baseado em XML?</td><td>SAML 2.0</td></tr>
+<tr><td>Documento assinado enviado pelo IdP ao SP no SAML?</td><td>SAML Assertion</td></tr>
+</tbody>
+</table>
+
+<!-- 11 -->
+<h1 id="s11">11. Pegadinhas Consolidadas (revisão de véspera)</h1>
+<ul class="bullets">
+  <li>OAuth 2.0 ≠ autenticação. É um framework de AUTORIZAÇÃO. Quem autentica é o OpenID Connect (camada construída sobre o OAuth2).</li>
+  <li>"Certificado SSL" é termo popular desatualizado — tecnicamente hoje é TLS; SSL está obsoleto/depreciado.</li>
+  <li>TLS 1.3 reduziu o handshake de 2 RTT (TLS 1.2) para 1 RTT, e eliminou a troca de chaves RSA estática, tornando o forward secrecy obrigatório.</li>
+  <li>Bell-LaPadula (confidencialidade: no read up/no write down) e Biba (integridade: no write up/no read down) têm regras opostas — não troque um pelo outro.</li>
+  <li>DAC = dono do recurso decide (discricionário); MAC = sistema/política central decide (mandatório, rótulos de sigilo).</li>
+  <li>SSO é o conceito; SAML, OAuth2/OIDC e Kerberos são protocolos/mecanismos que o implementam — não são sinônimos.</li>
+  <li>SAML usa XML e "Assertions"; OAuth2/OIDC usam JSON e tokens (JWT no caso do OIDC).</li>
+  <li>Access Token (OAuth2) concede acesso a recursos; ID Token (OIDC) prova identidade — não confundir os dois tipos de token.</li>
+  <li>Refresh Token serve para renovar o Access Token sem novo login — não concede acesso direto a recursos.</li>
+  <li>Autenticação de múltiplos fatores (MFA) exige fatores de CATEGORIAS diferentes — duas senhas não é MFA.</li>
+</ul>
+
+<!-- 12 -->
+<h1 id="s12">12. Questões Estilo Banca (FGV / Cesgranrio / AOCP) — com Gabarito Comentado</h1>
+
+<div class="questao">
+  <div class="enunciado">1. O OAuth 2.0 é corretamente descrito como um:</div>
+  <ul class="alternativas">
+    <li>(A) Protocolo de autenticação de usuários.</li>
+    <li class="correta">(B) Framework de autorização que permite acesso delegado a recursos, sem compartilhamento de senha.</li>
+    <li>(C) Protocolo de criptografia em trânsito equivalente ao TLS.</li>
+    <li>(D) Modelo de controle de acesso baseado em papéis (RBAC).</li>
+    <li>(E) Formato de certificado digital X.509.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: OAuth 2.0 (RFC 6749) é um framework de autorização — permite que uma aplicação acesse recursos em nome do usuário sem obter sua senha. Autenticação de identidade é papel do OpenID Connect, construído sobre o OAuth2.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">2. Assinale a alternativa que apresenta o elemento responsável por adicionar uma camada de autenticação (identidade do usuário) ao OAuth 2.0:</div>
+  <ul class="alternativas">
+    <li>(A) SAML 2.0.</li>
+    <li>(B) Refresh Token.</li>
+    <li class="correta">(C) OpenID Connect (OIDC), por meio do ID Token.</li>
+    <li>(D) TLS 1.3.</li>
+    <li>(E) PKCE.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: O OpenID Connect é uma camada de identidade construída sobre o OAuth 2.0, introduzindo o ID Token (formato JWT) com informações (claims) sobre a identidade autenticada do usuário.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">3. Em relação às versões do protocolo SSL/TLS, é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li>(A) O SSL 3.0 é a versão mais recente e recomendada atualmente.</li>
+    <li class="correta">(B) O SSL 3.0 foi formalmente depreciado pela RFC 7568, sendo o TLS 1.3 a versão mais atual e recomendada.</li>
+    <li>(C) TLS e SSL são nomes diferentes para exatamente o mesmo protocolo, sem diferenças técnicas.</li>
+    <li>(D) O TLS 1.3 aumentou o número de round trips do handshake em relação ao TLS 1.2.</li>
+    <li>(E) O TLS não utiliza criptografia simétrica em nenhuma etapa da comunicação.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: A RFC 7568 (2015) depreciou formalmente o SSL 3.0 devido à vulnerabilidade POODLE. O TLS 1.3 (RFC 8446) é a versão mais atual, reduzindo (e não aumentando) o número de round trips do handshake para 1 RTT.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">4. O modelo de controle de acesso em que o próprio proprietário do recurso decide, a seu critério, quem pode acessá-lo (tipicamente via listas de controle de acesso) é denominado:</div>
+  <ul class="alternativas">
+    <li>(A) MAC — Mandatory Access Control.</li>
+    <li class="correta">(B) DAC — Discretionary Access Control.</li>
+    <li>(C) RBAC — Role-Based Access Control.</li>
+    <li>(D) ABAC — Attribute-Based Access Control.</li>
+    <li>(E) SSO — Single Sign-On.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: DAC (Discretionary Access Control) é o modelo em que o dono do recurso concede/revoga acessos a seu critério, geralmente por meio de ACLs. MAC é o oposto — controle centralizado e mandatório por rótulos de classificação.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">5. O modelo formal Bell-LaPadula, aplicado a sistemas com controle de acesso obrigatório (MAC), tem como foco principal:</div>
+  <ul class="alternativas">
+    <li>(A) Integridade dos dados, impedindo escrita em níveis superiores.</li>
+    <li class="correta">(B) Confidencialidade dos dados, impedindo leitura em níveis superiores ("no read up") e escrita em níveis inferiores ("no write down").</li>
+    <li>(C) Disponibilidade dos serviços em ambientes de alta criticidade.</li>
+    <li>(D) Autenticação multifator de usuários privilegiados.</li>
+    <li>(E) Auditoria e não-repúdio de transações financeiras.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: Bell-LaPadula é voltado à confidencialidade, com as regras "no read up" (simple security property) e "no write down" (star property). O modelo Biba, com regras opostas, é que trata de integridade.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">6. No protocolo SAML 2.0, o documento XML assinado digitalmente, emitido pelo Identity Provider (IdP) e enviado ao Service Provider (SP) para comprovar a autenticação do usuário, é denominado:</div>
+  <ul class="alternativas">
+    <li>(A) Access Token.</li>
+    <li>(B) ID Token.</li>
+    <li class="correta">(C) SAML Assertion.</li>
+    <li>(D) Refresh Token.</li>
+    <li>(E) Client Credential.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: A SAML Assertion é o artefato XML assinado que carrega as afirmações sobre a autenticação/atributos do usuário, entregue do IdP ao SP para conceder acesso. Os demais termos (Access Token, ID Token, Refresh Token, Client Credential) pertencem ao vocabulário OAuth2/OIDC, não ao SAML.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">7. Sobre a porta padrão e a camada de segurança utilizada pelo protocolo HTTPS, é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li>(A) Utiliza a porta 80, com criptografia via IPSec.</li>
+    <li class="correta">(B) Utiliza a porta 443, com o tráfego protegido por TLS.</li>
+    <li>(C) Utiliza a porta 8080, sem qualquer camada de criptografia.</li>
+    <li>(D) Utiliza a porta 443, mas sem qualquer verificação de identidade do servidor.</li>
+    <li>(E) Utiliza a porta 22, protegida por SSH.</li>
+  </ul>
+  <div class="gabarito">Gabarito: B</div>
+  <div class="comentario">Comentário: HTTPS utiliza por padrão a porta 443 e protege a comunicação por meio do protocolo TLS (sucessor do SSL), garantindo confidencialidade, integridade e autenticação do servidor (via certificado digital).</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">8. Qual dos seguintes fluxos (grant types) do OAuth 2.0 é o mais recomendado atualmente para aplicações de página única (SPA) e aplicativos móveis, que não conseguem armazenar um segredo de cliente com segurança?</div>
+  <ul class="alternativas">
+    <li>(A) Client Credentials.</li>
+    <li>(B) Implicit Grant.</li>
+    <li class="correta">(C) Authorization Code com PKCE.</li>
+    <li>(D) Resource Owner Password Credentials.</li>
+    <li>(E) Device Code.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: O fluxo Authorization Code combinado com PKCE (Proof Key for Code Exchange) é a recomendação atual para clientes públicos (SPAs e apps móveis), substituindo o Implicit Grant, hoje desaconselhado por razões de segurança.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">9. A propriedade de segurança que garante que a captura futura da chave privada de longo prazo de um servidor NÃO permite descriptografar sessões TLS passadas, tornada obrigatória no TLS 1.3, é denominada:</div>
+  <ul class="alternativas">
+    <li>(A) Non-repudiation (não repúdio).</li>
+    <li>(B) Mutual authentication (autenticação mútua).</li>
+    <li class="correta">(C) Forward secrecy (sigilo futuro/perfeito).</li>
+    <li>(D) Data masking (mascaramento de dados).</li>
+    <li>(E) Session fixation protection.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: Forward secrecy é garantida pelo uso de chaves efêmeras (Diffie-Hellman/ECDHE) a cada sessão. O TLS 1.3 tornou essa propriedade obrigatória ao remover a troca de chaves RSA estática, presente ainda como opção no TLS 1.2.</div>
+</div>
+
+<div class="questao">
+  <div class="enunciado">10. Considerando a diferença entre os tokens emitidos em um fluxo OpenID Connect, é correto afirmar que:</div>
+  <ul class="alternativas">
+    <li>(A) O Access Token e o ID Token são exatamente o mesmo artefato, apenas com nomes diferentes.</li>
+    <li>(B) O Refresh Token é usado diretamente para acessar recursos protegidos na API.</li>
+    <li class="correta">(C) O ID Token, no formato JWT, carrega informações de identidade do usuário autenticado, enquanto o Access Token concede acesso a recursos protegidos.</li>
+    <li>(D) O Access Token é sempre um documento XML assinado.</li>
+    <li>(E) O ID Token substitui integralmente a necessidade de HTTPS na comunicação.</li>
+  </ul>
+  <div class="gabarito">Gabarito: C</div>
+  <div class="comentario">Comentário: No OpenID Connect, o ID Token (JWT) carrega claims de identidade do usuário, enquanto o Access Token (herdado do OAuth2) é usado para autorizar chamadas ao Resource Server. O Refresh Token apenas renova o Access Token, não acessa recursos diretamente. Nada dispensa o uso de TLS/HTTPS para proteger o transporte desses tokens.</div>
+</div>
+
+<footer>Guia de estudo — Controle de Acesso, HTTPS, SSL/TLS, OAuth 2.0 e SSO — Preparação Dataprev/FGV</footer>
+
+</body>
+</html>
