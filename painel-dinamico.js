@@ -9,7 +9,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwK7Y6KxVxKkq2Lk08HBWtO
 
 const COLORS = ['#5cd6d6', '#ffb454', '#4ade80', '#b39ddb', '#f87171', '#7fa8c9'];
 
-let currentData = []; // [{ materia, assuntos: [{assunto, link}] }]
+let currentData = []; // [{ materia, assuntos: [{assunto, prioridade, link}] }]
 
 document.getElementById('endpoint-line').textContent = API_URL.slice(0, 70) + '...';
 
@@ -23,8 +23,7 @@ document.getElementById('endpoint-line').textContent = API_URL.slice(0, 70) + '.
    ---------------------------------------------------------------------- */
 function normalize(json){
   // Formato real do Apps Script em uso:
-  // [{ planilha: "Nome da matéria", linhas: [["Assunto","Link","Card","MMental"], [valor, valor, valor, valor], ...] }, ...]
-  // A primeira linha de "linhas" é o cabeçalho e é descartada.
+  // [{ planilha: "Nome da matéria", linhas: [["Assunto","Prioridade","Link","Card","MMental"], ...] }, ...]
   if(Array.isArray(json) && json.length && json[0].planilha && Array.isArray(json[0].linhas)){
     return json.map(sheet => {
       const linhas = sheet.linhas || [];
@@ -33,17 +32,29 @@ function normalize(json){
           if(idx === 0 && String(row[0]).toLowerCase() === 'assunto') return false; // pula cabeçalho
           return row[0];
         })
-        .map(row => ({
-          assunto: row[0],
-          link: row[1] || '',
-          card: row[2] || '',
-          mmental: row[3] || ''
-        }));
+        .map(row => {
+          // Lógica inteligente para saber se a 2ª coluna é a Prioridade ou já é o Link (planilhas antigas)
+          let prioridade = 'Média';
+          let linkIdx = 1, cardIdx = 2, mmentalIdx = 3;
+          
+          if (row[1] && ['alta', 'média', 'media', 'baixa'].includes(String(row[1]).toLowerCase().trim())) {
+            prioridade = String(row[1]).trim();
+            linkIdx = 2; cardIdx = 3; mmentalIdx = 4;
+          }
+
+          return {
+            assunto: row[0],
+            prioridade: prioridade,
+            link: row[linkIdx] || '',
+            card: row[cardIdx] || '',
+            mmental: row[mmentalIdx] || ''
+          };
+        });
       return { materia: sheet.planilha, assuntos };
     });
   }
 
-  // Formato A: [{ materia: "...", assuntos: [{assunto, link}, ...] }, ...]
+  // Formato A: [{ materia: "...", assuntos: [{assunto, prioridade, link}, ...] }, ...]
   if(Array.isArray(json) && json.length && json[0].assuntos){
     return json.map(m => ({
       materia: m.materia || m.nome || m.name || 'Matéria',
@@ -51,8 +62,7 @@ function normalize(json){
     }));
   }
 
-  // Formato B: objeto { "Nome da aba": [ {Assunto, Link}, ... ], ... }
-  // ou { "Nome da aba": [ ["Assunto","Link"], ... ] } (linhas cruas, com ou sem cabeçalho)
+  // Formato B: objeto { "Nome da aba": [ {Assunto, Prioridade, Link}, ... ] }
   if(json && typeof json === 'object' && !Array.isArray(json)){
     const keys = Object.keys(json);
     if(keys.length && Array.isArray(json[keys[0]])){
@@ -60,7 +70,15 @@ function normalize(json){
         const rows = json[sheetName];
         const assuntos = rows
           .map(row => {
-            if(Array.isArray(row)) return { assunto: row[0], link: row[1] || '', card: row[2] || '', mmental: row[3] || '' };
+            if(Array.isArray(row)) {
+              let prioridade = 'Média';
+              let linkIdx = 1, cardIdx = 2, mmentalIdx = 3;
+              if (row[1] && ['alta', 'média', 'media', 'baixa'].includes(String(row[1]).toLowerCase().trim())) {
+                prioridade = String(row[1]).trim();
+                linkIdx = 2; cardIdx = 3; mmentalIdx = 4;
+              }
+              return { assunto: row[0], prioridade, link: row[linkIdx] || '', card: row[cardIdx] || '', mmental: row[mmentalIdx] || '' };
+            }
             return normalizeAssunto(row);
           })
           .filter(r => r.assunto && String(r.assunto).toLowerCase() !== 'assunto');
@@ -69,7 +87,7 @@ function normalize(json){
     }
   }
 
-  // Formato C: array plano de linhas { materia/aba, assunto, link }
+  // Formato C: array plano de linhas { materia/aba, assunto, prioridade, link }
   if(Array.isArray(json) && json.length && (json[0].assunto || json[0].Assunto)){
     const groups = {};
     json.forEach(row => {
@@ -87,6 +105,7 @@ function normalize(json){
 function normalizeAssunto(obj){
   return {
     assunto: obj.assunto || obj.Assunto || obj.nome || obj.name || '',
+    prioridade: obj.prioridade || obj.Prioridade || 'Média',
     link: obj.link || obj.Link || obj.url || obj.URL || '',
     card: obj.card || obj.Card || '',
     mmental: obj.mmental || obj.MMental || obj.mapaMental || obj['Mapa Mental'] || ''
@@ -215,18 +234,30 @@ function render(){
         <div class="node-tag">nó · matéria</div>
       </div>
       <div class="assunto-list">
-        ${m.assuntos.map((a, idx) => `
+        ${m.assuntos.map((a, idx) => {
+          
+          // Lógica para definir a classe CSS de acordo com a prioridade
+          let priorityClass = "priority-media";
+          const prio = a.prioridade ? a.prioridade.toLowerCase().replace('é', 'e') : "media";
+          if (prio === "alta") priorityClass = "priority-alta";
+          else if (prio === "baixa") priorityClass = "priority-baixa";
+
+          return `
           <div class="assunto-row">
             <div class="assunto-top">
               <span class="assunto-idx">${String(idx+1).padStart(2,'0')}</span>
-              <span class="assunto-nome">${escapeHtml(a.assunto)}</span>
+              <span class="assunto-nome">
+                ${escapeHtml(a.assunto)}
+                <span class="priority-badge ${priorityClass}">${escapeHtml(a.prioridade || 'Média')}</span>
+              </span>
             </div>
             <div class="assunto-actions">
               ${actionButton('conteudo', 'Conteúdo', a.link)}
               ${actionButton('card', 'Card', a.card)}
               ${actionButton('mmental', 'Mapa Mental', a.mmental)}
             </div>
-          </div>`).join('')}
+          </div>`;
+        }).join('')}
       </div>
     </div>`;
   }).join('') + `</div>`;
