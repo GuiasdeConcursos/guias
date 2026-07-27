@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tipologia Textual — Guia de Revisão</title>
+<style>
+  :root{
+    --bg:#0f1220;
+    --panel:#171b2e;
+    --panel2:#1e2338;
+    --border:#2a2f4a;
+    --text:#e8e9f3;
+    --muted:#9aa0c0;
+    --accent:#7c9eff;
+    --accent2:#ffb454;
+    --green:#5ed6a0;
+    --red:#ff6b6b;
+    --purple:#c792ea;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Roboto, Arial, sans-serif;
+    background:linear-gradient(180deg,#0f1220,#131730 40%, #0f1220);
+    color:var(--text);
+    line-height:1.6;
+    padding-bottom:60px;
+  }
+  header{
+    padding:40px 20px 30px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    background:radial-gradient(ellipse at top, rgba(124,158,255,0.15), transparent 60%);
+  }
+  header h1{
+    font-size:2.1em;
+    margin:0 0 8px;
+    letter-spacing:0.5px;
+  }
+  header p{
+    color:var(--muted);
+    margin:0;
+    font-size:0.95em;
+  }
+  nav{
+    max-width:900px;
+    margin:20px auto;
+    padding:0 20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+  }
+  nav a{
+    color:var(--accent);
+    text-decoration:none;
+    font-size:0.85em;
+    padding:6px 12px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    background:var(--panel);
+    transition:all .2s;
+  }
+  nav a:hover{
+    background:var(--accent);
+    color:#0f1220;
+    border-color:var(--accent);
+  }
+  main{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 20px;
+  }
+  section{
+    margin-top:40px;
+  }
+  h2{
+    font-size:1.5em;
+    color:var(--accent2);
+    border-bottom:2px solid var(--border);
+    padding-bottom:10px;
+    margin-bottom:20px;
+    scroll-margin-top:20px;
+  }
+  h3{
+    color:var(--accent);
+    font-size:1.15em;
+    margin-top:28px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px 22px;
+    margin-bottom:18px;
+  }
+  .tipo-card{
+    border-left:4px solid var(--accent);
+  }
+  .tipo-card.narracao{border-left-color:#7c9eff;}
+  .tipo-card.descricao{border-left-color:#c792ea;}
+  .tipo-card.dissertacao{border-left-color:#5ed6a0;}
+  .tipo-card.exposicao{border-left-color:#ffb454;}
+  .tipo-card.injuncao{border-left-color:#ff6b6b;}
+
+  .tipo-card h3{margin-top:0;}
+  .tag{
+    display:inline-block;
+    font-size:0.72em;
+    background:var(--panel2);
+    color:var(--muted);
+    padding:3px 9px;
+    border-radius:12px;
+    margin:2px 4px 2px 0;
+    border:1px solid var(--border);
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0 6px;
+    font-size:0.9em;
+  }
+  th, td{
+    border:1px solid var(--border);
+    padding:9px 10px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--panel2);
+    color:var(--accent2);
+  }
+  tr:nth-child(even){background:rgba(255,255,255,0.02);}
+
+  .pegadinha{
+    background:rgba(255,107,107,0.08);
+    border:1px solid rgba(255,107,107,0.35);
+    border-radius:10px;
+    padding:14px 16px;
+    margin:12px 0;
+  }
+  .pegadinha b{color:var(--red);}
+
+  .dica{
+    background:rgba(94,214,160,0.08);
+    border:1px solid rgba(94,214,160,0.35);
+    border-radius:10px;
+    padding:14px 16px;
+    margin:12px 0;
+  }
+  .dica b{color:var(--green);}
+
+  .exemplo{
+    background:var(--panel2);
+    border-radius:8px;
+    padding:10px 14px;
+    margin:10px 0;
+    font-style:italic;
+    color:var(--muted);
+    border-left:3px solid var(--purple);
+  }
+
+  .questao{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:16px;
+  }
+  .questao .banca{
+    font-size:0.75em;
+    color:var(--accent2);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:6px;
+    display:block;
+  }
+  .questao p.enunciado{margin:6px 0 12px;}
+  .alt{
+    display:block;
+    padding:7px 10px;
+    margin:4px 0;
+    border-radius:6px;
+    background:var(--panel2);
+    border:1px solid transparent;
+    cursor:pointer;
+    font-size:0.93em;
+  }
+  .alt:hover{border-color:var(--accent);}
+  details{
+    margin-top:10px;
+  }
+  summary{
+    cursor:pointer;
+    color:var(--accent);
+    font-size:0.88em;
+    user-select:none;
+  }
+  .gabarito{
+    margin-top:10px;
+    padding:12px 14px;
+    background:rgba(94,214,160,0.08);
+    border:1px solid rgba(94,214,160,0.3);
+    border-radius:8px;
+    font-size:0.9em;
+  }
+  .gabarito b{color:var(--green);}
+
+  .resumo-final{
+    background:var(--panel2);
+    border:1px solid var(--accent);
+    border-radius:12px;
+    padding:20px;
+    margin-top:16px;
+  }
+  .resumo-final ul{margin:0; padding-left:20px;}
+  .resumo-final li{margin-bottom:8px;}
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:0.8em;
+    margin-top:50px;
+    padding:20px;
+    border-top:1px solid var(--border);
+  }
+
+  .toc-badge{
+    display:inline-block;
+    background:var(--accent);
+    color:#0f1220;
+    font-weight:bold;
+    border-radius:50%;
+    width:22px;
+    height:22px;
+    text-align:center;
+    line-height:22px;
+    font-size:0.75em;
+    margin-right:6px;
+  }
+
+  @media print{
+    body{background:white; color:black;}
+    .card, .questao, .pegadinha, .dica{border-color:#ccc;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📘 Tipologia Textual</h1>
+  <p>Guia de revisão para prova — Narração · Descrição · Dissertação · Exposição · Injunção</p>
+</header>
+
+<nav>
+  <a href="#conceito">Conceito</a>
+  <a href="#tipos">As 5 tipologias</a>
+  <a href="#genero-x-tipo">Gênero x Tipo</a>
+  <a href="#sequencias">Sequências tipológicas</a>
+  <a href="#tabela-resumo">Tabela-resumo</a>
+  <a href="#pegadinhas">Pegadinhas</a>
+  <a href="#questoes">Questões</a>
+  <a href="#resumo-final">Resumo final</a>
+</nav>
+
+<main>
+
+<section id="conceito">
+  <h2>1. O que é Tipologia Textual</h2>
+  <div class="card">
+    <p><b>Tipologia textual</b> é a classificação dos textos conforme a <b>estrutura linguística e a natureza da composição</b> — isto é, o modo como as frases se organizam para construir sentido (narrar, descrever, argumentar, expor, instruir). É um conceito de base <b>linguística e formal</b>, criado principalmente a partir dos estudos de <b>Egon Werlich</b> (que também é cobrado nominalmente em provas de bancas como FGV).</p>
+    <p>Diferente do <b>gênero textual</b> (categoria sócio-comunicativa, como e-mail, notícia, bula, resenha, edital), a tipologia é um <b>número finito e estável de categorias</b> — tradicionalmente <b>cinco</b>:</p>
+    <p>
+      <span class="tag">Narração</span>
+      <span class="tag">Descrição</span>
+      <span class="tag">Dissertação/Argumentação</span>
+      <span class="tag">Exposição</span>
+      <span class="tag">Injunção</span>
+    </p>
+  </div>
+</section>
+
+<section id="tipos">
+  <h2>2. As cinco tipologias textuais</h2>
+
+  <div class="card tipo-card narracao">
+    <h3>🔵 Narração</h3>
+    <p>Relata <b>fatos/eventos organizados no tempo</b>, envolvendo personagens, enredo, tempo, espaço e conflito. Predomina a <b>sucessão cronológica de ações</b>.</p>
+    <p><b>Marcas linguísticas:</b> verbos de ação, predominância do <b>pretérito perfeito</b> (ações concluídas) e <b>pretérito imperfeito</b> (ações de fundo/habituais); conectivos temporais (<i>então, depois, quando, em seguida</i>); presença de discurso direto/indireto.</p>
+    <div class="exemplo">Ex.: "Ela abriu a porta, olhou para trás e saiu correndo antes que alguém percebesse."</div>
+  </div>
+
+  <div class="card tipo-card descricao">
+    <h3>🟣 Descrição</h3>
+    <p>Apresenta <b>características, qualidades e propriedades</b> de seres, objetos, ambientes ou cenas — organização <b>espacial</b>, não temporal. Não há progressão de ações, mas justaposição de traços.</p>
+    <p><b>Marcas linguísticas:</b> predominância de <b>adjetivos</b>, verbos de ligação (<i>ser, estar, parecer</i>), presente ou pretérito imperfeito com valor descritivo, estrutura frequentemente nominal (frases sem verbo de ação).</p>
+    <div class="exemplo">Ex.: "A sala era ampla, com paredes brancas e um lustre antigo pendurado ao centro."</div>
+  </div>
+
+  <div class="card tipo-card dissertacao">
+    <h3>🟢 Dissertação (Argumentativa e Expositiva)</h3>
+    <p>Muitas bancas tratam <b>dissertação</b> como termo guarda-chuva que se desdobra em duas vertentes — é a pegadinha nº 1 do tema (ver seção 6):</p>
+    <ul>
+      <li><b>Dissertativo-argumentativa</b>: defende um <b>ponto de vista</b>, com tese, argumentos, contra-argumentos e conclusão. Objetivo: <b>persuadir/convencer</b>.</li>
+      <li><b>Dissertativo-expositiva</b> (= Exposição, ver abaixo): apenas <b>expõe/explica</b> um tema, sem defender tese. Objetivo: <b>informar</b>.</li>
+    </ul>
+    <p><b>Marcas linguísticas (argumentativa):</b> presente do indicativo (atemporalidade), conectivos lógico-argumentativos (<i>portanto, contudo, entretanto, pois, uma vez que, dessa forma</i>), predominância de estrutura tese → argumentos → conclusão.</p>
+    <div class="exemplo">Ex.: "É inegável que a evasão escolar decorre, sobretudo, de fatores socioeconômicos, e não de mero desinteresse dos estudantes."</div>
+  </div>
+
+  <div class="card tipo-card exposicao">
+    <h3>🟠 Exposição (dissertativo-expositiva)</h3>
+    <p>Apresenta, <b>explica ou analisa</b> um assunto/conceito de forma objetiva, <b>sem tomar partido</b>. É a base de verbetes, resumos, textos didáticos e científicos.</p>
+    <p><b>Marcas linguísticas:</b> presente atemporal, linguagem denotativa, definições, comparações, exemplificações, ausência de defesa de tese pessoal.</p>
+    <div class="exemplo">Ex.: "A fotossíntese é o processo pelo qual as plantas convertem luz solar em energia química."</div>
+    <div class="pegadinha"><b>Atenção:</b> bancas cobram a diferença — texto <i>expositivo</i> informa; texto <i>argumentativo</i> persuade. Um artigo de opinião é argumentativo; um verbete de enciclopédia é expositivo.</div>
+  </div>
+
+  <div class="card tipo-card injuncao">
+    <h3>🔴 Injunção</h3>
+    <p>Tem função de <b>instruir, orientar ou comandar</b> uma ação a ser realizada pelo leitor. Presente em manuais, receitas, bulas, editais, regulamentos, placas.</p>
+    <p><b>Marcas linguísticas:</b> verbos no <b>imperativo</b> ou no <b>infinitivo</b> com valor imperativo; sequência de instruções numeradas ou em tópicos; linguagem objetiva e direta.</p>
+    <div class="exemplo">Ex.: "Bata os ovos, acrescente o açúcar e leve ao forno por 40 minutos."</div>
+  </div>
+</section>
+
+<section id="genero-x-tipo">
+  <h2>3. Tipologia Textual × Gênero Textual</h2>
+  <div class="card">
+    <table>
+      <tr><th>Critério</th><th>Tipologia Textual</th><th>Gênero Textual</th></tr>
+      <tr><td>Natureza</td><td>Linguística/formal</td><td>Sócio-comunicativa</td></tr>
+      <tr><td>Quantidade</td><td>Fechada (5 tipos)</td><td>Ilimitada, em constante criação</td></tr>
+      <tr><td>Critério de definição</td><td>Estrutura da frase, tempo verbal, léxico</td><td>Função social, suporte, contexto de circulação</td></tr>
+      <tr><td>Estabilidade</td><td>Estável (pouco muda historicamente)</td><td>Dinâmico (surgem novos: post, meme, podcast)</td></tr>
+      <tr><td>Exemplo</td><td>Narração, Descrição, Dissertação...</td><td>Notícia, e-mail, bula, receita, edital...</td></tr>
+    </table>
+    <div class="dica"><b>Dica de prova:</b> um mesmo gênero pode combinar mais de uma tipologia. Uma <b>notícia</b> (gênero) costuma ter trechos <b>narrativos</b> (o fato) e <b>descritivos</b> (o cenário); uma <b>bula de remédio</b> (gênero) mistura <b>exposição</b> (composição do medicamento) e <b>injunção</b> (modo de uso).</div>
+  </div>
+</section>
+
+<section id="sequencias">
+  <h2>4. Sequências Tipológicas e Heterogeneidade Tipológica</h2>
+  <div class="card">
+    <p>Conceito de <b>Jean-Michel Adam</b>, cobrado sobretudo pela FGV/Cesgranrio: nenhum texto real é <b>tipologicamente puro</b>. Um mesmo texto é organizado por <b>sequências tipológicas</b> que se intercalam, havendo apenas uma <b>sequência dominante</b> que classifica o texto como um todo.</p>
+    <p>Esse fenômeno é chamado de <b>heterogeneidade tipológica</b> (ou composicional): dentro de um romance (predominantemente narrativo), pode haver trechos descritivos (cenário) e até dissertativos (reflexões do narrador).</p>
+    <div class="pegadinha"><b>Pegadinha clássica:</b> a banca apresenta um trecho com uma tipologia secundária dentro de um texto de tipologia dominante diferente e pergunta "qual a tipologia do texto?" — a resposta é sempre a <b>predominante</b>, não a tipologia do trecho isolado citado.</div>
+  </div>
+</section>
+
+<section id="tabela-resumo">
+  <h2>5. Tabela-resumo comparativa</h2>
+  <div class="card">
+    <table>
+      <tr>
+        <th>Tipo</th>
+        <th>Foco</th>
+        <th>Tempo verbal dominante</th>
+        <th>Organização</th>
+        <th>Conectivos típicos</th>
+      </tr>
+      <tr>
+        <td>Narração</td>
+        <td>Ações/fatos</td>
+        <td>Pretérito perfeito/imperfeito</td>
+        <td>Temporal (cronológica)</td>
+        <td>então, depois, quando, enquanto</td>
+      </tr>
+      <tr>
+        <td>Descrição</td>
+        <td>Características</td>
+        <td>Presente/imperfeito, verbos de ligação</td>
+        <td>Espacial</td>
+        <td>ao lado, acima, ali, ao fundo</td>
+      </tr>
+      <tr>
+        <td>Dissertação argumentativa</td>
+        <td>Defesa de tese</td>
+        <td>Presente atemporal</td>
+        <td>Lógico-argumentativa</td>
+        <td>portanto, contudo, pois, dessa forma</td>
+      </tr>
+      <tr>
+        <td>Exposição</td>
+        <td>Explicar/informar</td>
+        <td>Presente atemporal</td>
+        <td>Lógica, sem tese pessoal</td>
+        <td>ou seja, isto é, por exemplo</td>
+      </tr>
+      <tr>
+        <td>Injunção</td>
+        <td>Instruir/comandar</td>
+        <td>Imperativo/infinitivo</td>
+        <td>Sequencial (passo a passo)</td>
+        <td>primeiro, em seguida, por fim</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<section id="pegadinhas">
+  <h2>6. Pegadinhas mais cobradas em prova</h2>
+
+  <div class="pegadinha">
+    <b>1. Dissertação ≠ apenas "argumentar".</b> Dissertação é gênero de base que se divide em <b>expositiva</b> (informar) e <b>argumentativa</b> (persuadir/defender tese). Bancas cobram essa subdivisão como "pegadinha de conceito".
+  </div>
+  <div class="pegadinha">
+    <b>2. Confundir tipologia com gênero.</b> "Editorial de jornal" é <b>gênero</b>; sua tipologia predominante é <b>dissertativo-argumentativa</b>. Cuidado com questões que pedem "o gênero" mas dão opções de tipologia (ou vice-versa).
+  </div>
+  <div class="pegadinha">
+    <b>3. Texto misto (heterogeneidade tipológica).</b> A resposta correta é sempre a tipologia <b>predominante</b> do texto todo, não de um trecho isolado citado no enunciado.
+  </div>
+  <div class="pegadinha">
+    <b>4. Descrição não é "sem verbo".</b> Descrição pode ter verbos, mas eles tendem a ser <b>de ligação/estado</b> (ser, estar, parecer, permanecer), não de ação transformadora como na narração.
+  </div>
+  <div class="pegadinha">
+    <b>5. Injunção não é só receita/manual.</b> Também abrange <b>editais, regulamentos, placas de aviso, bulas (parte de posologia)</b> — qualquer texto que oriente uma ação do leitor.
+  </div>
+  <div class="pegadinha">
+    <b>6. Presente do indicativo aparece em três tipos diferentes</b> (descrição, exposição, dissertação argumentativa) — o que diferencia não é só o tempo verbal, mas a <b>função comunicativa</b> (descrever traços x explicar x persuadir).
+  </div>
+</section>
+
+<section id="questoes">
+  <h2>7. Questões estilo prova</h2>
+
+  <div class="questao">
+    <span class="banca">FGV — estilo</span>
+    <p class="enunciado"><b>1.</b> "O relatório técnico define o protocolo como o conjunto de regras que rege a comunicação entre dispositivos em uma rede." Esse trecho é predominantemente:</p>
+    <span class="alt">A) narrativo</span>
+    <span class="alt">B) descritivo</span>
+    <span class="alt">C) dissertativo-expositivo</span>
+    <span class="alt">D) dissertativo-argumentativo</span>
+    <span class="alt">E) injuntivo</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: C.</b> O trecho define/explica um conceito, sem defender tese nem indicar ação a ser tomada — típico da exposição (dissertação expositiva).</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">Cesgranrio — estilo</span>
+    <p class="enunciado"><b>2.</b> "Retire o cabo da tomada antes de proceder à limpeza do equipamento." A tipologia predominante nesse trecho é:</p>
+    <span class="alt">A) narração</span>
+    <span class="alt">B) descrição</span>
+    <span class="alt">C) exposição</span>
+    <span class="alt">D) injunção</span>
+    <span class="alt">E) dissertação argumentativa</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: D.</b> Verbo no imperativo ("retire") orientando uma ação do leitor — marca clássica de injunção.</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">AOCP — estilo</span>
+    <p class="enunciado"><b>3.</b> Assinale a alternativa correta sobre tipologia e gênero textuais:</p>
+    <span class="alt">A) Os gêneros textuais formam um conjunto fechado e estável, ao contrário das tipologias.</span>
+    <span class="alt">B) A tipologia textual é definida pela função social e pelo suporte de circulação do texto.</span>
+    <span class="alt">C) Um mesmo gênero textual pode apresentar mais de uma sequência tipológica.</span>
+    <span class="alt">D) Narração e descrição são consideradas gêneros textuais, não tipologias.</span>
+    <span class="alt">E) A quantidade de tipologias textuais é ilimitada, assim como a de gêneros.</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: C.</b> É a heterogeneidade tipológica: um gênero (ex.: notícia) pode combinar narração, descrição etc. As demais alternativas invertem os conceitos de tipologia (fechada) e gênero (aberto/dinâmico).</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">FGV — estilo</span>
+    <p class="enunciado"><b>4.</b> "A economia brasileira cresceu 2% no último trimestre. Analistas apontam a queda de juros como principal fator, mas alertam que o cenário externo pode reverter essa tendência ainda este ano." Esse texto combina predominantemente:</p>
+    <span class="alt">A) narração e injunção</span>
+    <span class="alt">B) exposição e narração</span>
+    <span class="alt">C) descrição e argumentação</span>
+    <span class="alt">D) exposição e argumentação</span>
+    <span class="alt">E) apenas descrição</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: D.</b> A primeira frase expõe um dado (exposição); a segunda parte já avalia causas e faz prognóstico com ressalva ("mas alertam"), aproximando-se da argumentação.</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">Cesgranrio — estilo</span>
+    <p class="enunciado"><b>5.</b> Sobre as marcas linguísticas da tipologia narrativa, é correto afirmar que:</p>
+    <span class="alt">A) predominam verbos de ligação e adjetivos qualificativos.</span>
+    <span class="alt">B) organiza-se espacialmente, sem progressão temporal.</span>
+    <span class="alt">C) predominam pretérito perfeito e imperfeito, com progressão cronológica de fatos.</span>
+    <span class="alt">D) o tempo verbal predominante é o imperativo.</span>
+    <span class="alt">E) não admite discurso direto ou indireto.</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: C.</b> É a definição-padrão de narração: sucessão de eventos no tempo, marcada por pretérito perfeito (fatos pontuais) e imperfeito (cenário/hábito).</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">FGV — estilo</span>
+    <p class="enunciado"><b>6.</b> Um edital de concurso público que estabelece as regras de inscrição e convoca os candidatos aprovados para as próximas etapas é, quanto ao gênero, um edital; quanto à tipologia predominante, é:</p>
+    <span class="alt">A) narrativo</span>
+    <span class="alt">B) descritivo</span>
+    <span class="alt">C) dissertativo-argumentativo</span>
+    <span class="alt">D) expositivo</span>
+    <span class="alt">E) injuntivo</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: E.</b> Editais estabelecem regras e determinam condutas/prazos a serem seguidos pelo leitor — função injuntiva, mesmo contendo trechos expositivos (definições, requisitos).</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">AOCP — estilo</span>
+    <p class="enunciado"><b>7.</b> "O quarto era pequeno, iluminado por uma única janela que dava para o quintal. As paredes, descascadas, guardavam manchas de umidade." A tipologia predominante é:</p>
+    <span class="alt">A) narração</span>
+    <span class="alt">B) descrição</span>
+    <span class="alt">C) injunção</span>
+    <span class="alt">D) exposição</span>
+    <span class="alt">E) dissertação argumentativa</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: B.</b> Justaposição de características físicas do ambiente, organização espacial, verbos de estado ("era", "guardavam") — descrição clássica.</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">Cesgranrio — estilo</span>
+    <p class="enunciado"><b>8.</b> É correto afirmar sobre a heterogeneidade tipológica que:</p>
+    <span class="alt">A) impede que um texto seja classificado quanto à tipologia.</span>
+    <span class="alt">B) ocorre apenas em textos literários.</span>
+    <span class="alt">C) refere-se à coexistência de mais de uma sequência tipológica em um mesmo texto, prevalecendo uma delas para fins de classificação.</span>
+    <span class="alt">D) é sinônimo de intertextualidade.</span>
+    <span class="alt">E) só se aplica a gêneros digitais.</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: C.</b> Conceito de Jean-Michel Adam: sequências tipológicas coexistem, mas há uma dominante que define a classificação do texto.</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">FGV — estilo</span>
+    <p class="enunciado"><b>9.</b> Assinale a alternativa que apresenta corretamente uma marca linguística típica da dissertação argumentativa:</p>
+    <span class="alt">A) verbos no imperativo orientando uma ação.</span>
+    <span class="alt">B) predominância de adjetivos descrevendo um ambiente.</span>
+    <span class="alt">C) conectivos lógico-argumentativos como "portanto" e "contudo", articulando tese e argumentos.</span>
+    <span class="alt">D) sucessão cronológica de eventos com pretérito perfeito.</span>
+    <span class="alt">E) ausência total de opinião do autor.</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: C.</b> Conectivos lógico-argumentativos articulam a progressão tese → argumento → conclusão, marca central da dissertação argumentativa.</div>
+    </details>
+  </div>
+
+  <div class="questao">
+    <span class="banca">AOCP — estilo</span>
+    <p class="enunciado"><b>10.</b> A diferença essencial entre um texto dissertativo-expositivo e um dissertativo-argumentativo é que:</p>
+    <span class="alt">A) o expositivo sempre usa linguagem coloquial, e o argumentativo, formal.</span>
+    <span class="alt">B) o expositivo tem como objetivo informar/explicar, sem defender um ponto de vista; o argumentativo busca persuadir o leitor, defendendo uma tese.</span>
+    <span class="alt">C) apenas o argumentativo pode conter dados e exemplos.</span>
+    <span class="alt">D) o expositivo é exclusivo de textos literários.</span>
+    <span class="alt">E) não há diferença; são sinônimos.</span>
+    <details><summary>Ver gabarito e justificativa</summary>
+      <div class="gabarito"><b>Gabarito: B.</b> Distinção central cobrada em prova: expor ≠ persuadir. A exposição informa; a argumentação convence.</div>
+    </details>
+  </div>
+
+</section>
+
+<section id="resumo-final">
+  <h2>8. Resumo relâmpago (última leitura antes da prova)</h2>
+  <div class="resumo-final">
+    <ul>
+      <li><b>5 tipologias:</b> Narração, Descrição, Dissertação (Expositiva e Argumentativa), Injunção.</li>
+      <li><b>Narração</b> = ação no tempo → pretérito perfeito/imperfeito, conectivos temporais.</li>
+      <li><b>Descrição</b> = característica no espaço → verbos de ligação, adjetivos.</li>
+      <li><b>Exposição</b> = informar sem tese → presente atemporal, definições.</li>
+      <li><b>Dissertação argumentativa</b> = persuadir com tese → conectivos lógico-argumentativos.</li>
+      <li><b>Injunção</b> = instruir/mandar → imperativo ou infinitivo.</li>
+      <li><b>Tipologia</b> = fechada, linguística. <b>Gênero</b> = aberta, sócio-comunicativa.</li>
+      <li><b>Heterogeneidade tipológica</b> = texto pode misturar tipos; vale a tipologia <b>predominante</b>.</li>
+      <li>Base teórica cobrada nominalmente: <b>Egon Werlich</b> (tipologias) e <b>Jean-Michel Adam</b> (sequências tipológicas/heterogeneidade).</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Guia de revisão — Tipologia Textual · uso pessoal para preparação de concurso
+</footer>
+
+</body>
+</html>
